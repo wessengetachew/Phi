@@ -3,2319 +3,1126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Golden Ratio Sentinel — Prime Recovery from Jump Size</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<title>Φ — Prime Recovery from Jump Size · Wessen Getachew</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --void: #03020a;
-  --deep: #07051a;
-  --panel: rgba(10,8,24,.92);
-  --edge: rgba(255,255,255,.06);
-  --gold: #d4a843;
-  --gold2: rgba(212,168,67,.12);
-  --gold3: rgba(212,168,67,.05);
-  --teal: #2bbfb0;
-  --teal2: rgba(43,191,176,.1);
-  --coral: #e05540;
-  --violet: #9060d0;
-  --violet2: rgba(144,96,208,.1);
-  --ink: #ede6d8;
-  --ink2: #c0b49a;
-  --ink3: #7a7060;
-  --serif: 'EB Garamond', Georgia, serif;
-  --display: 'Cormorant Garamond', Georgia, serif;
-  --mono: 'JetBrains Mono', monospace;
-  --phi: 1.6180339887;
+  --void:    #020308;
+  --deep:    #060912;
+  --panel:   #0a0d18;
+  --edge:    rgba(255,255,255,.06);
+  --edge2:   rgba(255,255,255,.03);
+  --gold:    #c8a84b;
+  --gold2:   rgba(200,168,75,.15);
+  --gold3:   rgba(200,168,75,.06);
+  --teal:    #2bbfb0;
+  --teal2:   rgba(43,191,176,.12);
+  --coral:   #e05540;
+  --violet:  #8866cc;
+  --green:   #4dcc7a;
+  --ink:     #ede6d8;
+  --ink2:    #b8ae9c;
+  --ink3:    #6a6258;
+  --ink4:    #3a3630;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --mono:    'JetBrains Mono', monospace;
+  --phi-val: 1.6180339887;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;scroll-behavior:smooth;}
+html{font-size:15px;scroll-behavior:smooth;}
 body{
   background:var(--void);
   color:var(--ink);
-  font-family:var(--serif);
+  font-family:var(--mono);
   min-height:100vh;
   overflow-x:hidden;
 }
 
-/* ── LAYOUT ── */
-#app {
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
-  max-width:1400px;
-  margin:0 auto;
-}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--void);}
+::-webkit-scrollbar-thumb{background:var(--ink4);border-radius:2px;}
 
 /* ── HEADER ── */
-#header {
-  padding:28px 40px 20px;
-  border-bottom:1px solid rgba(212,168,67,.12);
-  background:rgba(3,2,10,.95);
-  display:flex;align-items:baseline;gap:24px;flex-wrap:wrap;
-  position:sticky;top:0;z-index:50;
-  backdrop-filter:blur(12px);
-}
-.h-title {
-  font-family:var(--display);
-  font-size:1.55rem;font-weight:300;
-  color:var(--ink);letter-spacing:-.01em;
-}
-.h-title em{color:var(--gold);font-style:italic;}
-.h-sub {
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:.18em;color:var(--ink3);
-  text-transform:uppercase;
-}
-.h-formula {
-  margin-left:auto;
-  font-family:var(--mono);font-size:13px;
-  color:var(--gold);letter-spacing:.04em;
-  white-space:nowrap;
-  padding:6px 14px;
-  border:1px solid rgba(212,168,67,.25);
-  border-radius:2px;
-  background:var(--gold3);
-}
-
-/* ── LEFT PANEL (doc + controls) ── */
-#left {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  border-bottom:1px solid var(--edge);
-}
-#formula-hero {
-  grid-column:1/-1;
-}
-
-/* ── FORMULA HERO ── */
-#formula-hero {
-  padding:28px 32px 0;
-  border-bottom:1px solid var(--edge);
-  flex-shrink:0;
-}
-.fh-label {
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:.24em;color:var(--teal);
-  text-transform:uppercase;margin-bottom:10px;
-}
-.fh-main {
+#hdr {
   display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-  margin-bottom:20px;
-}
-.fh-eq {
-  font-family:var(--mono);font-size:1.15rem;
-  color:var(--ink);line-height:2;
-  background:var(--gold3);border:1px solid rgba(212,168,67,.2);
-  border-left:3px solid var(--gold);
-  padding:14px 20px;border-radius:0 3px 3px 0;
-  flex:1;min-width:260px;
-}
-.fh-eq .v-gold{color:var(--gold);}
-.fh-eq .v-teal{color:var(--teal);}
-.fh-eq .v-violet{color:var(--violet);}
-.fh-note {
-  font-family:var(--serif);font-size:.9rem;
-  color:var(--ink2);line-height:1.7;
-  font-style:italic;max-width:320px;
-  flex:1;
-}
-
-/* ── DERIVATION STEPS ── */
-#derivation {
-  padding:20px 32px;
+  padding:18px 32px 14px;
   border-bottom:1px solid var(--edge);
-  flex-shrink:0;
+  background:rgba(2,3,8,.97);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(14px);
 }
-.deriv-title {
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:.2em;color:var(--ink3);
-  text-transform:uppercase;margin-bottom:14px;
+.hdr-phi {
+  font-family:var(--serif);
+  font-size:2.2rem;font-weight:300;font-style:italic;
+  color:var(--gold);line-height:1;
+  letter-spacing:-.02em;
 }
-.step-row {
-  display:flex;gap:10px;align-items:flex-start;
-  margin-bottom:10px;
+.hdr-title {
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink3);line-height:1.8;
 }
-.step-n {
-  font-family:var(--mono);font-size:9px;
-  color:var(--gold);opacity:.6;min-width:20px;
-  margin-top:3px;
+.hdr-sentinel {
+  margin-left:auto;
+  font-size:11px;color:var(--gold);
+  border:1px solid rgba(200,168,75,.3);
+  padding:5px 14px;background:var(--gold3);
+  border-radius:2px;white-space:nowrap;
 }
-.step-body {
-  font-size:.88rem;color:var(--ink2);line-height:1.65;flex:1;
-}
-.step-body code {
-  font-family:var(--mono);font-size:.8rem;
-  color:var(--teal);background:rgba(43,191,176,.08);
-  padding:1px 5px;border-radius:2px;
-}
-.step-body strong{color:var(--ink);}
+.hdr-sentinel span{color:var(--ink3);font-size:9px;}
 
-/* ── VERIFICATION TABLE ── */
-#verify {
-  padding:20px 32px;
-  border-bottom:1px solid var(--edge);
-  flex-shrink:0;
-}
-.vtable {
-  width:100%;border-collapse:collapse;
-  font-family:var(--mono);font-size:.76rem;
-  margin-top:12px;
-}
-.vtable th {
-  background:rgba(212,168,67,.06);
-  border:1px solid rgba(212,168,67,.12);
-  padding:7px 12px;text-align:left;
-  color:var(--gold);font-weight:400;
-  letter-spacing:.1em;font-size:.68rem;text-transform:uppercase;
-}
-.vtable td {
-  border:1px solid rgba(255,255,255,.04);
-  padding:8px 12px;color:var(--ink2);
-}
-.vtable tr:hover td{background:rgba(255,255,255,.02);}
-.vtable .prime-col{color:var(--teal);}
-.vtable .jump-col{color:var(--gold);}
-.vtable .phi-row td{color:rgba(212,168,67,.45);font-style:italic;}
-
-/* ── LIVE CHECKER ── */
-#checker {
-  padding:20px 32px;
-  flex-shrink:0;
-}
-.checker-row {
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-  margin-bottom:14px;
-}
-.checker-row label {
-  font-family:var(--mono);font-size:10px;color:var(--ink3);
-}
-.inp {
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.12);
-  color:var(--ink);font-family:var(--mono);
-  font-size:13px;padding:7px 12px;
-  border-radius:3px;width:140px;outline:none;
-  transition:border-color .2s;
-}
-.inp:focus{border-color:var(--teal);}
-.check-result {
-  background:rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:4px;padding:14px 16px;
-  font-family:var(--mono);font-size:12px;
-  color:var(--ink2);line-height:2;
-  min-height:52px;
-}
-.cr-prime{color:var(--teal);font-size:1.1rem;}
-.cr-phi{color:var(--gold);}
-.cr-warn{color:var(--coral);}
-
-/* ── ADVANCED CHECKER ── */
-#checker { padding:20px 32px 28px; }
-.checker-title {
-  font-family:var(--mono);font-size:8px;letter-spacing:.22em;
-  color:var(--ink3);text-transform:uppercase;margin-bottom:16px;
-  display:flex;align-items:center;gap:10px;
-}
-.checker-title::after{content:'';flex:1;height:1px;background:var(--edge);}
-
-/* Input grid — 2 cols on wide, 1 col narrow */
-.adv-inputs {
+/* ── LAYOUT ── */
+#shell {
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px 20px;
-  margin-bottom:14px;
+  grid-template-columns:360px 1fr;
+  grid-template-rows:auto 1fr;
+  min-height:calc(100vh - 55px);
 }
-@media(max-width:600px){.adv-inputs{grid-template-columns:1fr;}}
 
-.adv-inp-group { display:flex;flex-direction:column;gap:5px; }
-.adv-label {
-  font-family:var(--mono);font-size:8px;letter-spacing:.16em;
-  color:var(--teal);text-transform:uppercase;
+/* ── INPUT PANEL ── */
+#input-panel {
+  grid-row:1/3;
+  border-right:1px solid var(--edge);
+  background:var(--panel);
+  overflow-y:auto;
+  padding:0;
 }
-.adv-inp {
+
+.ip-section {
+  padding:18px 20px;
+  border-bottom:1px solid var(--edge2);
+}
+.ip-label {
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.ip-label::after{content:'';flex:1;height:1px;background:var(--edge);}
+
+/* s input box */
+.s-main-wrap {
+  position:relative;margin-bottom:10px;
+}
+.s-main-input {
   width:100%;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  color:var(--ink);font-family:var(--mono);font-size:12px;
-  padding:7px 10px;border-radius:3px;outline:none;
-  transition:border-color .2s,background .2s;
+  background:rgba(200,168,75,.05);
+  border:1px solid rgba(200,168,75,.3);
+  color:var(--gold);
+  font-family:var(--mono);font-size:16px;
+  padding:11px 14px;border-radius:3px;
+  outline:none;transition:border-color .2s,background .2s;
+  letter-spacing:.04em;
 }
-.adv-inp:focus{border-color:var(--teal);background:rgba(43,191,176,.04);}
-.adv-hint {
-  font-family:var(--mono);font-size:7.5px;color:var(--ink3);
+.s-main-input:focus{
+  border-color:var(--gold);
+  background:rgba(200,168,75,.09);
+}
+.s-main-hint {
+  font-size:8px;color:var(--ink3);margin-top:4px;
   letter-spacing:.06em;
 }
 
-/* Slider row inside group */
-.adv-slider-row {
-  display:flex;align-items:center;gap:8px;
+/* slider */
+.sl-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.sl-row input[type=range]{
+  flex:1;accent-color:var(--gold);cursor:pointer;
+  height:3px;
 }
-.adv-slider-row input[type=range]{
-  flex:1;accent-color:var(--teal);cursor:pointer;height:3px;
-}
-.adv-slider-val {
-  font-family:var(--mono);font-size:10px;color:var(--teal);
-  min-width:64px;text-align:right;
-}
+.sl-val{font-size:10px;color:var(--gold);min-width:80px;text-align:right;}
 
-/* Result banner */
-.adv-result {
-  background:rgba(0,0,0,.4);
-  border:1px solid rgba(255,255,255,.07);
-  border-left:3px solid var(--teal);
-  border-radius:0 4px 4px 0;
-  padding:12px 16px;
-  font-family:var(--mono);font-size:11.5px;
-  color:var(--ink2);line-height:2;
-  margin-bottom:14px;
-  min-height:56px;
-  transition:border-color .3s;
+/* quick inputs */
+.quick-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;
 }
-.adv-result.exact{border-left-color:var(--teal);}
-.adv-result.inexact{border-left-color:var(--coral);}
+.qi-group{display:flex;flex-direction:column;gap:4px;}
+.qi-label{font-size:8px;letter-spacing:.14em;color:var(--teal);text-transform:uppercase;}
+.qi-inp {
+  width:100%;background:rgba(43,191,176,.05);
+  border:1px solid rgba(43,191,176,.2);
+  color:var(--ink);font-family:var(--mono);font-size:11px;
+  padding:6px 9px;border-radius:2px;outline:none;
+  transition:border-color .2s;
+}
+.qi-inp:focus{border-color:var(--teal);}
 
-/* Parameter cards */
-.param-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(185px,1fr));
-  gap:6px;
+/* presets */
+.preset-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.pb{
+  background:transparent;border:1px solid var(--edge);
+  color:var(--ink3);font-family:var(--mono);font-size:8px;
+  padding:4px 8px;border-radius:2px;cursor:pointer;
+  letter-spacing:.06em;transition:all .15s;
 }
-.param-card {
-  background:rgba(255,255,255,.025);
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:3px;padding:8px 11px;
-  font-family:var(--mono);
-  transition:background .15s,border-color .15s;
-}
-.param-card:hover{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);}
-.param-card .pk {
-  font-size:7.5px;letter-spacing:.13em;
-  color:var(--ink3);text-transform:uppercase;margin-bottom:4px;
-}
-.param-card .pv { font-size:11.5px;color:var(--ink); }
-.param-card .pv.gold   { color:var(--gold); }
-.param-card .pv.teal   { color:var(--teal); }
-.param-card .pv.violet { color:var(--violet); }
-.param-card .pv.coral  { color:var(--coral); }
-.param-card .pv.green  { color:#5dd87a; }
-.param-card .pv.dim    { color:var(--ink3); }
+.pb:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ── C(x) LIVE CONTROLS ── */
-#cx-controls {
-  display:none;
-  padding:10px 18px;
-  background:rgba(5,3,15,.92);
+/* result banner */
+#result-banner {
+  margin:0;padding:14px 20px;
   border-bottom:1px solid var(--edge);
-  gap:0;flex-direction:column;
+  border-left:3px solid var(--teal);
+  font-size:11px;line-height:1.9;
+  min-height:56px;
+  transition:border-left-color .3s;
+  background:rgba(43,191,176,.03);
 }
-#cx-controls.visible{display:flex;}
-.cx-ctrl-row {
-  display:flex;flex-wrap:wrap;gap:10px 28px;
-  padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03);
-  align-items:center;
+#result-banner.inexact{border-left-color:var(--coral);background:rgba(224,85,64,.03);}
+#result-banner.sentinel{border-left-color:var(--gold);background:rgba(200,168,75,.04);}
+
+/* data cards */
+#card-grid {
+  padding:14px 20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
 }
-.cx-ctrl-row:last-child{border-bottom:none;}
-.cx-group {
-  display:flex;align-items:center;gap:8px;min-width:200px;flex:1;
-}
-.cx-group label {
-  font-family:var(--mono);font-size:8px;letter-spacing:.14em;
-  color:var(--ink3);text-transform:uppercase;white-space:nowrap;min-width:64px;
-}
-.cx-group input[type=range]{
-  flex:1;accent-color:var(--gold);cursor:pointer;max-width:160px;
-}
-.cx-group input[type=number]{
-  width:72px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  color:var(--gold);font-family:var(--mono);font-size:11px;
-  padding:4px 8px;border-radius:3px;outline:none;
-}
-.cx-group input[type=number]:focus{border-color:var(--gold);}
-.cx-val {
-  font-family:var(--mono);font-size:10px;color:var(--gold);
-  min-width:52px;text-align:right;
-}
-.cx-btn {
-  font-family:var(--mono);font-size:9px;letter-spacing:.06em;
-  padding:5px 12px;border-radius:2px;cursor:pointer;
-  border:1px solid rgba(212,168,67,.35);
-  background:transparent;color:var(--gold);
+.card {
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--edge2);
+  border-radius:2px;padding:7px 10px;
   transition:background .15s;
 }
-.cx-btn:hover{background:rgba(212,168,67,.1);}
-.cx-btn.teal{border-color:rgba(43,191,176,.4);color:var(--teal);}
-.cx-btn.teal:hover{background:rgba(43,191,176,.1);}
-.cx-stat-row {
-  font-family:var(--mono);font-size:9px;color:var(--ink3);
-  display:flex;gap:16px;flex-wrap:wrap;padding-top:4px;
-}
-.cx-stat-row .csv{color:var(--gold);}
-.cx-stat-row .csv2{color:var(--teal);}
+.card:hover{background:rgba(255,255,255,.04);}
+.ck{font-size:7.5px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-bottom:3px;}
+.cv{font-size:11px;color:var(--ink);}
+.cv.gold{color:var(--gold);}
+.cv.teal{color:var(--teal);}
+.cv.coral{color:var(--coral);}
+.cv.violet{color:var(--violet);}
+.cv.green{color:var(--green);}
+.cv.dim{color:var(--ink3);}
 
-
-
-/* ── RIGHT PANEL (canvas) ── */
-#right {
+/* ── CHART AREA ── */
+#chart-area {
+  grid-column:2;
+  grid-row:1;
   display:flex;flex-direction:column;
-  background:rgba(5,3,15,.6);
+  background:var(--void);
+  min-height:0;
 }
 
-/* ── CANVAS CONTROLS ── */
-#cv-controls {
-  padding:10px 14px;
-  background:rgba(5,3,15,.9);
-  border-bottom:1px solid var(--edge);
-  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-  flex-shrink:0;
+/* chart tabs */
+#chart-tabs {
+  display:flex;gap:0;border-bottom:1px solid var(--edge);
+  flex-shrink:0;background:var(--panel);
 }
-.cv-label {
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:.18em;color:var(--gold);
-  text-transform:uppercase;
-}
-.preset-btn {
-  font-family:var(--mono);font-size:9px;
-  padding:4px 10px;border-radius:2px;
-  cursor:pointer;letter-spacing:.06em;
-  transition:all .2s;border:1px solid;
+.ct{
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--ink3);font-family:var(--mono);font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 16px;cursor:pointer;transition:all .15s;
   white-space:nowrap;
 }
-.preset-btn.active,
-.preset-btn:hover{background:rgba(43,191,176,.15)!important;}
+.ct:hover{color:var(--ink);}
+.ct.active{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* ── PRESET DESCRIPTION ── */
-#preset-desc {
-  padding:8px 14px;
-  background:rgba(3,2,10,.7);
-  border-bottom:1px solid var(--edge);
-  flex-shrink:0;
+/* canvases */
+#chart-wrap {
+  flex:1;position:relative;min-height:300px;
 }
-.pd-name {
-  font-family:var(--mono);font-size:9px;
-  color:var(--teal);letter-spacing:.14em;
-  text-transform:uppercase;margin-bottom:3px;
+.chart-cv {
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:none;
 }
-.pd-text {
-  font-family:var(--serif);font-size:.84rem;
-  color:var(--ink2);line-height:1.5;font-style:italic;
-}
-.pd-formula {
-  font-family:var(--mono);font-size:.75rem;
-  color:var(--gold);margin-top:4px;opacity:.8;
-}
+.chart-cv.active{display:block;}
 
-/* ── CANVAS ── */
-#cv-wrap{position:relative;overflow:hidden;height:80vh;min-height:560px;}
-#main-cv{display:block;width:100%;height:100%;}
-
-/* ── CANVAS STATS ── */
-#cv-stats {
-  padding:6px 14px;
-  background:rgba(3,2,10,.9);
+/* formula strip */
+#formula-strip {
+  grid-column:2;grid-row:2;
   border-top:1px solid var(--edge);
-  font-family:var(--mono);font-size:9px;
-  color:var(--ink3);display:flex;gap:16px;flex-wrap:wrap;
+  background:var(--panel);
+  padding:14px 24px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
   flex-shrink:0;
 }
-#cv-stats span{white-space:nowrap;}
-#cv-stats .sv{color:var(--gold);}
-#cv-stats .sv2{color:var(--teal);}
+.fblock{
+  border-left:2px solid var(--edge);
+  padding-left:12px;
+}
+.fblock-label{font-size:8px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;margin-bottom:5px;}
+.fblock-eq{font-size:12px;color:var(--gold);line-height:1.9;}
+.fblock-eq .ht{color:var(--teal);}
+.fblock-eq .hv{color:var(--violet);}
+.fblock-eq .hc{color:var(--coral);}
 
-/* ── SENTINEL LINE LABEL ── */
-.phi-badge {
-  display:inline-block;
-  font-family:var(--mono);font-size:9px;
-  background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);
-  color:var(--gold);padding:2px 8px;border-radius:2px;
-  letter-spacing:.08em;margin-left:8px;
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;}
+  #input-panel{grid-row:auto;border-right:none;border-bottom:1px solid var(--edge);}
+  #chart-area{grid-column:1;grid-row:auto;}
+  #formula-strip{grid-column:1;grid-row:auto;}
 }
-/* ── PAGE SWITCHER ── */
-#page-tabs {
-  display:flex;gap:0;
-  border-bottom:2px solid rgba(212,168,67,.15);
-  background:rgba(3,2,10,.97);
-  position:sticky;top:73px;z-index:40;
-  flex-shrink:0;
-}
-.page-tab {
-  font-family:var(--mono);font-size:9px;letter-spacing:.18em;
-  text-transform:uppercase;
-  padding:11px 28px;cursor:pointer;
-  border:none;background:transparent;
-  color:var(--ink3);border-bottom:2px solid transparent;
-  margin-bottom:-2px;transition:all .2s;white-space:nowrap;
-}
-.page-tab:hover{color:var(--ink2);}
-.page-tab.active{
-  color:var(--gold);
-  border-bottom-color:var(--gold);
-  background:rgba(212,168,67,.04);
-}
-
-/* ── PAGE PANELS ── */
-.page-panel{display:none;}
-.page-panel.active{display:block;}
-#page-viz.active{display:flex;flex-direction:column;}
-
-/* ── THEORY PAGE ── */
-#page-theory {
-  background:var(--void);
-  min-height:calc(100vh - 120px);
-}
-#theory {
-  max-width:900px;margin:0 auto;
-  padding:40px 40px 80px;
-  font-family:var(--serif);
-  color:var(--ink2);
-}
-.theory-section {
-  margin-bottom:52px;
-  padding-bottom:40px;
-  border-bottom:1px solid var(--edge);
-}
-.theory-section:last-child{border-bottom:none;}
-.theory-h1 {
-  font-family:var(--display);font-size:2rem;font-weight:300;
-  color:var(--ink);letter-spacing:-.01em;
-  margin-bottom:6px;
-}
-.theory-h1 em{color:var(--gold);font-style:italic;}
-.theory-h2 {
-  font-family:var(--display);font-size:1.35rem;font-weight:300;
-  color:var(--ink);margin-bottom:4px;margin-top:32px;
-}
-.theory-h2 em{color:var(--teal);font-style:normal;}
-.theory-kicker {
-  font-family:var(--mono);font-size:8px;letter-spacing:.22em;
-  color:var(--ink3);text-transform:uppercase;margin-bottom:18px;
-}
-.theory-p {
-  font-size:1rem;line-height:1.85;color:var(--ink2);
-  margin-bottom:14px;
-}
-.theory-p strong{color:var(--ink);}
-.theory-p em{color:var(--gold);font-style:italic;}
-.theory-p code{
-  font-family:var(--mono);font-size:.82rem;
-  color:var(--teal);background:rgba(43,191,176,.07);
-  padding:1px 6px;border-radius:2px;
-}
-
-/* Math display blocks */
-.math-block {
-  margin:20px 0;
-  padding:18px 24px;
-  background:rgba(212,168,67,.04);
-  border-left:3px solid rgba(212,168,67,.4);
-  border-radius:0 4px 4px 0;
-  font-family:var(--mono);font-size:.92rem;
-  color:var(--ink);line-height:2;
-  overflow-x:auto;
-}
-.math-block .eq-label {
-  font-size:.72rem;letter-spacing:.14em;color:var(--ink3);
-  text-transform:uppercase;margin-bottom:8px;
-}
-.math-block .eq-line{display:block;color:var(--ink);}
-.math-block .eq-line .hl-gold{color:var(--gold);}
-.math-block .eq-line .hl-teal{color:var(--teal);}
-.math-block .eq-line .hl-violet{color:var(--violet);}
-.math-block .eq-line .hl-coral{color:var(--coral);}
-.math-block .eq-note{
-  font-family:var(--serif);font-size:.82rem;
-  font-style:italic;color:var(--ink3);
-  margin-top:8px;display:block;
-}
-
-/* Connection boxes */
-.connection-box {
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-  margin:24px 0;
-}
-@media(max-width:640px){.connection-box{grid-template-columns:1fr;}}
-.conn-card {
-  padding:16px 18px;border-radius:4px;
-  border:1px solid var(--edge);
-  background:rgba(255,255,255,.02);
-}
-.conn-card .cc-title{
-  font-family:var(--mono);font-size:8px;letter-spacing:.16em;
-  text-transform:uppercase;margin-bottom:10px;
-}
-.conn-card .cc-body{
-  font-family:var(--mono);font-size:.78rem;
-  color:var(--ink2);line-height:1.9;
-}
-.conn-card .cc-body .cv{color:var(--gold);}
-.conn-card .cc-body .ct{color:var(--teal);}
-.conn-card .cc-body .cp{color:var(--violet);}
-
-/* Comparison table in theory */
-.comp-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.78rem;margin-top:14px;}
-.comp-table th{
-  background:rgba(43,191,176,.06);border:1px solid rgba(43,191,176,.1);
-  padding:8px 14px;color:var(--teal);font-weight:400;
-  letter-spacing:.1em;font-size:.68rem;text-transform:uppercase;text-align:left;
-}
-.comp-table td{
-  border:1px solid rgba(255,255,255,.04);
-  padding:9px 14px;color:var(--ink2);line-height:1.6;
-}
-.comp-table tr:hover td{background:rgba(255,255,255,.02);}
-.comp-table .ct{color:var(--teal);}
-.comp-table .cg{color:var(--gold);}
-.comp-table .cv{color:var(--violet);}
-
-/* inline switcher inside theory to jump to viz */
-.theory-cta {
-  display:inline-block;
-  font-family:var(--mono);font-size:9px;letter-spacing:.1em;
-  padding:7px 18px;border-radius:3px;
-  border:1px solid rgba(43,191,176,.4);
-  color:var(--teal);background:rgba(43,191,176,.06);
-  cursor:pointer;margin-top:12px;text-decoration:none;
-  transition:background .2s;
-}
-.theory-cta:hover{background:rgba(43,191,176,.14);}
 </style>
-<script>
-// MathJax config — load before body so it's ready
-window.MathJax = {
-  tex: { inlineMath:[['\\(','\\)'],['$','$']], displayMath:[['\\[','\\]'],['$$','$$']] },
-  options:{ skipHtmlTags:['script','noscript','style','textarea','pre'] },
-  startup:{ typeset:false }
-};
-</script>
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
 <body>
-<div id="app">
 
-  <!-- ══ HEADER ══ -->
-  <header id="header">
-    <div>
-      <div class="h-title">The <em>Golden Ratio</em> Sentinel</div>
-      <div class="h-sub">Prime Recovery from Jump Size · Lift Survival Framework</div>
+<!-- HEADER -->
+<header id="hdr">
+  <div class="hdr-phi">Φ</div>
+  <div>
+    <div style="font-family:var(--serif);font-size:1.1rem;font-weight:300;color:var(--ink);letter-spacing:.01em;">Prime Recovery from Jump Size</div>
+    <div class="hdr-title">Wessen Getachew · 2026 · math.NT · Lift Survival Framework</div>
+  </div>
+  <div class="hdr-sentinel">
+    p(s) = <span>(1 + √(1 + 4/s)) / 2</span> &nbsp;·&nbsp; p(1) = φ ≈ 1.6180339887…
+  </div>
+</header>
+
+<!-- SHELL -->
+<div id="shell">
+
+  <!-- ═══════════ INPUT PANEL ═══════════ -->
+  <aside id="input-panel">
+
+    <!-- Primary s input -->
+    <div class="ip-section">
+      <div class="ip-label">Jump size s</div>
+      <div class="s-main-wrap">
+        <input type="text" class="s-main-input" id="s-input"
+          value="0.5" placeholder="0.5 · 1/6 · 1e-4 · any decimal"
+          oninput="onSText(this.value)" onkeydown="onSKey(event)">
+      </div>
+      <div class="s-main-hint">Accepts: decimals · fractions (1/6) · scientific (1e-9) · expressions</div>
+      <div class="sl-row">
+        <input type="range" id="s-slider" min="0.000001" max="1" step="0.000001" value="0.5"
+          oninput="onSlider(+this.value)">
+        <span class="sl-val" id="s-sl-val">0.500000</span>
+      </div>
+      <!-- Log slider -->
+      <div class="ip-label" style="margin-top:12px;">Log scale s (for small values)</div>
+      <div class="sl-row">
+        <input type="range" id="s-log-slider" min="-9" max="0" step="0.001" value="-0.301"
+          oninput="onLogSlider(+this.value)">
+        <span class="sl-val" id="s-log-val">10⁻⁰·³⁰¹</span>
+      </div>
     </div>
-    <div class="h-formula">p = (1 + √(1 + 4/s)) / 2</div>
-  </header>
 
-  <!-- ══ PAGE TABS ══ -->
-  <div id="page-tabs">
-    <button class="page-tab active" onclick="switchPage('viz')">⬡ Interactive Visualizations</button>
-    <button class="page-tab" onclick="switchPage('theory')">∑ Formula & Prime Zeta Theory</button>
+    <!-- Quick inputs -->
+    <div class="ip-section">
+      <div class="ip-label">Quick lookup</div>
+      <div class="quick-grid">
+        <div class="qi-group">
+          <label class="qi-label">Prime p (exact)</label>
+          <input type="number" class="qi-inp" id="p-input" value="2" min="2" step="1"
+            placeholder="e.g. 101" oninput="onPInput(+this.value)">
+        </div>
+        <div class="qi-group">
+          <label class="qi-label">Prime index n</label>
+          <input type="number" class="qi-inp" id="n-input" value="1" min="1" step="1"
+            placeholder="1 → p₁=2" oninput="onNInput(+this.value)">
+        </div>
+        <div class="qi-group">
+          <label class="qi-label">p(p−1) = 1/s</label>
+          <input type="number" class="qi-inp" id="inv-input" placeholder="2, 6, 20, 42…"
+            oninput="onInvInput(+this.value)">
+        </div>
+        <div class="qi-group">
+          <label class="qi-label">s as fraction n/d</label>
+          <div style="display:flex;gap:4px;">
+            <input type="number" class="qi-inp" id="frac-n" value="1" min="1" style="width:50%;" oninput="onFrac()">
+            <input type="number" class="qi-inp" id="frac-d" value="2" min="1" style="width:50%;" oninput="onFrac()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div class="ip-section">
+      <div class="ip-label">Presets</div>
+      <div class="preset-row">
+        <button class="pb" onclick="setS(0.5)">p=2 (s=1/2)</button>
+        <button class="pb" onclick="setS(1/6)">p=3 (s=1/6)</button>
+        <button class="pb" onclick="setS(1/20)">p=5 (s=1/20)</button>
+        <button class="pb" onclick="setS(1/42)">p=7 (s=1/42)</button>
+        <button class="pb" onclick="setS(1/110)">p=11</button>
+        <button class="pb" onclick="setS(1/156)">p=13</button>
+        <button class="pb" onclick="setS(1/272)">p=17</button>
+        <button class="pb" onclick="setS(1/9900)">p=100</button>
+        <button class="pb" onclick="setS(0.9999)">s≈1 (→φ)</button>
+        <button class="pb" onclick="setS(1)">s=1 (φ exact)</button>
+        <button class="pb" onclick="setS(0.3)">s=0.3 (non-prime)</button>
+        <button class="pb" onclick="setS(1e-6)">s=10⁻⁶ (large p)</button>
+      </div>
+    </div>
+
+    <!-- Result banner -->
+    <div id="result-banner">Enter any s above to recover a prime.</div>
+
+    <!-- Data cards -->
+    <div id="card-grid"></div>
+
+  </aside>
+
+  <!-- ═══════════ CHART AREA ═══════════ -->
+  <div id="chart-area">
+
+    <div id="chart-tabs">
+      <button class="ct active" onclick="showChart(0,this)">① Sentinel Wall</button>
+      <button class="ct" onclick="showChart(1,this)">② C(x) Convergence</button>
+      <button class="ct" onclick="showChart(2,this)">③ Jump Spectrum</button>
+      <button class="ct" onclick="showChart(3,this)">④ Recovery Curve</button>
+      <button class="ct" onclick="showChart(4,this)">⑤ Coprimality Drop</button>
+    </div>
+
+    <div id="chart-wrap">
+      <canvas class="chart-cv active" id="cv0"></canvas>
+      <canvas class="chart-cv" id="cv1"></canvas>
+      <canvas class="chart-cv" id="cv2"></canvas>
+      <canvas class="chart-cv" id="cv3"></canvas>
+      <canvas class="chart-cv" id="cv4"></canvas>
+    </div>
+
   </div>
 
-  <!-- ══ VIZ PAGE ══ -->
-  <div id="page-viz" class="page-panel active">
-
-  <!-- ══ LEFT PANEL ══ -->
-  <div id="left">
-
-    <!-- Formula Hero -->
-    <div id="formula-hero">
-      <div class="fh-label">The Recovery Formula</div>
-      <div class="fh-main">
-        <div class="fh-eq">
-          <span class="v-teal">s</span> = 1 / (<span class="v-gold">p</span>(<span class="v-gold">p</span>−1))<br>
-          ↓ solve for p<br>
-          <span class="v-gold">p</span> = (1 + √(1 + 4/<span class="v-teal">s</span>)) / 2<br>
-          <br>
-          At <span class="v-teal">s</span>=1: &nbsp;<span class="v-violet">φ</span> = (1+√5)/2 ≈ 1.618...
-        </div>
-        <div class="fh-note">
-          The jump size s is the discrete drop in coprimality survival rate when a new prime hits the modular ring. The formula inverts this signal to recover the exact prime responsible.
-          The golden ratio φ is the unreachable sentinel — the value returned when s = 1, which no prime can produce.
-        </div>
-      </div>
+  <!-- ═══════════ FORMULA STRIP ═══════════ -->
+  <div id="formula-strip">
+    <div class="fblock">
+      <div class="fblock-label">Jump Size</div>
+      <div class="fblock-eq"><span class="ht">s</span> = 1 / p(p−1)</div>
     </div>
-
-    <!-- Derivation -->
-    <div id="derivation">
-      <div class="deriv-title">Derivation — Step by Step</div>
-
-      <div class="step-row">
-        <div class="step-n">1.</div>
-        <div class="step-body">The <strong>jump at prime p</strong> in the log-derivative of C(x) is exactly <code>s = 1/(p(p−1))</code>. This is the Lift Survival drop: the fraction of coprime positions killed when ring M+1 introduces prime factor p.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-n">2.</div>
-        <div class="step-body">Multiply both sides by p(p−1): &nbsp;<code>s·p(p−1) = 1</code> &nbsp;→&nbsp; <code>sp² − sp − 1 = 0</code>. This is a quadratic in p.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-n">3.</div>
-        <div class="step-body">Quadratic formula with a=s, b=−s, c=−1: &nbsp;<code>p = (s ± √(s² + 4s)) / 2s</code> &nbsp;=&nbsp; <code>(1 ± √(1 + 4/s)) / 2</code>. Take the positive root.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-n">4.</div>
-        <div class="step-body">Set <code>s = 1</code>: &nbsp;<code>p = (1 + √5)/2 = φ ≈ 1.618...</code>. This is the <strong>golden ratio</strong> — the value the formula returns at the largest possible jump, which no prime can achieve.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-n">5.</div>
-        <div class="step-body">The smallest prime is 2, giving <code>s = 1/(2·1) = 0.5</code>. As p grows, s → 0. The sentinel φ is the infimum of what the formula could return — permanently out of reach.</div>
-      </div>
+    <div class="fblock">
+      <div class="fblock-label">Recovery Formula</div>
+      <div class="fblock-eq"><span class="ht">p(s)</span> = (1 + √(1 + 4/s)) / 2</div>
     </div>
-
-    <!-- Verification Table -->
-    <div id="verify">
-      <div class="deriv-title">Verification Table <span class="phi-badge">φ = 1.6180...</span></div>
-      <table class="vtable">
-        <thead>
-          <tr>
-            <th>Prime p</th>
-            <th>Jump s = 1/p(p−1)</th>
-            <th>Formula → p</th>
-            <th>Distance to φ</th>
-          </tr>
-        </thead>
-        <tbody id="vtable-body"></tbody>
-      </table>
+    <div class="fblock">
+      <div class="fblock-label">Golden Sentinel</div>
+      <div class="fblock-eq">p(1) = <span class="hv">φ</span> = (1+√5)/2 ≈ <span style="color:var(--gold)">1.6180…</span></div>
     </div>
-
-    <!-- Live Checker -->
-    <div id="checker">
-      <div class="checker-title">Live Checker — Advanced Parameters</div>
-
-      <div class="adv-inputs">
-
-        <!-- s text input -->
-        <div class="adv-inp-group">
-          <label class="adv-label">Jump size s</label>
-          <input type="text" class="adv-inp" id="s-input"
-            value="0.5" placeholder="0.5  or  1/6  or  1e-4"
-            oninput="onSInput(this.value)">
-          <span class="adv-hint">Type freely — accepts decimals, fractions, sci notation</span>
-        </div>
-
-        <!-- s slider -->
-        <div class="adv-inp-group">
-          <label class="adv-label">Slider — s</label>
-          <div class="adv-slider-row">
-            <input type="range" id="s-slider" min="0.00001" max="0.5" value="0.5" step="0.00001"
-              oninput="onSliderInput(+this.value)">
-            <span class="adv-slider-val" id="s-val">0.500000</span>
-          </div>
-          <span class="adv-hint">Full range 0.00001 → 0.5 (p=2 exact)</span>
-        </div>
-
-        <!-- prime index -->
-        <div class="adv-inp-group">
-          <label class="adv-label">Prime index n</label>
-          <input type="number" class="adv-inp" id="pidx-input"
-            value="1" min="1" max="9999" step="1"
-            oninput="onPrimeIndex(+this.value)">
-          <span class="adv-hint">Sets s = 1/p_n(p_n−1) for the nth prime</span>
-        </div>
-
-        <!-- direct prime -->
-        <div class="adv-inp-group">
-          <label class="adv-label">Direct prime p</label>
-          <input type="number" class="adv-inp" id="directp-input"
-            value="2" min="2" step="1" placeholder="e.g. 101"
-            oninput="onDirectP(+this.value)">
-          <span class="adv-hint">Auto-computes exact s, syncs all inputs</span>
-        </div>
-
-      </div><!-- /adv-inputs -->
-
-      <!-- Result banner -->
-      <div class="adv-result" id="check-result">—</div>
-
-      <!-- Parameter cards -->
-      <div class="param-grid" id="param-grid"></div>
+    <div class="fblock">
+      <div class="fblock-label">Lift Survival</div>
+      <div class="fblock-eq"><span class="ht">C(x)</span> = ∏<sub>p≤x</sub> (p²−2)/(p²−1)</div>
     </div>
-
-  </div><!-- /left -->
-
-  <!-- ══ RIGHT PANEL (canvas) ══ -->
-  <div id="right">
-
-    <!-- Canvas Controls -->
-    <div id="cv-controls">
-      <span class="cv-label">View</span>
-
-      <button class="preset-btn active" id="btn-0"
-        style="border-color:rgba(43,191,176,.5);color:rgba(43,191,176,.9);background:rgba(43,191,176,.08);"
-        onclick="setPreset(0)">① Sentinel Wall</button>
-
-      <button class="preset-btn" id="btn-1"
-        style="border-color:rgba(212,168,67,.4);color:rgba(212,168,67,.8);background:transparent;"
-        onclick="setPreset(1)">② Prime Rain</button>
-
-      <button class="preset-btn" id="btn-2"
-        style="border-color:rgba(144,96,208,.4);color:rgba(144,96,208,.8);background:transparent;"
-        onclick="setPreset(2)">③ Jump Spiral</button>
-
-      <button class="preset-btn" id="btn-3"
-        style="border-color:rgba(224,85,64,.4);color:rgba(224,85,64,.8);background:transparent;"
-        onclick="setPreset(3)">④ LP Orbit</button>
-
-      <button class="preset-btn" id="btn-4"
-        style="border-color:rgba(200,168,75,.4);color:rgba(200,168,75,.7);background:transparent;"
-        onclick="setPreset(4)">⑤ C(x) Live</button>
-
-      <button class="preset-btn" id="btn-5"
-        style="border-color:rgba(43,191,176,.35);color:rgba(43,191,176,.6);background:transparent;"
-        onclick="setPreset(5)">⑥ Quadratic Field</button>
-
-      <button class="preset-btn" id="btn-6"
-        style="border-color:rgba(93,216,122,.4);color:rgba(93,216,122,.75);background:transparent;"
-        onclick="setPreset(6)">⑦ 1/C(x) vs π(x)</button>
+    <div class="fblock">
+      <div class="fblock-label">Log Derivative</div>
+      <div class="fblock-eq">−d/dx log C = Σ<sub>p</sub> <span class="ht">s</span>·δ(x−p)</div>
     </div>
-
-    <!-- Preset Description -->
-    <div id="preset-desc">
-      <div class="pd-name" id="pd-name">Sentinel Wall</div>
-      <div class="pd-text" id="pd-text">Loading...</div>
-      <div class="pd-formula" id="pd-formula"></div>
+    <div class="fblock">
+      <div class="fblock-label">C∞ (OEIS A065469)</div>
+      <div class="fblock-eq" style="color:var(--gold)">0.530711806246…</div>
     </div>
+  </div>
 
-    <!-- C(x) Live Controls (shown only on preset 4) -->
-    <div id="cx-controls">
-
-      <!-- Row 1: Range + Speed -->
-      <div class="cx-ctrl-row">
-        <div class="cx-group">
-          <label>X Max</label>
-          <input type="range" id="cx-xmax-sl" min="20" max="2000" value="100" step="10"
-            oninput="setCxXMax(+this.value)">
-          <span class="cx-val" id="cx-xmax-v">100</span>
-        </div>
-        <div class="cx-group">
-          <label>X Max (type)</label>
-          <input type="number" id="cx-xmax-inp" value="100" min="20" max="50000" step="10"
-            oninput="setCxXMax(+this.value)">
-        </div>
-        <div class="cx-group">
-          <label>Speed</label>
-          <input type="range" id="cx-speed-sl" min="0.005" max="3" value="0.04" step="0.005"
-            oninput="cxSpeed=+this.value;document.getElementById('cx-speed-v').textContent=cxSpeed.toFixed(3)">
-          <span class="cx-val" id="cx-speed-v">0.040</span>
-        </div>
-      </div>
-
-      <!-- Row 2: Delta prime selector -->
-      <div class="cx-ctrl-row">
-        <div class="cx-group">
-          <label>Δ at prime</label>
-          <input type="range" id="cx-dp-sl" min="0" max="100" value="0" step="1"
-            oninput="setCxDeltaByIndex(+this.value)">
-          <span class="cx-val" id="cx-dp-v">p = 2</span>
-        </div>
-        <div class="cx-group">
-          <label>Prime p (type)</label>
-          <input type="number" id="cx-dp-inp" value="2" min="2" step="1"
-            oninput="setCxDeltaP(+this.value)">
-        </div>
-        <div class="cx-group">
-          <label>Y zoom</label>
-          <input type="range" id="cx-yzoom" min="1" max="20" value="1" step="0.5"
-            oninput="cxYZoom=+this.value;document.getElementById('cx-yz-v').textContent=this.value+'×'">
-          <span class="cx-val" id="cx-yz-v">1×</span>
-        </div>
-      </div>
-
-      <!-- Row 3: buttons + live stats -->
-      <div class="cx-ctrl-row">
-        <button class="cx-btn" onclick="initCx()">↺ Reset</button>
-        <button class="cx-btn teal" id="cx-pause-btn"
-          onclick="cxPaused=!cxPaused;this.textContent=cxPaused?'▶ Resume':'⏸ Pause';">⏸ Pause</button>
-        <button class="cx-btn" onclick="cxSweep=cxXMax-0.01;">⏭ Jump to end</button>
-        <div class="cx-stat-row" id="cx-stat-row">
-          <span>x: <span class="csv" id="cxs-x">—</span></span>
-          <span>C(x): <span class="csv" id="cxs-c">—</span></span>
-          <span>π(x): <span class="csv2" id="cxs-pi">—</span></span>
-          <span>Δ: <span class="csv" id="cxs-delta">—</span></span>
-          <span>s at Δp: <span class="csv2" id="cxs-s">—</span></span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Canvas -->
-    <div id="cv-wrap">
-      <canvas id="main-cv"></canvas>
-    </div>
-
-    <!-- Stats -->
-    <div id="cv-stats">
-      <span>recovered p: <span class="sv" id="stat-p">—</span></span>
-      <span>jump s: <span class="sv" id="stat-s">—</span></span>
-      <span>|φ − p|: <span class="sv2" id="stat-dist">—</span></span>
-      <span>C(x): <span class="sv" id="stat-cx">—</span></span>
-      <span>fps: <span class="sv2" id="stat-fps">—</span></span>
-    </div>
-
-  </div><!-- /right -->
-
-</div><!-- /app -->
-
-  </div><!-- /page-viz -->
-
-  <!-- ══ THEORY PAGE ══ -->
-  <div id="page-theory" class="page-panel">
-  <div id="theory">
-
-    <!-- ══ SECTION 1: The Core Formula ══ -->
-    <div class="theory-section">
-      <div class="theory-kicker">Section 1 · The Lift Survival Framework</div>
-      <h1 class="theory-h1">The <em>Recovery Formula</em> — How a Jump Size Encodes a Prime</h1>
-      <p class="theory-p">
-        The Lift Survival Function <strong>C(x)</strong> is the product over all primes p ≤ x of the fraction of integers in the modular ring {1,…,M} that remain coprime to p. When a new prime p enters the product, C(x) drops by an exact multiplicative factor — and the size of that drop uniquely identifies which prime caused it.
-      </p>
-
-      <div class="math-block">
-        <div class="eq-label">Definition — Lift Survival Function</div>
-        <span class="eq-line">
-          <span class="hl-teal">C(x)</span>
-          &nbsp;=&nbsp; ∏<sub>p ≤ x</sub>
-          <span class="hl-gold">(p² − 2) / (p² − 1)</span>
-        </span>
-        <span class="eq-note">
-          C(x) is a step function, constant between primes, dropping at each prime p with jump size s = 1/(p(p−1)).
-        </span>
-      </div>
-
-      <h2 class="theory-h2">The Jump Size <em>s</em></h2>
-      <p class="theory-p">
-        At each prime p, the relative drop in C(x) is the <strong>jump size</strong>:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Jump Size Definition</div>
-        <span class="eq-line">
-          <span class="hl-teal">s</span> &nbsp;=&nbsp;
-          <span class="hl-gold">1 / (p(p − 1))</span>
-          &nbsp;=&nbsp; 1/2, 1/6, 1/20, 1/42, …
-          &nbsp; for p = 2, 3, 5, 7, …
-        </span>
-        <span class="eq-note">s → 0 as p → ∞. The largest possible jump is s = 1 (at the sentinel φ, never achieved by any prime).</span>
-      </div>
-
-      <h2 class="theory-h2">Inverting <em>s</em> to Recover <em>p</em></h2>
-      <p class="theory-p">
-        Given any jump size s, we can recover exactly which prime produced it by solving the quadratic <code>sp² − sp − 1 = 0</code>:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Prime Recovery Formula</div>
-        <span class="eq-line">
-          <span class="hl-gold">p</span> &nbsp;=&nbsp;
-          <span class="hl-teal">(1 + √(1 + 4/s)) / 2</span>
-        </span>
-        <span class="eq-line" style="margin-top:8px">
-          At s = 1: &nbsp;
-          <span class="hl-violet">φ = (1 + √5) / 2 ≈ 1.6180339887…</span>
-          &nbsp; — the <em>Golden Ratio Sentinel</em>
-        </span>
-        <span class="eq-note">
-          φ is the unique fixed point of the formula at s = 1. No prime produces s = 1, so φ is permanently unreachable — it is the infimum of the range of p(s) over all actual primes.
-        </span>
-      </div>
-
-      <p class="theory-p">
-        The golden ratio emerges not from geometry here but from the <strong>algebraic structure of prime jumps</strong>: it is the value the recovery formula converges toward as jump sizes approach their maximum. Every prime p satisfies p > φ or p = 2 (the only prime below φ), and the sequence of recovered values p(s_p) crowds toward φ from above as primes grow.
-      </p>
-      <button class="theory-cta" onclick="switchPage('viz');setPreset(0);">→ See Sentinel Wall Visualization</button>
-    </div>
-
-    <!-- ══ SECTION 2: Prime Zeta Connection ══ -->
-    <div class="theory-section">
-      <div class="theory-kicker">Section 2 · The Prime Zeta Function</div>
-      <h1 class="theory-h1">How <em>C(x)</em> Encodes the <em>Prime Zeta Function</em></h1>
-      <p class="theory-p">
-        The <strong>Prime Zeta Function</strong> is defined as the Dirichlet series summing p<sup>−s</sup> over all primes:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Prime Zeta Function</div>
-        <span class="eq-line">
-          <span class="hl-violet">P(s)</span>
-          &nbsp;=&nbsp; ∑<sub>p prime</sub>
-          <span class="hl-gold">p<sup>−s</sup></span>
-          &nbsp;=&nbsp; 2<sup>−s</sup> + 3<sup>−s</sup> + 5<sup>−s</sup> + 7<sup>−s</sup> + …
-        </span>
-        <span class="eq-note">
-          Related to the Riemann zeta function via: P(s) = ∑_{n≥1} μ(n)/n · log ζ(ns), where μ is the Möbius function.
-        </span>
-      </div>
-
-      <h2 class="theory-h2">The <em>log C(x)</em> as a Prime Zeta Weight</h2>
-      <p class="theory-p">
-        Taking the logarithm of C(x) converts the product into a sum over primes — directly analogous to the prime zeta function at s = 2:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Logarithm of C(x)</div>
-        <span class="eq-line">
-          log <span class="hl-teal">C(x)</span>
-          &nbsp;=&nbsp; ∑<sub>p ≤ x</sub>
-          log <span class="hl-gold">((p² − 2)/(p² − 1))</span>
-        </span>
-        <span class="eq-line" style="margin-top:6px">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈&nbsp; −∑<sub>p ≤ x</sub>
-          <span class="hl-coral">1/(p² − 1)</span>
-          &nbsp; &nbsp;[to leading order in 1/p²]
-        </span>
-        <span class="eq-line" style="margin-top:6px">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈&nbsp; −<span class="hl-violet">P(2)</span> + O(x<sup>−2</sup>)
-          &nbsp; as x → ∞
-        </span>
-        <span class="eq-note">
-          The infinite product C∞ = ∏_p (p²−2)/(p²−1) ≈ 0.5307… is directly controlled by P(2) = ∑ p⁻² ≈ 0.4522…
-        </span>
-      </div>
-
-      <h2 class="theory-h2">The Inverse <em>1/C(x)</em> Mimics <em>π(x)</em></h2>
-      <p class="theory-p">
-        The inverse function 1/C(x) = ∏<sub>p≤x</sub> (p²−1)/(p²−2) grows step by step at each prime, tracking the <strong>prime counting function π(x)</strong>. This is not coincidental:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Logarithmic Derivative Connection</div>
-        <span class="eq-line">
-          d/dx log(1/<span class="hl-teal">C(x)</span>)
-          &nbsp;=&nbsp; −d/dx log <span class="hl-teal">C(x)</span>
-          &nbsp;=&nbsp; ∑<sub>p</sub>
-          <span class="hl-gold">s_p</span>
-          · δ(x − p)
-        </span>
-        <span class="eq-note">
-          Each prime p contributes a Dirac spike of weight s_p = 1/(p(p−1)) — exactly the jump size. This is the Lift Survival analog of the von Mangoldt function Λ(n), which encodes primes in the logarithmic derivative of the Riemann zeta function.
-        </span>
-      </div>
-
-      <div class="connection-box">
-        <div class="conn-card">
-          <div class="cc-title" style="color:var(--violet)">Riemann Zeta / Von Mangoldt</div>
-          <div class="cc-body">
-            ζ(s) = ∏<sub>p</sub> (1 − p<sup>−s</sup>)<sup>−1</sup><br>
-            −<span class="ct">ζ′(s)/ζ(s)</span> = ∑<sub>n</sub> <span class="cv">Λ(n)</span> n<sup>−s</sup><br>
-            Λ(p<sup>k</sup>) = log p, else 0<br><br>
-            Primes ↔ <span class="cv">log p</span> weights<br>
-            Zeros of ζ ↔ oscillations in π(x)
-          </div>
-        </div>
-        <div class="conn-card">
-          <div class="cc-title" style="color:var(--teal)">Lift Survival / Jump Formula</div>
-          <div class="cc-body">
-            C(x) = ∏<sub>p≤x</sub> (p²−2)/(p²−1)<br>
-            −d/dx log <span class="ct">C(x)</span> = ∑<sub>p</sub> <span class="cv">s_p</span> δ(x−p)<br>
-            s_p = 1/(p(p−1))<br><br>
-            Primes ↔ <span class="cv">s_p = 1/p(p−1)</span> weights<br>
-            1/C(x) grows ≈ π(x) · log-rate
-          </div>
-        </div>
-      </div>
-
-      <button class="theory-cta" onclick="switchPage('viz');setPreset(6);">→ See 1/C(x) vs π(x) Visualization</button>
-    </div>
-
-    <!-- ══ SECTION 3: Comparison Table ══ -->
-    <div class="theory-section">
-      <div class="theory-kicker">Section 3 · Side-by-Side Comparison</div>
-      <h1 class="theory-h1">Jump Formula vs Classical Analytic Number Theory</h1>
-      <p class="theory-p">
-        The table below shows the precise structural parallels between the Lift Survival framework and classical results in analytic number theory.
-      </p>
-      <table class="comp-table">
-        <thead>
-          <tr>
-            <th>Concept</th>
-            <th style="color:var(--violet)">Classical (Riemann / von Mangoldt)</th>
-            <th style="color:var(--teal)">Lift Survival (This Framework)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Generating function</td>
-            <td class="cv">ζ(s) = ∏_p (1 − p<sup>−s</sup>)<sup>−1</sup></td>
-            <td class="ct">C(x) = ∏_{p≤x} (p²−2)/(p²−1)</td>
-          </tr>
-          <tr>
-            <td>Prime weight</td>
-            <td class="cv">Λ(p) = log p</td>
-            <td class="ct">s_p = 1/(p(p−1))</td>
-          </tr>
-          <tr>
-            <td>Log derivative</td>
-            <td class="cv">−ζ′/ζ = ∑ Λ(n) n<sup>−s</sup></td>
-            <td class="ct">−d/dx log C = ∑_p s_p · δ(x−p)</td>
-          </tr>
-          <tr>
-            <td>Inverse / counting</td>
-            <td class="cv">1/ζ(s) ~ Möbius sum; π(x) via explicit formula</td>
-            <td class="ct">1/C(x) grows step-by-step tracking π(x)</td>
-          </tr>
-          <tr>
-            <td>Sentinel / boundary</td>
-            <td class="cv">s = 1 pole of ζ(s) — prime density</td>
-            <td class="ct">s → 1 gives φ — the golden ratio sentinel</td>
-          </tr>
-          <tr>
-            <td>Prime recovery</td>
-            <td class="cv">Explicit formula: π(x) = Li(x) − ∑_ρ Li(x<sup>ρ</sup>) − …</td>
-            <td class="ct">p = (1 + √(1 + 4/s)) / 2 — algebraic, exact</td>
-          </tr>
-          <tr>
-            <td>Convergence</td>
-            <td class="cv">ζ(2) = π²/6; P(2) = ∑ p<sup>−2</sup> ≈ 0.4522</td>
-            <td class="ct">C∞ ≈ 0.5307; log C∞ ≈ −P(2) to leading order</td>
-          </tr>
-          <tr>
-            <td>LP / analytic structure</td>
-            <td class="cv">ξ(s) entire of genus 1; zeros on critical line (GRH)</td>
-            <td class="ct">F(u) = ∏(p²−u)/(p²−1); zeros at u = p² (real, positive)</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2 class="theory-h2">The <em>Prime Zeta</em> at s = 2</h2>
-      <p class="theory-p">
-        The sum ∑<sub>p</sub> p<sup>−2</sup> = P(2) ≈ 0.45224742… controls the infinite product C∞. More precisely:
-      </p>
-      <div class="math-block">
-        <div class="eq-label">Exact Relation at Infinity</div>
-        <span class="eq-line">
-          log <span class="hl-teal">C∞</span>
-          &nbsp;=&nbsp; ∑<sub>p</sub> log<span class="hl-gold">((p²−2)/(p²−1))</span>
-        </span>
-        <span class="eq-line" style="margin-top:6px">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp; −∑<sub>p</sub> log<span class="hl-gold">(1 + 1/(p²−2))</span>
-        </span>
-        <span class="eq-line" style="margin-top:6px">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈&nbsp; −<span class="hl-violet">P(2)</span>
-          &nbsp; + &nbsp; <span class="hl-coral">O(P(4))</span>
-          &nbsp; (higher-order prime zeta corrections)
-        </span>
-        <span class="eq-note">
-          C∞ ≈ 0.5307… exactly, with corrections from P(4) = ∑ p⁻⁴ ≈ 0.00772…, P(6) ≈ 0.000264…, etc.
-          The full expansion is: log C∞ = −∑_{k≥1} P(2k)/(k·2^k) approximately.
-        </span>
-      </div>
-
-      <p class="theory-p">
-        This means <strong>C∞ is not arbitrary</strong> — it is a precise analytic invariant of the primes, expressible as an Euler product evaluated at the prime zeta values. Every digit of 0.5307… encodes information about the distribution of primes.
-      </p>
-
-      <button class="theory-cta" onclick="switchPage('viz');setPreset(4);">→ Watch C(x) converge to C∞ live</button>
-    </div>
-
-  </div><!-- /theory -->
-  </div><!-- /page-theory -->
-
-</div><!-- /outer app wrapper -->
+</div><!-- /shell -->
 
 <script>
-// ═══════════════════════════════════════════
-// PAGE SWITCHER
-// ═══════════════════════════════════════════
-function switchPage(name){
-  ['viz','theory'].forEach(function(p){
-    var panel = document.getElementById('page-'+p);
-    if(panel) panel.classList.toggle('active', p===name);
-  });
-  document.querySelectorAll('.page-tab').forEach(function(btn,i){
-    btn.classList.toggle('active', (i===0&&name==='viz')||(i===1&&name==='theory'));
-  });
-  // Typeset MathJax on first theory visit
-  if(name==='theory' && window.MathJax && MathJax.typesetPromise){
-    MathJax.typesetPromise([document.getElementById('page-theory')]);
-  }
-  // Restart animation if switching back to viz
-  if(name==='viz' && !animId){
-    requestAnimationFrame(loop);
-  }
-}
+'use strict';
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════════
 // MATH CORE
-// ═══════════════════════════════════════════
-var PHI = (1 + Math.sqrt(5)) / 2; // 1.6180339887...
+// ══════════════════════════════════════════════
+const PHI = (1 + Math.sqrt(5)) / 2;
+const C_INF = 0.530711806246;
 
 function jumpSize(p){ return 1/(p*(p-1)); }
 function recoverPrime(s){ return (1 + Math.sqrt(1 + 4/s)) / 2; }
 
-function isPrime(n){
-  if(n<2) return false;
-  if(n<4) return true;
-  if(n%2===0||n%3===0) return false;
-  for(var i=5;i*i<=n;i+=6) if(n%i===0||n%(i+2)===0) return false;
-  return true;
+function sieve(limit){
+  const a = new Uint8Array(limit+1).fill(1);
+  a[0]=a[1]=0;
+  for(let i=2;i*i<=limit;i++) if(a[i]) for(let j=i*i;j<=limit;j+=i) a[j]=0;
+  const ps=[];
+  for(let i=2;i<=limit;i++) if(a[i]) ps.push(i);
+  return ps;
 }
 
-function primesUpTo(n){
-  var out=[];
-  for(var i=2;i<=n;i++) if(isPrime(i)) out.push(i);
-  return out;
+const PRIMES = sieve(500000);
+
+function nearestPrime(x){
+  // find closest prime to x
+  let best=null, bestD=Infinity;
+  for(const p of PRIMES){
+    const d=Math.abs(p-x);
+    if(d<bestD){bestD=d;best=p;}
+    if(p>x+bestD+2) break;
+  }
+  return best;
 }
 
-var PRIMES = primesUpTo(1100);
-
-// Lift Survival Constant C(x) — product over primes ≤ x
-function computeC(primes){
-  var c=1;
-  primes.forEach(function(p){ c *= (p*p-2)/(p*p-1); });
+function computeC(upTo){
+  let c=1;
+  for(const p of PRIMES){
+    if(p>upTo) break;
+    c *= (p*p-2)/(p*p-1);
+  }
   return c;
 }
 
-// ═══════════════════════════════════════════
-// VERIFICATION TABLE
-// ═══════════════════════════════════════════
-(function buildTable(){
-  var tbody = document.getElementById('vtable-body');
-  var rows = '';
-  // First few primes
-  [2,3,5,7,11,13,17,19,23].forEach(function(p){
-    var s = jumpSize(p);
-    var rec = recoverPrime(s);
-    var dist = PHI - rec;
-    rows += '<tr>'
-      +'<td class="prime-col">'+p+'</td>'
-      +'<td class="jump-col">'+s.toFixed(6)+'</td>'
-      +'<td style="color:var(--teal);">'+rec.toFixed(4)+'</td>'
-      +'<td style="color:var(--ink3);">'+dist.toFixed(4)+'</td>'
-      +'</tr>';
-  });
-  // Sentinel row
-  rows += '<tr class="phi-row">'
-    +'<td>φ (sentinel)</td>'
-    +'<td>s = 1.0000</td>'
-    +'<td>'+PHI.toFixed(6)+'</td>'
-    +'<td>0.0000 — unreachable</td>'
-    +'</tr>';
-  tbody.innerHTML = rows;
-})();
-
-// ═══════════════════════════════════════════
-// LIVE CHECKER — ADVANCED
-// ═══════════════════════════════════════════
-
-// Parse s: accepts "0.5", "1/6", "1e-4", etc.
 function evalS(raw){
-  raw = (raw||'').trim();
+  raw=(raw||'').trim();
   if(!raw) return NaN;
-  var frac = raw.match(/^(-?[\d.]+(?:e[+-]?\d+)?)\s*\/\s*(-?[\d.]+(?:e[+-]?\d+)?)$/i);
-  if(frac) return parseFloat(frac[1]) / parseFloat(frac[2]);
+  // fraction
+  const frac=raw.match(/^(-?[\d.]+(?:e[+-]?\d+)?)\s*\/\s*(-?[\d.]+(?:e[+-]?\d+)?)$/i);
+  if(frac) return parseFloat(frac[1])/parseFloat(frac[2]);
+  // simple expression with * / + -
+  try{
+    const safe=raw.replace(/[^0-9.+\-*/()e]/gi,'');
+    if(safe) return Function('"use strict";return ('+safe+')')();
+  }catch(e){}
   return parseFloat(raw);
 }
 
-// Big prime list for index lookups — generated once
-var BIG_PRIMES = primesUpTo(200000);
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let currentS = 0.5;
+let activeChart = 0;
 
-function checkJump(s){
-  var el = document.getElementById('check-result');
-  var grid = document.getElementById('param-grid');
-  if(isNaN(s) || s <= 0 || s >= 1){
-    el.className = 'adv-result';
-    el.innerHTML = '<span style="color:var(--ink3)">Enter s ∈ (0, 1) — or use a slider / prime input above</span>';
-    grid.innerHTML = '';
+// ══════════════════════════════════════════════
+// COMPUTE & DISPLAY
+// ══════════════════════════════════════════════
+function compute(s){
+  currentS = s;
+  updateSliders(s);
+
+  const banner = document.getElementById('result-banner');
+  const grid = document.getElementById('card-grid');
+
+  if(isNaN(s)||s<=0){
+    banner.className='';
+    banner.innerHTML='<span style="color:var(--ink3)">Enter a valid s ∈ (0, 1] to recover a prime. At s=1, p(1)=φ.</span>';
+    grid.innerHTML='';
     return;
   }
 
-  var p    = recoverPrime(s);
-  var pR   = Math.round(p);
-  var exact = Math.abs(p - pR) < 0.00005 && isPrime(pR);
-  var dist  = PHI - p;
+  const p = recoverPrime(s);
+  const pR = Math.round(p);
+  const isAtPhi = Math.abs(s-1)<1e-10;
+  const exact = !isAtPhi && Math.abs(p-pR)<0.0001 && PRIMES.includes(pR);
+  const dist = PHI - p;
+  const distRel = dist/PHI;
 
-  // ── Banner ──
-  var banner = '';
-  if(exact){
-    var sTrue = jumpSize(pR);
-    var err   = Math.abs(s - sTrue);
-    banner = '<span style="color:var(--teal);font-size:1.05em">p = '+pR+'</span>'
-      +'  ·  s = '+s.toFixed(10)
-      +'  ·  φ − p = <span style="color:var(--gold)">'+dist.toFixed(10)+'</span>'
-      +'<br><span style="color:var(--teal)">✓ Exact prime recovered</span>'
-      +(err > 1e-12 ? '  <span style="color:var(--ink3);font-size:.9em">(rounding err: '+err.toExponential(2)+')</span>' : '');
-    el.className = 'adv-result exact';
+  // Banner
+  if(isAtPhi){
+    banner.className='sentinel';
+    banner.innerHTML=
+      '<span style="color:var(--gold);font-size:1.1em">φ = '+PHI.toFixed(12)+'</span><br>'+
+      '<span style="color:var(--gold)">s = 1 → Golden Ratio Sentinel — permanently unreachable by any prime</span><br>'+
+      '<span style="color:var(--ink3);font-size:.9em">φ is the infimum of p(s) over all actual primes. No prime produces s=1.</span>';
+  } else if(exact){
+    const idx=PRIMES.indexOf(pR);
+    banner.className='';
+    banner.innerHTML=
+      '<span style="color:var(--teal);font-size:1.1em">p = '+pR+'</span>'+
+      '&nbsp;·&nbsp; s = '+s.toFixed(12)+
+      '&nbsp;·&nbsp; φ − p = <span style="color:var(--gold)">'+dist.toFixed(12)+'</span><br>'+
+      '<span style="color:var(--green)">✓ Exact prime recovered</span>'+
+      '&nbsp;·&nbsp; <span style="color:var(--ink3)">prime #'+(idx+1)+'</span>';
   } else {
-    banner = '<span style="color:var(--ink);font-size:1.05em">p ≈ '+p.toFixed(10)+'</span>'
-      +'  ·  s = '+s.toFixed(10)
-      +'  ·  φ − p = <span style="color:var(--gold)">'+dist.toFixed(10)+'</span>'
-      +'<br><span style="color:var(--coral)">✗ Not a prime jump size  —  nearest prime below</span>';
-    el.className = 'adv-result inexact';
-  }
-  el.innerHTML = banner;
-
-  // ── Parameter computation ──
-  var pIdx   = exact ? BIG_PRIMES.indexOf(pR) : -1; // 0-based
-  var prevP  = pIdx > 0  ? BIG_PRIMES[pIdx-1] : null;
-  var nextP  = pIdx >= 0 && pIdx < BIG_PRIMES.length-1 ? BIG_PRIMES[pIdx+1] : null;
-  var gapPrev = prevP ? pR - prevP : null;
-  var gapNext = nextP ? nextP - pR : null;
-
-  var isTwin    = exact && (isPrime(pR-2) || isPrime(pR+2));
-  var isCousin  = exact && (isPrime(pR-4) || isPrime(pR+4));
-  var isSexty   = exact && (isPrime(pR-6) || isPrime(pR+6));
-  var isSophie  = exact && isPrime(2*pR+1);
-  var isSafe    = exact && pR > 2 && isPrime((pR-1)/2);
-  var isMersene = exact && (Math.log2(pR+1) % 1 < 0.0001);
-
-  var pMod6     = exact ? pR % 6 : null;
-  var pMod6txt  = pMod6===null?'—':pMod6===2?'p=2':pMod6===3?'p=3':pMod6===1?'6k−5 ≡1':pMod6===5?'6k−1 ≡5':'other';
-
-  // C(x) at p
-  var cxBefore = exact ? computeC(BIG_PRIMES.filter(function(q){return q<pR;}))  : null;
-  var cxAfter  = exact ? computeC(BIG_PRIMES.filter(function(q){return q<=pR;})) : null;
-  var deltaC   = (cxBefore!==null && cxAfter!==null) ? cxAfter - cxBefore : null;
-  var relDrop  = (deltaC !== null && cxBefore > 0) ? (-deltaC / cxBefore * 100) : null;
-
-  // s-series quantities
-  var oneOverS = 1/s;                  // = p(p-1) if exact
-  var sqrtDisc = Math.sqrt(1 + 4/s);  // = 2p-1 if exact
-  var logS     = Math.log(s);
-  var logP     = Math.log(p);
-  var pSquared = exact ? pR*pR : p*p;
-  var sRatio   = s / (1 - s);
-
-  // Nearest prime for inexact
-  var nrst = '';
-  if(!exact){
-    var npBelow = BIG_PRIMES.filter(function(q){return q<=p;}).slice(-1)[0];
-    var npAbove = BIG_PRIMES.filter(function(q){return q>p;})[0];
-    nrst = (npBelow||'?')+' (−'+(p-(npBelow||p)).toFixed(4)+')  /  '+(npAbove||'?')+' (+'+((npAbove||p)-p).toFixed(4)+')';
+    const below=PRIMES.filter(q=>q<=p).slice(-1)[0];
+    const above=PRIMES.find(q=>q>p);
+    banner.className='inexact';
+    banner.innerHTML=
+      '<span style="color:var(--ink);font-size:1.1em">p ≈ '+p.toFixed(12)+'</span><br>'+
+      '<span style="color:var(--coral)">✗ Not a prime jump size</span>'+
+      '&nbsp;·&nbsp; nearest: <span style="color:var(--teal)">'+(below||'?')+'</span> / <span style="color:var(--teal)">'+(above||'?')+'</span>';
   }
 
-  var cards = [
-    // Identity
-    {k:'Recovered p',          v: exact ? pR : p.toFixed(12),         cls: exact?'teal':'coral'},
-    {k:'Exact prime?',         v: exact ? 'Yes ✓' : 'No ✗',           cls: exact?'green':'coral'},
-    {k:'Prime index n',        v: pIdx>=0 ? '#'+(pIdx+1) : '—',       cls:''},
-    {k:'Nearest primes',       v: exact ? (prevP||'—')+' / '+(nextP||'—') : nrst, cls:'dim'},
+  // Cards
+  const idx = exact ? PRIMES.indexOf(pR) : -1;
+  const prevP = idx>0 ? PRIMES[idx-1] : null;
+  const nextP = idx>=0&&idx<PRIMES.length-1 ? PRIMES[idx+1] : null;
 
-    // Jump / s quantities
-    {k:'Jump s = 1/p(p−1)',   v: s.toFixed(12),                        cls:'gold'},
-    {k:'1/s = p(p−1)',        v: oneOverS.toFixed(8),                  cls:''},
-    {k:'√(1 + 4/s) = 2p−1',  v: sqrtDisc.toFixed(10),                 cls:''},
-    {k:'s/(1−s)',             v: sRatio.toFixed(10),                   cls:''},
-    {k:'log(s)',              v: logS.toFixed(10),                     cls:''},
-    {k:'log(p)',              v: logP.toFixed(10),                     cls:''},
-    {k:'s · log(1/s)',        v: (s * (-logS)).toFixed(10),            cls:''},
+  const cxBefore = exact&&pR>2 ? computeC(pR-1) : null;
+  const cxAt     = exact ? computeC(pR) : null;
+  const deltaC   = (cxBefore!==null&&cxAt!==null) ? cxAt-cxBefore : null;
+  const relDrop  = (deltaC!==null&&cxBefore>0) ? -deltaC/cxBefore*100 : null;
 
-    // Distance to φ
-    {k:'φ − p  (sentinel gap)', v: dist.toFixed(12),                  cls:'violet'},
-    {k:'(φ − p) / φ',          v: (dist/PHI).toFixed(12),             cls:'violet'},
-    {k:'log(φ − p)',            v: dist>0?Math.log(dist).toFixed(8):'—', cls:''},
+  const oneOverS = 1/s;
+  const sqrtDisc = Math.sqrt(1+4/s);
+  const logS = Math.log(s);
+  const logP = Math.log(p);
 
-    // Coprimality
-    {k:'Coprimality drop %',   v: (s*100).toFixed(8)+'%',             cls:'coral'},
-    {k:'Survival factor',      v: (1-s).toFixed(10),                  cls:''},
+  const isTwin   = exact&&(PRIMES.includes(pR-2)||PRIMES.includes(pR+2));
+  const isCousin = exact&&(PRIMES.includes(pR-4)||PRIMES.includes(pR+4));
+  const isSexy   = exact&&(PRIMES.includes(pR-6)||PRIMES.includes(pR+6));
+  const isSophie = exact&&PRIMES.includes(2*pR+1);
+  const isSafe   = exact&&pR>2&&PRIMES.includes((pR-1)/2);
+  const pMod4    = exact ? pR%4 : null;
+  const pMod6    = exact ? pR%6 : null;
+  const inertZi  = pMod4===3; // inert in Z[i]
 
-    // C(x) at prime
-    {k:'C(p−) before jump',    v: cxBefore!==null?cxBefore.toFixed(12):'—', cls:''},
-    {k:'C(p) after jump',      v: cxAfter!==null?cxAfter.toFixed(12):'—',  cls:'teal'},
-    {k:'ΔC at p  (exact)',     v: deltaC!==null?deltaC.toFixed(12):'—',    cls:'coral'},
-    {k:'Relative drop %',      v: relDrop!==null?relDrop.toFixed(8)+'%':'—', cls:'coral'},
+  const cards=[
+    // Recovery
+    {k:'Recovered p(s)',      v:isAtPhi?'φ = '+PHI.toFixed(10):exact?pR:p.toFixed(12),            cls:isAtPhi?'gold':exact?'teal':'coral'},
+    {k:'Exact prime?',        v:isAtPhi?'Sentinel — φ':exact?'Yes ✓':'No ✗',                       cls:isAtPhi?'gold':exact?'green':'coral'},
+    {k:'Prime index #',       v:idx>=0?'#'+(idx+1):'—',                                            cls:''},
+    {k:'s input',             v:s.toFixed(14),                                                      cls:'gold'},
 
-    // Modular / classification
-    {k:'p mod 6',              v: pMod6!==null?pMod6+' ('+pMod6txt+')':'—', cls:''},
-    {k:'Gap to prev prime',    v: gapPrev!==null?gapPrev:'—',          cls:''},
-    {k:'Gap to next prime',    v: gapNext!==null?gapNext:'—',          cls:''},
-    {k:'Twin prime?',          v: exact?(isTwin?'Yes ✓':'No'):'—',    cls: isTwin?'green':''},
-    {k:'Cousin prime (gap 4)?',v: exact?(isCousin?'Yes ✓':'No'):'—', cls: isCousin?'green':''},
-    {k:'Sexy prime (gap 6)?',  v: exact?(isSexty?'Yes ✓':'No'):'—',  cls: isSexty?'green':''},
-    {k:'Sophie Germain?',      v: exact?(isSophie?'Yes ✓ (2p+1 prime)':'No'):'—', cls: isSophie?'green':''},
-    {k:'Safe prime?',          v: exact?(isSafe?'Yes ✓ ((p−1)/2 prime)':'No'):'—', cls: isSafe?'green':''},
-    {k:'Mersenne prime?',      v: exact?(isMersene?'Yes ✓ (2ⁿ−1)':'No'):'—', cls: isMersene?'green':''},
+    // Sentinel
+    {k:'φ − p(s)',            v:dist.toFixed(14),                                                   cls:'violet'},
+    {k:'(φ−p)/φ',             v:distRel.toFixed(14),                                               cls:'dim'},
+    {k:'Distance to φ',       v:Math.abs(dist)<1e-14?'0 — you are φ':Math.abs(dist).toExponential(8), cls:'violet'},
+
+    // Jump quantities
+    {k:'1/s = p(p−1)',        v:oneOverS.toFixed(8),                                               cls:''},
+    {k:'√(1+4/s) = 2p−1',    v:sqrtDisc.toFixed(10),                                              cls:''},
+    {k:'s/(1−s)',             v:s<1?(s/(1-s)).toFixed(10):'∞',                                     cls:''},
+    {k:'log(s)',              v:logS.toFixed(10),                                                   cls:'dim'},
+    {k:'log p(s)',            v:logP.toFixed(10),                                                   cls:'dim'},
+    {k:'s · p²',             v:exact?(s*pR*pR).toFixed(10):(s*p*p).toFixed(10),                  cls:''},
+
+    // Neighbours
+    {k:'Prev prime',          v:prevP||'—',                                                         cls:'dim'},
+    {k:'Next prime',          v:nextP||'—',                                                         cls:'dim'},
+    {k:'Gap to prev',         v:exact&&prevP?pR-prevP:'—',                                          cls:''},
+    {k:'Gap to next',         v:exact&&nextP?nextP-pR:'—',                                          cls:''},
+
+    // C(x)
+    {k:'C(p−) before jump',   v:cxBefore!==null?cxBefore.toFixed(14):'—',                         cls:''},
+    {k:'C(p) after jump',     v:cxAt!==null?cxAt.toFixed(14):'—',                                 cls:'teal'},
+    {k:'ΔC at p',             v:deltaC!==null?deltaC.toFixed(14):'—',                             cls:'coral'},
+    {k:'Relative drop %',     v:relDrop!==null?relDrop.toFixed(10)+'%':'—',                       cls:'coral'},
+    {k:'C∞ − C(p)',           v:cxAt!==null?(C_INF-cxAt).toFixed(12):'—',                        cls:'dim'},
+
+    // Classification
+    {k:'p mod 4',             v:pMod4!==null?pMod4+(pMod4===1?' (splits in Z[i])':pMod4===3?' (inert in Z[i])':''):'—', cls:pMod4===3?'violet':pMod4===1?'teal':''},
+    {k:'Z[i] type',           v:exact?(inertZi?'Inert (q≡3 mod 4)':'Splits (q≡1 mod 4)'):'—',    cls:inertZi?'violet':'teal'},
+    {k:'p mod 6',             v:pMod6!==null?pMod6+(pMod6===1?' (6k+1)':pMod6===5?' (6k−1)':''):'—', cls:''},
+    {k:'Twin prime?',         v:exact?(isTwin?'Yes ✓':'No'):'—',                                  cls:isTwin?'green':''},
+    {k:'Cousin (gap 4)?',     v:exact?(isCousin?'Yes ✓':'No'):'—',                               cls:isCousin?'green':''},
+    {k:'Sexy (gap 6)?',       v:exact?(isSexy?'Yes ✓':'No'):'—',                                 cls:isSexy?'green':''},
+    {k:'Sophie Germain?',     v:exact?(isSophie?'Yes ✓ (2p+1 prime)':'No'):'—',                  cls:isSophie?'green':''},
+    {k:'Safe prime?',         v:exact?(isSafe?'Yes ✓ ((p−1)/2 prime)':'No'):'—',                 cls:isSafe?'green':''},
 
     // LP / analytic
-    {k:'p² (LP zero of F)',    v: pSquared.toFixed(4),                 cls:'violet'},
-    {k:'(p²−2)/(p²−1) factor',v: exact?((pR*pR-2)/(pR*pR-1)).toFixed(12):'—', cls:''},
-    {k:'s² = 1/p²(p−1)²',    v: (s*s).toFixed(14),                   cls:'dim'},
+    {k:'p² (LP zero of F)',   v:exact?(pR*pR):p*p,                                                cls:'violet'},
+    {k:'(p²−2)/(p²−1)',       v:exact?((pR*pR-2)/(pR*pR-1)).toFixed(14):'—',                    cls:''},
+    {k:'Survival factor 1−s', v:(1-s).toFixed(14),                                                cls:''},
+    {k:'Coprimality drop s',  v:(s*100).toFixed(10)+'%',                                          cls:'coral'},
   ];
 
-  var html = '';
-  cards.forEach(function(c){
-    html += '<div class="param-card"><div class="pk">'+c.k+'</div>'
-      +'<div class="pv '+(c.cls||'')+'">'+c.v+'</div></div>';
+  grid.innerHTML = cards.map(c=>
+    `<div class="card"><div class="ck">${c.k}</div><div class="cv ${c.cls||''}">${c.v}</div></div>`
+  ).join('');
+
+  // Redraw active chart
+  drawChart(activeChart, s, p, exact, isAtPhi, pR);
+}
+
+// ══════════════════════════════════════════════
+// INPUT HANDLERS
+// ══════════════════════════════════════════════
+function onSText(raw){
+  const s=evalS(raw);
+  if(!isNaN(s)&&s>0) compute(s);
+}
+function onSKey(e){
+  if(e.key==='Enter') onSText(e.target.value);
+}
+function onSlider(s){
+  document.getElementById('s-input').value=s.toFixed(8);
+  document.getElementById('s-log-slider').value=Math.log10(s).toFixed(6);
+  document.getElementById('s-log-val').textContent='10^'+Math.log10(s).toFixed(4);
+  compute(s);
+}
+function onLogSlider(logS){
+  const s=Math.pow(10,logS);
+  document.getElementById('s-input').value=s.toExponential(8);
+  document.getElementById('s-slider').value=Math.min(s,1);
+  document.getElementById('s-log-val').textContent='10^'+logS.toFixed(4);
+  document.getElementById('s-sl-val').textContent=s.toExponential(4);
+  compute(s);
+}
+function onPInput(pVal){
+  pVal=Math.round(pVal);
+  if(pVal<2) return;
+  const s=jumpSize(pVal);
+  setS(s,pVal);
+  const idx=PRIMES.indexOf(pVal);
+  if(idx>=0) document.getElementById('n-input').value=idx+1;
+  document.getElementById('inv-input').value=pVal*(pVal-1);
+}
+function onNInput(n){
+  n=Math.round(n);
+  if(n<1||n>PRIMES.length) return;
+  const p=PRIMES[n-1];
+  document.getElementById('p-input').value=p;
+  onPInput(p);
+}
+function onInvInput(v){
+  if(!v||v<=0) return;
+  const s=1/v;
+  setS(s);
+}
+function onFrac(){
+  const n=parseFloat(document.getElementById('frac-n').value)||1;
+  const d=parseFloat(document.getElementById('frac-d').value)||2;
+  if(d===0) return;
+  setS(n/d);
+}
+function setS(s, pVal){
+  document.getElementById('s-input').value=s<=1e-5?s.toExponential(8):s.toFixed(10);
+  updateSliders(s);
+  compute(s);
+}
+function updateSliders(s){
+  const sl=document.getElementById('s-slider');
+  sl.value=Math.min(Math.max(s,0.000001),1);
+  document.getElementById('s-sl-val').textContent=s<=1e-4?s.toExponential(5):s.toFixed(6);
+  const logS=Math.log10(Math.max(s,1e-9));
+  document.getElementById('s-log-slider').value=logS.toFixed(6);
+  document.getElementById('s-log-val').textContent='10^'+logS.toFixed(3);
+}
+
+// ══════════════════════════════════════════════
+// CHART ENGINE
+// ══════════════════════════════════════════════
+let chartResizeObs;
+
+function showChart(idx, btn){
+  activeChart=idx;
+  document.querySelectorAll('.chart-cv').forEach((c,i)=>{
+    c.classList.toggle('active',i===idx);
   });
-  grid.innerHTML = html;
-
-  document.getElementById('s-val').textContent = s.toFixed(8);
-  updateCanvasStats(p, s, dist);
+  document.querySelectorAll('.ct').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  drawChart(idx, currentS);
 }
 
-function onSInput(raw){
-  var s = evalS(raw);
-  if(!isNaN(s) && s > 0 && s < 1){
-    // Sync slider (capped at 0.5)
-    var sl = document.getElementById('s-slider');
-    sl.value = Math.min(s, 0.5);
-    checkJump(s);
-  }
+function getCtx(idx){
+  const cv=document.getElementById('cv'+idx);
+  const wrap=document.getElementById('chart-wrap');
+  const W=wrap.clientWidth, H=wrap.clientHeight;
+  cv.width=W*devicePixelRatio;
+  cv.height=H*devicePixelRatio;
+  cv.style.width=W+'px';
+  cv.style.height=H+'px';
+  const c=cv.getContext('2d');
+  c.scale(devicePixelRatio,devicePixelRatio);
+  return {c, W, H};
 }
 
-function onSliderInput(s){
-  // Update text input without clobbering user cursor
-  document.getElementById('s-input').value = s.toFixed(8);
-  document.getElementById('s-val').textContent = s.toFixed(8);
-  checkJump(s);
+function drawChart(idx, s, p, exact, isAtPhi, pR){
+  if(idx===0) drawSentinelWall(s,p,exact,isAtPhi,pR);
+  if(idx===1) drawCxConvergence(s,p,exact,pR);
+  if(idx===2) drawJumpSpectrum(s);
+  if(idx===3) drawRecoveryCurve(s);
+  if(idx===4) drawCoprimDrop(s,p,exact,pR);
 }
 
-function onPrimeIndex(n){
-  n = Math.round(n);
-  if(n < 1 || n > BIG_PRIMES.length) return;
-  var p = BIG_PRIMES[n-1];
-  var s = jumpSize(p);
-  document.getElementById('s-input').value   = s.toFixed(12);
-  document.getElementById('directp-input').value = p;
-  document.getElementById('s-slider').value  = Math.min(s, 0.5);
-  checkJump(s);
-}
+// ── Chart 0: Sentinel Wall ──────────────────────
+function drawSentinelWall(s, p, exact, isAtPhi, pR){
+  const {c,W,H}=getCtx(0);
+  c.fillStyle='#020308';c.fillRect(0,0,W,H);
 
-function onDirectP(pVal){
-  pVal = Math.round(pVal);
-  if(!pVal || pVal < 2) return;
-  var s = jumpSize(pVal);
-  document.getElementById('s-input').value = s.toFixed(12);
-  document.getElementById('s-slider').value = Math.min(s, 0.5);
-  checkJump(s);
-  var idx = BIG_PRIMES.indexOf(pVal);
-  if(idx >= 0) document.getElementById('pidx-input').value = idx+1;
-}
+  const pad={l:50,r:30,t:30,b:50};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
 
-function syncSlider(s){
-  if(s >= 0.00001 && s <= 0.5) document.getElementById('s-slider').value = s;
-}
-
-function updateCanvasStats(p,s,dist){
-  var ep = document.getElementById('stat-p');
-  var es = document.getElementById('stat-s');
-  var ed = document.getElementById('stat-dist');
-  if(ep) ep.textContent = isNaN(p)?'—':p.toFixed(6);
-  if(es) es.textContent = s.toFixed(8);
-  if(ed) ed.textContent = isNaN(dist)?'—':Math.abs(dist).toFixed(8);
-}
-
-
-// ═══════════════════════════════════════════
-// CANVAS ENGINE
-// ═══════════════════════════════════════════
-var cv = document.getElementById('main-cv');
-var ctx = cv.getContext('2d');
-var W, H;
-var currentPreset = 0;
-var animId;
-
-function resize(){
-  var wrap = document.getElementById('cv-wrap');
-  var dpr = window.devicePixelRatio || 1;
-  var cw = wrap.clientWidth  || wrap.offsetWidth  || 800;
-  var ch = wrap.clientHeight || wrap.offsetHeight || 500;
-  if(cw < 10) cw = 800;
-  if(ch < 10) ch = 500;
-  W = cw; H = ch;
-  cv.width  = Math.round(W * dpr);
-  cv.height = Math.round(H * dpr);
-  cv.style.width  = W + 'px';
-  cv.style.height = H + 'px';
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.scale(dpr, dpr);
-}
-window.addEventListener('resize', function(){ resize(); });
-// Defer first resize so layout dimensions are available
-requestAnimationFrame(function(){ resize(); });
-
-// ═══════════════════════════════════════════
-// PRESETS
-// ═══════════════════════════════════════════
-var PRESETS = [
-  {
-    name: 'Sentinel Wall',
-    text: 'Each prime p is plotted at its jump size s = 1/(p(p−1)) on the horizontal axis. The vertical axis shows the recovered value p = (1+√(1+4/s))/2. The golden ratio φ stands as a vertical wall to the right — every prime arrow falls short. Watch them crowd toward φ as primes grow, never arriving.',
-    formula: 'p = (1+√(1+4/s))/2 · φ = lim_{s→1} p(s) — unreachable',
-    draw: drawSentinelWall
-  },
-  {
-    name: 'Prime Rain',
-    text: 'Primes fall from above as particles, each trailing a jump signal. The horizontal position encodes the jump size s, vertical position encodes p. Larger primes fall slower — their jumps are smaller, their signals fainter. The golden ratio sentinel glows at the top of the fall zone, untouched.',
-    formula: 's_p = 1/(p(p−1)) → 0 as p → ∞ · rain density ~ π(x)/x ~ 1/log x',
-    draw: drawPrimeRain
-  },
-  {
-    name: 'Jump Spiral',
-    text: 'The jump sizes s_p are mapped to a polar spiral. Each prime defines an angle θ = 2π·log(p) and radius r = 1−s_p. As primes grow their jumps shrink and the spiral winds tighter toward the outer rim. The unit circle represents φ — approached but never reached.',
-    formula: 'θ = 2π·log(p) · r = 1 − s_p = 1 − 1/(p(p−1)) → 1 as p → ∞',
-    draw: drawJumpSpiral
-  },
-  {
-    name: 'LP Orbit',
-    text: 'The zeros of F(u) = ∏_p (p²−u)/(p²−1) lie at u = p², all real and positive. These are plotted on the real line as orbiting points, their positions encoded by p² and their size by the jump magnitude at each prime. The Laguerre–Pólya class membership is visible: all zeros are real.',
-    formula: 'F(p²) = 0 · zeros = {4, 9, 25, 49, 121, ...} = {p²} ⊂ ℝ₊',
-    draw: drawLPOrbit
-  },
-  {
-    name: 'C(x) Live',
-    text: 'The Lift Survival function C(x) = ∏_{p≤x} (p²−2)/(p²−1) is drawn in real time as x sweeps from 2 to 100. Each prime introduces a visible downward jump — a discontinuity. Between primes the function is constant. The jump magnitudes decrease as primes grow, converging toward C ≈ 0.5307.',
-    formula: 'C(x) = ∏_{p≤x} (p²−2)/(p²−1) · Δ C(p) = −1/(p(p−1)) · C∞ ≈ 0.5307',
-    draw: drawCxLive
-  },
-  {
-    name: 'Quadratic Field',
-    text: 'The full quadratic landscape s·p²−s·p−1 = 0 is drawn as a 2D field. Color encodes the sign of the residual — positive (no prime) vs negative (prime zone). The level curve at residual = 0 traces the exact prime recovery curve, with φ appearing as a fixed point at s = 1.',
-    formula: 'f(s,p) = s·p²−s·p−1 = 0 · level set = prime recovery curve · f(1,φ) = 0',
-    draw: drawQuadraticField
-  },
-  {
-    name: '1/C(x) vs π(x)',
-    text: 'The inverse 1/C(x) grows as primes accumulate, mimicking the prime counting function π(x). Overlaid with Li(x) = ∫₂ˣ dt/ln(t) and x/ln(x), this shows how the Lift Survival product encodes prime density. The logarithmic derivative of 1/C(x) directly recovers the von Mangoldt-style prime signal.',
-    formula: '1/C(x) = ∏_{p≤x} (p²−1)/(p²−2) · d/dx log(1/C) ~ Σ s_p·δ(x−p)',
-    draw: drawInverseCx
-  }
-];
-
-// ── Preset 0: Sentinel Wall ──
-var sentinelParticles = [];
-function initSentinelParticles(){
-  sentinelParticles = PRIMES.slice(0,40).map(function(p,i){
-    return {
-      p:p, s:jumpSize(p), rec:recoverPrime(jumpSize(p)),
-      phase: Math.random()*Math.PI*2,
-      vy: 0, y0: -1
-    };
-  });
-}
-
-function drawSentinelWall(t){
-  ctx.fillStyle='rgba(3,2,10,.88)';
-  ctx.fillRect(0,0,W,H);
-
-  var pad=60, pw=W-pad*2, ph=H-pad*2;
-  var maxS=0.55, maxP=25;
+  // x-axis: log(s), from -10 to 0
+  // y-axis: p(s) from 1 to 5
+  const xMin=-9, xMax=0;
+  const yMin=1, yMax=5;
+  const toX=ls=>(ls-xMin)/(xMax-xMin)*cW+pad.l;
+  const toY=pv=>cH-(pv-yMin)/(yMax-yMin)*cH+pad.t;
 
   // Grid
-  ctx.strokeStyle='rgba(255,255,255,.03)';
-  ctx.lineWidth=1;
-  for(var gi=0;gi<=10;gi++){
-    var gx=pad+pw*gi/10;
-    ctx.beginPath();ctx.moveTo(gx,pad);ctx.lineTo(gx,H-pad);ctx.stroke();
-    var gy=pad+ph*gi/10;
-    ctx.beginPath();ctx.moveTo(pad,gy);ctx.lineTo(W-pad,gy);ctx.stroke();
+  c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+  for(let y=1;y<=5;y+=0.5){
+    c.beginPath();c.moveTo(pad.l,toY(y));c.lineTo(W-pad.r,toY(y));c.stroke();
+  }
+  for(let x=-9;x<=0;x++){
+    const px=toX(x);
+    c.beginPath();c.moveTo(px,pad.t);c.lineTo(px,H-pad.b);c.stroke();
   }
 
-  // Axes
-  ctx.strokeStyle='rgba(200,168,75,.3)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.stroke();
+  // φ line
+  const phiY=toY(PHI);
+  c.strokeStyle='rgba(200,168,75,.5)';c.lineWidth=1.5;c.setLineDash([6,4]);
+  c.beginPath();c.moveTo(pad.l,phiY);c.lineTo(W-pad.r,phiY);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='rgba(200,168,75,.8)';c.font='11px var(--mono)';
+  c.textAlign='left';c.fillText('φ = 1.6180…',pad.l+4,phiY-5);
 
-  // Axis labels
-  ctx.fillStyle='rgba(120,110,90,.7)';
-  ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('jump size  s = 1/(p(p−1))',W/2,H-12);
-  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);
-  ctx.fillText('recovered prime  p',0,0);ctx.restore();
+  // Recovery curve p(s) = (1+√(1+4/s))/2
+  c.beginPath();
+  let first=true;
+  for(let ls=xMin;ls<=xMax;ls+=0.01){
+    const sv=Math.pow(10,ls);
+    const pv=recoverPrime(sv);
+    if(pv<yMin||pv>yMax){first=true;continue;}
+    const px=toX(ls),py=toY(pv);
+    if(first){c.moveTo(px,py);first=false;}else c.lineTo(px,py);
+  }
+  c.strokeStyle='rgba(43,191,176,.8)';c.lineWidth=2;c.stroke();
 
-  // φ SENTINEL line — at s=1, x=left+small (s=1 is off scale, show as vertical boundary)
-  var phiX = pad; // sentinel is at s→1 which maps to left
-  // Actually plot s on x-axis from 0 to maxS=0.55, phi is at s=1 which is off-chart to right
-  // So sentinel is the right boundary
-  var sentX = pad + pw; // far right
-  var grad=ctx.createLinearGradient(sentX-3,0,sentX+3,0);
-  grad.addColorStop(0,'rgba(212,168,67,0)');
-  grad.addColorStop(0.5,'rgba(212,168,67,.7)');
-  grad.addColorStop(1,'rgba(212,168,67,0)');
-  ctx.fillStyle=grad;
-  ctx.fillRect(sentX-2,pad,4,ph);
-
-  ctx.fillStyle='rgba(212,168,67,.8)';
-  ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='left';
-  ctx.fillText('φ = 1.618...  (s=1)',sentX-90,pad-8);
-  ctx.fillText('← UNREACHABLE',sentX-90,pad+8);
-
-  // Plot each prime as a point + vertical bar
-  var t_anim = t*0.0008;
-  PRIMES.slice(0,35).forEach(function(p,i){
-    var s = jumpSize(p);
-    var rec = recoverPrime(s);
-    // x = s, y = rec (clamped)
-    var x = pad + (s/maxS)*pw;
-    var y = H-pad - Math.min((rec/maxP)*ph, ph);
-    if(x>W-pad) return;
-
-    // Pulse
-    var pulse = Math.sin(t_anim + i*.7)*.5+.5;
-    var glow = 4 + pulse*6;
-
-    // Vertical drop line
-    ctx.strokeStyle='rgba(43,191,176,'+(0.08+pulse*.08)+')';
-    ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(x,H-pad);ctx.lineTo(x,y);ctx.stroke();
-
-    // Jump label line
-    ctx.strokeStyle='rgba(43,191,176,.25)';
-    ctx.setLineDash([2,4]);ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(pad,y);ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Glow
-    var g=ctx.createRadialGradient(x,y,0,x,y,glow);
-    g.addColorStop(0,'rgba(43,191,176,.8)');
-    g.addColorStop(1,'rgba(43,191,176,0)');
-    ctx.beginPath();ctx.arc(x,y,glow,0,Math.PI*2);
-    ctx.fillStyle=g;ctx.fill();
-
-    // Dot
-    ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);
-    ctx.fillStyle=p<=10?'rgba(212,168,67,.9)':'rgba(43,191,176,.85)';ctx.fill();
-
-    // Prime label (first 8)
-    if(i<8){
-      ctx.fillStyle='rgba(200,168,75,.7)';
-      ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-      ctx.fillText('p='+p, x, y-12);
-    }
+  // Prime dots
+  const primesSub=PRIMES.filter(p=>p<=yMax);
+  primesSub.forEach(pp=>{
+    const sv=jumpSize(pp);
+    if(sv<=0) return;
+    const ls=Math.log10(sv);
+    if(ls<xMin||ls>xMax) return;
+    const px=toX(ls),py=toY(pp);
+    c.beginPath();c.arc(px,py,4,0,2*Math.PI);
+    c.fillStyle='rgba(43,191,176,.9)';
+    c.shadowColor='#2bbfb0';c.shadowBlur=8;
+    c.fill();c.shadowBlur=0;
+    // label
+    c.fillStyle='rgba(43,191,176,.7)';c.font='9px var(--mono)';
+    c.textAlign='center';c.fillText('p='+pp,px,py-9);
   });
 
-  // Curve: y = recoverPrime(s) for s in [0.001, maxS]
-  ctx.beginPath();
-  ctx.strokeStyle='rgba(144,96,208,.35)';ctx.lineWidth=1.5;
-  var first2=true;
-  for(var si=0;si<=200;si++){
-    var s2=0.001+si/200*(maxS-0.001);
-    var rec2=recoverPrime(s2);
-    var x2=pad+(s2/maxS)*pw;
-    var y2=H-pad-Math.min((rec2/maxP)*ph,ph);
-    if(first2){ctx.moveTo(x2,y2);first2=false;}else ctx.lineTo(x2,y2);
-  }
-  ctx.stroke();
-
-  // φ label on Y
-  var phiY=H-pad-Math.min((PHI/maxP)*ph,ph);
-  ctx.strokeStyle='rgba(212,168,67,.2)';ctx.setLineDash([3,6]);ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(pad,phiY);ctx.lineTo(W-pad,phiY);ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='rgba(212,168,67,.6)';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='right';
-  ctx.fillText('φ',pad-4,phiY+4);
-}
-
-// ── Preset 1: Prime Rain ──
-var rainDrops = [];
-function initRain(){
-  rainDrops = [];
-  PRIMES.slice(0,60).forEach(function(p){
-    rainDrops.push({
-      p:p, s:jumpSize(p),
-      x: (jumpSize(p)/0.5)*0.9 + 0.05,
-      y: Math.random(),
-      speed: 0.0002 + 0.0008/Math.log(p),
-      alpha: 0
-    });
-  });
-}
-function drawPrimeRain(t){
-  ctx.fillStyle='rgba(3,2,10,.85)';ctx.fillRect(0,0,W,H);
-
-  var pad=50;
-  var t2=t*0.001;
-
-  // Sentinel glow at top
-  var sgr=ctx.createLinearGradient(0,0,0,60);
-  sgr.addColorStop(0,'rgba(212,168,67,.25)');
-  sgr.addColorStop(1,'rgba(212,168,67,0)');
-  ctx.fillStyle=sgr;ctx.fillRect(0,0,W,60);
-  ctx.fillStyle='rgba(212,168,67,.5)';
-  ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('φ = 1.6180... — THE SENTINEL — unreachable',W/2,22);
-
-  rainDrops.forEach(function(d,i){
-    d.y += d.speed;
-    if(d.y>1.1) d.y=-0.05-Math.random()*0.3;
-    d.alpha = Math.min(1, d.alpha+0.02);
-
-    var x=pad+d.x*(W-pad*2);
-    var y=pad+d.y*(H-pad*2);
-    var sz=4+20/(d.p);
-    var al=d.alpha*(0.6+Math.sin(t2*2+i)*.2);
-
-    // Trail
-    var tgr=ctx.createLinearGradient(x,y-sz*4,x,y);
-    tgr.addColorStop(0,'rgba(43,191,176,0)');
-    tgr.addColorStop(1,'rgba(43,191,176,'+(al*.3)+')');
-    ctx.fillStyle=tgr;
-    ctx.fillRect(x-sz/3,y-sz*4,sz/1.5,sz*4);
-
-    // Dot
-    var dg=ctx.createRadialGradient(x,y,0,x,y,sz);
-    var col=d.p<=7?'200,168,75':'43,191,176';
-    dg.addColorStop(0,'rgba('+col+','+al+')');
-    dg.addColorStop(1,'rgba('+col+',0)');
-    ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);
-    ctx.fillStyle=dg;ctx.fill();
-    ctx.beginPath();ctx.arc(x,y,sz*.4,0,Math.PI*2);
-    ctx.fillStyle='rgba('+col+','+(al*.9)+')';ctx.fill();
-
-    // Label
-    if(d.p<=13){
-      ctx.fillStyle='rgba(200,168,75,'+(al*.8)+')';
-      ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-      ctx.fillText('p='+d.p,x,y+sz+12);
-      ctx.fillText('s='+d.s.toFixed(3),x,y+sz+23);
-    }
-  });
-
-  // X axis label
-  ctx.fillStyle='rgba(120,110,90,.5)';
-  ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('jump size s (left=large, right=small)  →  small primes left, large primes right',W/2,H-12);
-}
-
-// ── Preset 2: Jump Spiral ──
-function drawJumpSpiral(t){
-  ctx.fillStyle='rgba(3,2,10,.88)';ctx.fillRect(0,0,W,H);
-  var cx=W/2,cy=H/2;
-  var maxR=Math.min(W,H)*0.42;
-  var t2=t*0.0004;
-
-  // Unit circle (φ boundary)
-  for(var ri=0;ri<3;ri++){
-    var rr=maxR*(ri+1)/3;
-    ctx.beginPath();ctx.arc(cx,cy,rr,0,Math.PI*2);
-    ctx.strokeStyle=ri===2?'rgba(212,168,67,.18)':'rgba(255,255,255,.04)';
-    ctx.lineWidth=ri===2?1.5:.5;ctx.stroke();
-  }
-  ctx.fillStyle='rgba(212,168,67,.5)';
-  ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('outer = φ boundary',cx,cy-maxR-8);
-
-  // Spiral curve
-  ctx.beginPath();
-  var firstS=true;
-  for(var pi2=0;pi2<PRIMES.length;pi2++){
-    var p=PRIMES[pi2];
-    if(p>150) break;
-    var s=jumpSize(p);
-    var theta=2*Math.PI*Math.log(p)+t2;
-    var r=maxR*(1-s*1.5);
-    var x=cx+r*Math.cos(theta),y=cy+r*Math.sin(theta);
-    if(firstS){ctx.moveTo(x,y);firstS=false;}else ctx.lineTo(x,y);
-  }
-  ctx.strokeStyle='rgba(144,96,208,.2)';ctx.lineWidth=1;ctx.stroke();
-
-  // Prime dots on spiral
-  PRIMES.forEach(function(p,i){
-    if(p>100) return;
-    var s=jumpSize(p);
-    var theta=2*Math.PI*Math.log(p)+t2;
-    var r=maxR*(1-s*1.5);
-    var x=cx+r*Math.cos(theta), y=cy+r*Math.sin(theta);
-    var pulse=Math.sin(t*0.002+i*.8)*.5+.5;
-
-    var gw=6+pulse*8;
-    var col=p<=10?'212,168,67':'43,191,176';
-    var gr=ctx.createRadialGradient(x,y,0,x,y,gw);
-    gr.addColorStop(0,'rgba('+col+',.9)');
-    gr.addColorStop(1,'rgba('+col+',0)');
-    ctx.beginPath();ctx.arc(x,y,gw,0,Math.PI*2);
-    ctx.fillStyle=gr;ctx.fill();
-    ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
-    ctx.fillStyle='rgba('+col+',.95)';ctx.fill();
-
-    if(p<=23){
-      ctx.fillStyle='rgba(200,168,75,.65)';
-      ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='center';
-      ctx.fillText(p,x+(r+14)*Math.cos(theta)/r*(r+14)/r,y+(r+14)*Math.sin(theta)/r*(r+14)/r);
-    }
-  });
-
-  // Center label
-  ctx.fillStyle='rgba(200,168,75,.3)';
-  ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('θ = 2π·log(p)',cx,cy+14);
-  ctx.fillText('r = 1 − s',cx,cy+26);
-}
-
-// ── Preset 3: LP Orbit ──
-function drawLPOrbit(t){
-  ctx.fillStyle='rgba(3,2,10,.88)';ctx.fillRect(0,0,W,H);
-  var t2=t*0.0005;
-  var cy=H/2;
-  var pad=60;
-  var lineY=cy;
-
-  // Real number line
-  ctx.strokeStyle='rgba(200,168,75,.3)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(pad,lineY);ctx.lineTo(W-pad,lineY);ctx.stroke();
-
-  // Arrow
-  ctx.fillStyle='rgba(200,168,75,.4)';
-  ctx.beginPath();ctx.moveTo(W-pad,lineY);
-  ctx.lineTo(W-pad-8,lineY-4);ctx.lineTo(W-pad-8,lineY+4);ctx.closePath();ctx.fill();
-
-  ctx.fillStyle='rgba(120,110,90,.6)';
-  ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('ℝ₊ — zeros of F(u) at u = p²',W/2,lineY+26);
-
-  // Zero labels: p² for first primes
-  var p2s = PRIMES.slice(0,12).map(function(p){return {p:p,u:p*p};});
-  var maxU = p2s[p2s.length-1].u + 10;
-
-  p2s.forEach(function(obj,i){
-    var x=pad+(obj.u/maxU)*(W-pad*2);
-    var pulse=Math.sin(t2+i*.6)*.5+.5;
-    var orbitR=18+pulse*8;
-
-    // Orbit circle
-    ctx.beginPath();ctx.arc(x,lineY,orbitR,0,Math.PI*2);
-    ctx.strokeStyle='rgba(144,96,208,'+(0.08+pulse*.12)+')';
-    ctx.lineWidth=1;ctx.stroke();
-
-    // Orbiting dot
-    var angle=t2*2+i*1.3;
-    var ox=x+orbitR*Math.cos(angle), oy=lineY+orbitR*Math.sin(angle);
-    ctx.beginPath();ctx.arc(ox,oy,2.5,0,Math.PI*2);
-    ctx.fillStyle='rgba(144,96,208,.8)';ctx.fill();
-
-    // Zero marker on line
-    ctx.strokeStyle='rgba(43,191,176,.6)';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(x,lineY-8);ctx.lineTo(x,lineY+8);ctx.stroke();
-
-    // Labels
-    ctx.fillStyle='rgba(43,191,176,.8)';
-    ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='center';
-    ctx.fillText('p='+obj.p,x,lineY-22);
-    ctx.fillStyle='rgba(200,168,75,.7)';
-    ctx.fillText('u='+obj.u,x,lineY-12);
-  });
-
-  // F(u) label
-  ctx.fillStyle='rgba(144,96,208,.4)';
-  ctx.font='bold 13px JetBrains Mono,monospace';ctx.textAlign='left';
-  ctx.fillText('F(u) = ∏_p (p²−u)/(p²−1)',pad,pad);
-  ctx.font='10px JetBrains Mono,monospace';
-  ctx.fillStyle='rgba(43,191,176,.5)';
-  ctx.fillText('zeros: {4, 9, 25, 49, 121, 169, ...} = {p²} ⊂ ℝ₊  →  LP class',pad,pad+18);
-  ctx.fillText('all zeros real, positive, prime-indexed  →  Laguerre–Pólya ✓',pad,pad+32);
-}
-
-// ── Preset 4: C(x) Live ──
-var cxSweep  = 2;
-var cxXMax   = 100;
-var cxSpeed  = 0.04;
-var cxDeltaP = 2;
-var cxYZoom  = 1;
-var cxPaused = false;
-
-function setCxXMax(v){
-  v = Math.max(20, Math.min(50000, Math.round(v)));
-  cxXMax = v;
-  document.getElementById('cx-xmax-sl').value  = Math.min(v, 2000);
-  document.getElementById('cx-xmax-inp').value = v;
-  document.getElementById('cx-xmax-v').textContent = v;
-  PRIMES = primesUpTo(v + 50);
-  // Update delta slider max
-  var dp = document.getElementById('cx-dp-sl');
-  var pCount = PRIMES.length;
-  dp.max = pCount - 1;
-  initCx();
-}
-
-function setCxDeltaByIndex(idx){
-  idx = Math.round(idx);
-  if(idx < 0 || idx >= PRIMES.length) return;
-  cxDeltaP = PRIMES[idx];
-  document.getElementById('cx-dp-inp').value = cxDeltaP;
-  document.getElementById('cx-dp-v').textContent = 'p = ' + cxDeltaP;
-}
-
-function setCxDeltaP(pVal){
-  pVal = Math.round(pVal);
-  if(pVal < 2) return;
-  // snap to nearest prime
-  var best = PRIMES[0];
-  PRIMES.forEach(function(q){ if(Math.abs(q-pVal) < Math.abs(best-pVal)) best=q; });
-  cxDeltaP = best;
-  document.getElementById('cx-dp-inp').value = best;
-  document.getElementById('cx-dp-v').textContent = 'p = ' + best;
-  var idx = PRIMES.indexOf(best);
-  if(idx >= 0) document.getElementById('cx-dp-sl').value = idx;
-}
-
-function initCx(){
-  cxSweep = 2;
-  PRIMES = primesUpTo(Math.max(cxXMax + 50, 300));
-}
-
-function drawCxLive(t){
-  // Always clear even when paused
-  ctx.fillStyle='rgba(3,2,10,.88)';ctx.fillRect(0,0,W,H);
-  if(cxPaused){
-    // Draw frozen state — just skip advance
-  } else {
-    if(cxSweep < cxXMax) cxSweep += cxSpeed;
-    if(cxSweep >= cxXMax) cxSweep = 2;
-  }
-
-  var pad=64, pw=W-pad*2, ph=H-pad*2;
-
-  // C(x) at current sweep
-  var sweepPrimes = PRIMES.filter(function(p){return p<=cxSweep;});
-  var cx_val = computeC(sweepPrimes);
-
-  // Dynamic Y bounds — zoom in around C∞ when zoom > 1
-  var cInf = 0.530711806246;
-  var yRange = (1.02 - 0.46) / cxYZoom;
-  var yMid   = cxYZoom > 1 ? cInf : (1.02 + 0.46)/2;
-  var yMin   = yMid - yRange/2;
-  var yMax   = yMid + yRange/2;
-  // Clamp so current value is visible
-  if(cx_val < yMin + yRange*0.05) { yMin = cx_val - yRange*0.05; yMax = yMin + yRange; }
-  if(cx_val > yMax - yRange*0.05) { yMax = cx_val + yRange*0.05; yMin = yMax - yRange; }
-
-  function mapY(c){ return H-pad - ((c-yMin)/(yMax-yMin))*ph; }
-  function mapX(x){ return pad + ((x-2)/(Math.max(cxXMax,3)-2))*pw; }
-
-  // Axes
-  ctx.strokeStyle='rgba(200,168,75,.2)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
-
-  // Y gridlines — auto step based on zoom
-  var yStep = yRange > 0.4 ? 0.05 : yRange > 0.1 ? 0.02 : yRange > 0.02 ? 0.005 : 0.001;
-  for(var yv = Math.ceil(yMin/yStep)*yStep; yv <= yMax+yStep*0.01; yv += yStep){
-    if(yv < yMin || yv > yMax) continue;
-    var gy = mapY(yv);
-    ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(pad,gy);ctx.lineTo(W-pad,gy);ctx.stroke();
-    ctx.fillStyle='rgba(120,110,90,.5)';ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='right';
-    ctx.fillText(yv.toFixed(4),pad-5,gy+3);
-  }
-
-  // X axis ticks
-  var xTickStep = cxXMax <= 100 ? 10 : cxXMax <= 500 ? 50 : cxXMax <= 2000 ? 200 : 1000;
-  for(var xv=xTickStep; xv<cxXMax; xv+=xTickStep){
-    var gx=mapX(xv);
-    ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(gx,pad);ctx.lineTo(gx,H-pad);ctx.stroke();
-    ctx.fillStyle='rgba(120,110,90,.4)';ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='center';
-    ctx.fillText(xv,gx,H-pad+10);
-  }
-
-  // C∞ reference line
-  var cInfY = mapY(cInf);
-  if(cInfY >= pad && cInfY <= H-pad){
-    ctx.strokeStyle='rgba(144,96,208,.35)';ctx.setLineDash([5,9]);ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(pad,cInfY);ctx.lineTo(W-pad,cInfY);ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle='rgba(144,96,208,.65)';ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='left';
-    ctx.fillText('C∞ ≈ 0.530711806...',pad+4,cInfY-4);
-  }
-
-  // Prime vertical lines
-  var labelEvery = cxXMax > 500 ? 20 : cxXMax > 200 ? 8 : cxXMax > 80 ? 3 : 1;
-  PRIMES.forEach(function(p, pi){
-    if(p > cxSweep) return;
-    var px2 = mapX(p);
-    if(px2 < pad || px2 > W-pad) return;
-    ctx.strokeStyle='rgba(232,85,64,.18)';ctx.lineWidth=.7;ctx.setLineDash([2,6]);
-    ctx.beginPath();ctx.moveTo(px2,pad);ctx.lineTo(px2,H-pad);ctx.stroke();
-    ctx.setLineDash([]);
-    if(pi % labelEvery === 0 && px2 < W-pad-10){
-      ctx.fillStyle='rgba(232,85,64,.5)';ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='center';
-      ctx.fillText(p, px2, pad-5);
-    }
-  });
-
-  // Draw C(x) step function
-  ctx.beginPath();
-  var fp = true;
-  var bps = [2].concat(sweepPrimes);
-  if(bps[bps.length-1] < cxSweep) bps.push(cxSweep);
-  for(var ai=0; ai<bps.length-1; ai++){
-    var xa=bps[ai], xb=bps[ai+1];
-    var ca=computeC(PRIMES.filter(function(q){return q<=xa;}));
-    var sx2=mapX(xa),sy2=mapY(ca),ex2=mapX(xb);
-    if(fp){ctx.moveTo(sx2,sy2);fp=false;}
-    ctx.lineTo(ex2,sy2);
-    if(isPrime(Math.round(xb)) && Math.abs(xb-Math.round(xb))<0.05){
-      var cb=computeC(PRIMES.filter(function(q){return q<=xb;}));
-      ctx.lineTo(ex2,mapY(cb));
+  // Current s marker
+  if(!isNaN(s)&&s>0){
+    const ls=Math.log10(Math.min(s,1));
+    const pv=isAtPhi?PHI:recoverPrime(s);
+    if(ls>=xMin&&pv>=yMin&&pv<=yMax){
+      const px=toX(ls),py=toY(pv);
+      c.beginPath();c.arc(px,py,7,0,2*Math.PI);
+      c.strokeStyle=exact?'#4dcc7a':isAtPhi?'#c8a84b':'#e05540';
+      c.lineWidth=2;c.stroke();
+      c.beginPath();c.arc(px,py,3,0,2*Math.PI);
+      c.fillStyle=exact?'#4dcc7a':isAtPhi?'#c8a84b':'#e05540';
+      c.fill();
+      // vertical drop to φ
+      c.strokeStyle='rgba(200,168,75,.3)';c.lineWidth=1;c.setLineDash([3,3]);
+      c.beginPath();c.moveTo(px,py);c.lineTo(px,phiY);c.stroke();
+      c.setLineDash([]);
     }
   }
-  ctx.strokeStyle='rgba(43,191,176,.88)';ctx.lineWidth=2;ctx.stroke();
-
-  // ── Delta annotation ──
-  if(isPrime(cxDeltaP) && cxDeltaP <= cxSweep){
-    var cBef = computeC(PRIMES.filter(function(q){return q<cxDeltaP;}));
-    var cAft = computeC(PRIMES.filter(function(q){return q<=cxDeltaP;}));
-    var dlt  = cAft - cBef;
-    var relD = (-dlt/cBef*100);
-    var ddx  = mapX(cxDeltaP);
-    var dyB  = mapY(cBef);
-    var dyA  = mapY(cAft);
-    if(ddx >= pad && ddx <= W-pad && dyB >= pad && dyA >= pad){
-      var midY = (dyB+dyA)/2;
-      // vertical brace line
-      ctx.strokeStyle='rgba(212,168,67,.95)';ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(ddx+12,dyB);ctx.lineTo(ddx+12,dyA);ctx.stroke();
-      // arrowheads
-      ctx.beginPath();ctx.moveTo(ddx+8,dyA+5);ctx.lineTo(ddx+12,dyA);ctx.lineTo(ddx+16,dyA+5);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(ddx+8,dyB-5);ctx.lineTo(ddx+12,dyB);ctx.lineTo(ddx+16,dyB-5);ctx.stroke();
-      // labels
-      ctx.fillStyle='rgba(212,168,67,1)';ctx.font='bold 9px JetBrains Mono,monospace';ctx.textAlign='left';
-      ctx.fillText('ΔC = '+dlt.toFixed(8), ddx+20, midY+4);
-      ctx.fillStyle='rgba(212,168,67,.65)';ctx.font='8px JetBrains Mono,monospace';
-      ctx.fillText('p = '+cxDeltaP, ddx+20, midY-8);
-      ctx.fillStyle='rgba(43,191,176,.7)';
-      ctx.fillText('s = '+jumpSize(cxDeltaP).toFixed(8), ddx+20, midY+16);
-      ctx.fillStyle='rgba(224,85,64,.8)';
-      ctx.fillText('drop = '+relD.toFixed(6)+'%', ddx+20, midY+28);
-      // update side stats
-      var cxsd = document.getElementById('cxs-delta');
-      var cxss = document.getElementById('cxs-s');
-      if(cxsd) cxsd.textContent = dlt.toFixed(8);
-      if(cxss) cxss.textContent = jumpSize(cxDeltaP).toFixed(8);
-    }
-  }
-
-  // Sweep dot
-  var curY2 = mapY(cx_val);
-  var curX3 = mapX(cxSweep);
-  if(curX3 >= pad && curX3 <= W-pad && curY2 >= pad && curY2 <= H-pad){
-    var gr2=ctx.createRadialGradient(curX3,curY2,0,curX3,curY2,14);
-    gr2.addColorStop(0,'rgba(43,191,176,.75)');gr2.addColorStop(1,'rgba(43,191,176,0)');
-    ctx.beginPath();ctx.arc(curX3,curY2,14,0,Math.PI*2);ctx.fillStyle=gr2;ctx.fill();
-    ctx.beginPath();ctx.arc(curX3,curY2,4,0,Math.PI*2);ctx.fillStyle='rgba(43,191,176,1)';ctx.fill();
-  }
-
-  // Top-left info
-  ctx.fillStyle='rgba(43,191,176,.75)';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='left';
-  ctx.fillText('C(x) = ∏_{p≤x} (p²−2)/(p²−1)',pad+4,pad+14);
-  ctx.fillText('C('+cxSweep.toFixed(2)+') = '+cx_val.toFixed(12),pad+4,pad+28);
-  ctx.fillStyle='rgba(232,85,64,.65)';
-  ctx.fillText('π('+cxSweep.toFixed(0)+') = '+sweepPrimes.length+' primes',pad+4,pad+42);
-  ctx.fillStyle='rgba(120,110,90,.55)';ctx.textAlign='center';
-  ctx.fillText('x  (primes in red  ·  x max = '+cxXMax+'  ·  zoom = '+cxYZoom+'×)',W/2,H-14);
-
-  // Update stat bar
-  document.getElementById('stat-cx').textContent = cx_val.toFixed(8);
-  var cxsx = document.getElementById('cxs-x');
-  var cxsc = document.getElementById('cxs-c');
-  var cxsp = document.getElementById('cxs-pi');
-  if(cxsx) cxsx.textContent = cxSweep.toFixed(2);
-  if(cxsc) cxsc.textContent = cx_val.toFixed(10);
-  if(cxsp) cxsp.textContent = sweepPrimes.length;
-}
-
-// ── Preset 5: Quadratic Field ──
-function drawQuadraticField(t){
-  // Draw field: f(s,p) = s*p^2 - s*p - 1
-  var pad=60, t2=t*0.0003;
-  var imgData = ctx.createImageData(W,H);
-  var data = imgData.data;
-
-  var sMin=0.001, sMax=0.8;
-  var pMin=1.0, pMax=8.0;
-
-  for(var py=0;py<H;py++){
-    for(var px=0;px<W;px++){
-      var s2=(px-pad)/(W-pad*2)*(sMax-sMin)+sMin;
-      var p2=(H-pad-py)/(H-pad*2)*(pMax-pMin)+pMin;
-      var f=s2*p2*p2-s2*p2-1;
-      var idx=(py*W+px)*4;
-      if(f>0){
-        // positive region — blue tint
-        var v=Math.min(1,f/2);
-        data[idx]=Math.round(20+v*30);
-        data[idx+1]=Math.round(15+v*20);
-        data[idx+2]=Math.round(40+v*60);
-        data[idx+3]=200;
-      } else {
-        // negative region — teal tint (prime zone)
-        var v2=Math.min(1,-f/2);
-        data[idx]=Math.round(10+v2*20);
-        data[idx+1]=Math.round(30+v2*60);
-        data[idx+2]=Math.round(40+v2*60);
-        data[idx+3]=200;
-      }
-    }
-  }
-  ctx.putImageData(imgData,0,0);
-
-  // Level curve: f=0 → p=(1+√(1+4/s))/2
-  ctx.beginPath();
-  var first3=true;
-  for(var si2=0;si2<=300;si2++){
-    var s3=sMin+si2/300*(sMax-sMin);
-    var p3=recoverPrime(s3);
-    if(p3<pMin||p3>pMax) continue;
-    var x3=pad+(s3-sMin)/(sMax-sMin)*(W-pad*2);
-    var y3=H-pad-(p3-pMin)/(pMax-pMin)*(H-pad*2);
-    if(first3){ctx.moveTo(x3,y3);first3=false;}else ctx.lineTo(x3,y3);
-  }
-  ctx.strokeStyle='rgba(212,168,67,.9)';ctx.lineWidth=2;ctx.stroke();
-
-  // Prime dots on the curve
-  PRIMES.forEach(function(p,i){
-    if(p>pMax||p<pMin) return;
-    var s4=jumpSize(p);
-    if(s4<sMin||s4>sMax) return;
-    var x4=pad+(s4-sMin)/(sMax-sMin)*(W-pad*2);
-    var y4=H-pad-(p-pMin)/(pMax-pMin)*(H-pad*2);
-    var pulse=Math.sin(t2*3+i)*.5+.5;
-    var gr3=ctx.createRadialGradient(x4,y4,0,x4,y4,10+pulse*6);
-    gr3.addColorStop(0,'rgba(212,168,67,.9)');gr3.addColorStop(1,'rgba(212,168,67,0)');
-    ctx.beginPath();ctx.arc(x4,y4,10+pulse*6,0,Math.PI*2);ctx.fillStyle=gr3;ctx.fill();
-    ctx.beginPath();ctx.arc(x4,y4,5,0,Math.PI*2);ctx.fillStyle='rgba(212,168,67,1)';ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='bold 9px JetBrains Mono,monospace';ctx.textAlign='center';
-    ctx.fillText(p,x4,y4-12);
-  });
-
-  // φ point at s=1 (off chart right), label near right edge
-  ctx.fillStyle='rgba(212,168,67,.5)';ctx.font='10px JetBrains Mono,monospace';ctx.textAlign='left';
-  ctx.fillText('prime recovery curve: f(s,p)=0',pad,pad-8);
-  ctx.fillStyle='rgba(43,191,176,.5)';ctx.font='9px JetBrains Mono,monospace';
-  ctx.fillText('■ prime zone (f<0)  □ non-prime zone (f>0)',pad,pad+10);
 
   // Axes labels
-  ctx.fillStyle='rgba(120,110,90,.5)';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('jump size s →',W/2,H-12);
-  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);
-  ctx.fillText('p →',0,0);ctx.restore();
-}
-
-// ── Preset 6: 1/C(x) vs π(x) and Li(x) ──
-function drawInverseCx(t){
-  ctx.fillStyle='rgba(3,2,10,.92)';ctx.fillRect(0,0,W,H);
-  var pad=72, pw=W-pad*2, ph=H-pad*2;
-
-  // Determine x range from cxXMax (shared with C(x) preset)
-  var xMax = Math.min(cxXMax, 1000);
-  var primeList = PRIMES.filter(function(p){ return p <= xMax; });
-  if(primeList.length === 0) return;
-
-  // Build data arrays at key x values (primes + endpoints)
-  var xs = [2];
-  primeList.forEach(function(p){ xs.push(p); });
-  xs.push(xMax);
-
-  // Compute 1/C(x) at each x
-  var invC = xs.map(function(x){
-    var ps = PRIMES.filter(function(p){ return p <= x; });
-    var c = computeC(ps);
-    return c > 0 ? 1/c : 0;
-  });
-
-  // π(x): prime count at each x
-  var piX = xs.map(function(x){
-    return PRIMES.filter(function(p){ return p <= x; }).length;
-  });
-
-  // Li(x) approximation via simple sum: Li(x) ≈ Σ 1/ln(k) for k=2..x
-  // Use a cached discrete sum for speed
-  function li(x){
-    if(x < 2) return 0;
-    var sum = 0;
-    for(var k=2; k<=Math.min(x,xMax); k++) sum += 1/Math.log(k);
-    return sum;
+  c.fillStyle='var(--ink3)';
+  c.font='9px var(--mono)';c.textAlign='center';
+  for(let x=-9;x<=0;x+=1){
+    c.fillText('10^'+x,toX(x),H-pad.b+14);
   }
-  var liX = xs.map(function(x){ return li(x); });
-
-  // x/ln(x) approximation
-  var xlnx = xs.map(function(x){ return x > 1 ? x/Math.log(x) : 0; });
-
-  // Y range: cover all four series
-  var allY = invC.concat(piX).concat(liX).concat(xlnx);
-  var yMax2 = Math.max.apply(null, allY) * 1.08;
-  var yMin2 = 0;
-
-  function mapX2(x){ return pad + (x-2)/(Math.max(xMax-2,1))*pw; }
-  function mapY2(y){ return H-pad - (y-yMin2)/(yMax2-yMin2)*ph; }
-
-  // Axes
-  ctx.strokeStyle='rgba(200,168,75,.2)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
-
-  // Y gridlines
-  var yTicks = 6;
-  for(var yi=0; yi<=yTicks; yi++){
-    var yv2 = yMin2 + (yMax2-yMin2)*yi/yTicks;
-    var gy2 = mapY2(yv2);
-    ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(pad,gy2);ctx.lineTo(W-pad,gy2);ctx.stroke();
-    ctx.fillStyle='rgba(120,110,90,.45)';ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='right';
-    ctx.fillText(yv2.toFixed(1),pad-5,gy2+3);
+  c.textAlign='right';
+  for(let y=1;y<=5;y+=0.5){
+    c.fillText(y.toFixed(1),pad.l-5,toY(y)+3);
   }
-
-  // X gridlines
-  var xTickStep2 = xMax <= 100 ? 10 : xMax <= 500 ? 50 : 100;
-  for(var xv2=xTickStep2; xv2<xMax; xv2+=xTickStep2){
-    var gx2 = mapX2(xv2);
-    ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(gx2,pad);ctx.lineTo(gx2,H-pad);ctx.stroke();
-    ctx.fillStyle='rgba(120,110,90,.4)';ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='center';
-    ctx.fillText(xv2,gx2,H-pad+10);
-  }
-
-  // Helper: draw a step or smooth line
-  function drawLine(data, color, lw, dashed){
-    ctx.beginPath();
-    for(var i=0;i<xs.length;i++){
-      var px3=mapX2(xs[i]), py3=mapY2(data[i]);
-      if(i===0) ctx.moveTo(px3,py3); else ctx.lineTo(px3,py3);
-    }
-    ctx.strokeStyle=color;ctx.lineWidth=lw;
-    if(dashed) ctx.setLineDash(dashed); else ctx.setLineDash([]);
-    ctx.stroke();ctx.setLineDash([]);
-  }
-
-  // x/ln(x) — dim background reference
-  drawLine(xlnx, 'rgba(120,100,60,.35)', 1, [4,6]);
-
-  // Li(x) — violet
-  drawLine(liX, 'rgba(144,96,208,.75)', 1.5, [3,4]);
-
-  // π(x) — gold step function
-  ctx.beginPath();
-  var piFp=true;
-  for(var pi3=0;pi3<xs.length;pi3++){
-    var ppx=mapX2(xs[pi3]), ppy=mapY2(piX[pi3]);
-    if(piFp){ctx.moveTo(ppx,ppy);piFp=false;}
-    else {
-      // horizontal then vertical (step)
-      ctx.lineTo(ppx,mapY2(piX[pi3-1]));
-      ctx.lineTo(ppx,ppy);
-    }
-  }
-  ctx.strokeStyle='rgba(212,168,67,.8)';ctx.lineWidth=2;ctx.setLineDash([]);ctx.stroke();
-
-  // 1/C(x) — teal step function (main star)
-  ctx.beginPath();
-  var icFp=true;
-  for(var ic=0;ic<xs.length;ic++){
-    var icx=mapX2(xs[ic]), icy=mapY2(invC[ic]);
-    if(icFp){ctx.moveTo(icx,icy);icFp=false;}
-    else {
-      ctx.lineTo(icx,mapY2(invC[ic-1]));
-      ctx.lineTo(icx,icy);
-    }
-  }
-  ctx.strokeStyle='rgba(43,191,176,.95)';ctx.lineWidth=2.5;ctx.stroke();
-
-  // Prime tick marks on x axis
-  primeList.forEach(function(p,pi4){
-    if(pi4 % (xMax>200?10:xMax>80?3:1) !== 0) return;
-    var ppx2=mapX2(p);
-    ctx.strokeStyle='rgba(232,85,64,.3)';ctx.lineWidth=.6;
-    ctx.beginPath();ctx.moveTo(ppx2,H-pad);ctx.lineTo(ppx2,H-pad+4);ctx.stroke();
-  });
-
-  // Gap ratio annotation: show (1/C(x)) / π(x) at current sweep point
-  var sweepX = Math.min(cxSweep, xMax);
-  var sweepPs = PRIMES.filter(function(p){ return p <= sweepX; });
-  if(sweepPs.length > 0){
-    var cSweep = computeC(sweepPs);
-    var invCSweep = 1/cSweep;
-    var piSweep = sweepPs.length;
-    var ratio = invCSweep / piSweep;
-    var sx3=mapX2(sweepX), sy3inv=mapY2(invCSweep), sy3pi=mapY2(piSweep);
-
-    // Glowing dot on 1/C(x)
-    var gr3=ctx.createRadialGradient(sx3,sy3inv,0,sx3,sy3inv,10);
-    gr3.addColorStop(0,'rgba(43,191,176,.8)');gr3.addColorStop(1,'rgba(43,191,176,0)');
-    ctx.beginPath();ctx.arc(sx3,sy3inv,10,0,Math.PI*2);ctx.fillStyle=gr3;ctx.fill();
-    ctx.beginPath();ctx.arc(sx3,sy3inv,3.5,0,Math.PI*2);ctx.fillStyle='rgba(43,191,176,1)';ctx.fill();
-
-    // Glowing dot on π(x)
-    var gr4=ctx.createRadialGradient(sx3,sy3pi,0,sx3,sy3pi,8);
-    gr4.addColorStop(0,'rgba(212,168,67,.7)');gr4.addColorStop(1,'rgba(212,168,67,0)');
-    ctx.beginPath();ctx.arc(sx3,sy3pi,8,0,Math.PI*2);ctx.fillStyle=gr4;ctx.fill();
-    ctx.beginPath();ctx.arc(sx3,sy3pi,3,0,Math.PI*2);ctx.fillStyle='rgba(212,168,67,1)';ctx.fill();
-
-    // Ratio label
-    ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='left';
-    var lx3 = Math.min(sx3+14, W-pad-160);
-    ctx.fillText('x = '+sweepX.toFixed(1), lx3, Math.min(sy3inv-14, H-pad-40));
-    ctx.fillStyle='rgba(43,191,176,.8)';
-    ctx.fillText('1/C = '+invCSweep.toFixed(4), lx3, Math.min(sy3inv-3, H-pad-28));
-    ctx.fillStyle='rgba(212,168,67,.8)';
-    ctx.fillText('π(x) = '+piSweep, lx3, Math.min(sy3inv+9, H-pad-16));
-    ctx.fillStyle='rgba(93,216,122,.8)';
-    ctx.fillText('ratio = '+ratio.toFixed(4), lx3, Math.min(sy3inv+21, H-pad-4));
-  }
-
-  // Legend
-  var lx = pad+8, ly = pad+14;
-  function legend(color, label, dy, dashed){
-    ctx.strokeStyle=color;ctx.lineWidth=2;
-    if(dashed) ctx.setLineDash(dashed); else ctx.setLineDash([]);
-    ctx.beginPath();ctx.moveTo(lx,ly+dy);ctx.lineTo(lx+24,ly+dy);ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle=color;ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='left';
-    ctx.fillText(label, lx+30, ly+dy+3);
-  }
-  legend('rgba(43,191,176,.95)',  '1/C(x)  — inverse lift survival', 0);
-  legend('rgba(212,168,67,.8)',   'π(x)    — prime counting function', 16);
-  legend('rgba(144,96,208,.75)',  'Li(x)   — logarithmic integral', 32, [3,4]);
-  legend('rgba(120,100,60,.5)',   'x/ln(x) — prime number theorem approx', 48, [4,6]);
+  c.fillStyle='rgba(255,255,255,.3)';c.font='10px var(--mono)';
+  c.textAlign='center';c.fillText('log₁₀(s)',W/2,H-5);
+  c.save();c.translate(12,H/2);c.rotate(-Math.PI/2);c.fillText('p(s)',0,0);c.restore();
 
   // Title
-  ctx.fillStyle='rgba(93,216,122,.7)';ctx.font='bold 10px JetBrains Mono,monospace';ctx.textAlign='right';
-  ctx.fillText('1/C(x) vs π(x)  ·  x max = '+xMax, W-pad, pad-8);
-  ctx.fillStyle='rgba(120,110,90,.55)';ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='center';
-  ctx.fillText('x',W/2,H-pad+20);
-
-  // Note on zeta connection
-  ctx.fillStyle='rgba(144,96,208,.5)';ctx.font='8px JetBrains Mono,monospace';ctx.textAlign='left';
-  ctx.fillText('log(1/C(x)) = Σ_{p≤x} log((p²−1)/(p²−2))  ≈  Σ s_p  →  prime zeta weight', pad, H-pad-8);
+  c.fillStyle='rgba(200,168,75,.6)';c.font='11px var(--mono)';
+  c.textAlign='left';c.fillText('Sentinel Wall: p(s) = (1+√(1+4/s))/2 → φ as s→1',pad.l,16);
 }
 
-// ═══════════════════════════════════════════
-// ANIMATION LOOP
-// ═══════════════════════════════════════════
-var lastFpsT = 0, fpsFrames = 0, displayFps = 0;
-function loop(ts){
-  animId = requestAnimationFrame(loop);
-  // FPS tracking
-  fpsFrames++;
-  if(ts - lastFpsT >= 1000){
-    displayFps = fpsFrames;
-    fpsFrames = 0;
-    lastFpsT = ts;
-    var ef = document.getElementById('stat-fps');
-    if(ef) ef.textContent = displayFps;
+// ── Chart 1: C(x) Convergence ──────────────────
+function drawCxConvergence(s, p, exact, pR){
+  const {c,W,H}=getCtx(1);
+  c.fillStyle='#020308';c.fillRect(0,0,W,H);
+
+  const pad={l:58,r:20,t:30,b:50};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+
+  // Build C(x) series up to 200th prime
+  const maxIdx=Math.min(PRIMES.length-1,199);
+  const points=[];
+  let cx=1;
+  for(let i=0;i<=maxIdx;i++){
+    const pp=PRIMES[i];
+    cx *= (pp*pp-2)/(pp*pp-1);
+    points.push({x:i+1,cx});
   }
-  PRESETS[currentPreset].draw(ts);
-}
 
-// ═══════════════════════════════════════════
-// PRESET SWITCHING
-// ═══════════════════════════════════════════
-var PRESET_DESC_DATA = PRESETS.map(function(p){ return {name:p.name,text:p.text,formula:p.formula}; });
+  const xMin=0,xMax=points.length;
+  const yVals=points.map(p=>p.cx);
+  const yMin=Math.min(...yVals)-0.01;
+  const yMax=1.01;
+  const toX=i=>(i-xMin)/(xMax-xMin)*cW+pad.l;
+  const toY=y=>cH-(y-yMin)/(yMax-yMin)*cH+pad.t;
 
-function setPreset(idx){
-  currentPreset=idx;
-  // Reset state
-  if(idx===1) initRain();
-  if(idx===4) initCx();
+  // Grid
+  c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+  [0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0].forEach(y=>{
+    if(y<yMin) return;
+    const py=toY(y);
+    c.beginPath();c.moveTo(pad.l,py);c.lineTo(W-pad.r,py);c.stroke();
+  });
 
-  // Show/hide C(x) controls
-  var cxc = document.getElementById('cx-controls');
-  if(cxc) cxc.classList.toggle('visible', idx===4);
+  // C∞ line
+  const cinfY=toY(C_INF);
+  c.strokeStyle='rgba(200,168,75,.5)';c.lineWidth=1.2;c.setLineDash([5,4]);
+  c.beginPath();c.moveTo(pad.l,cinfY);c.lineTo(W-pad.r,cinfY);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='rgba(200,168,75,.7)';c.font='9px var(--mono)';c.textAlign='left';
+  c.fillText('C∞ ≈ 0.530711806',pad.l+3,cinfY-4);
 
-  // Update buttons
-  for(var i=0;i<7;i++){
-    var btn=document.getElementById('btn-'+i);
-    if(btn){
-      btn.classList.toggle('active',i===idx);
-      btn.style.background=i===idx?'rgba(43,191,176,.15)':'transparent';
+  // C(x) curve
+  c.beginPath();
+  points.forEach(({x,cx},i)=>{
+    const px=toX(x),py=toY(cx);
+    if(i===0)c.moveTo(px,py);else c.lineTo(px,py);
+  });
+  c.strokeStyle='rgba(43,191,176,.7)';c.lineWidth=1.5;c.stroke();
+
+  // Mark current prime
+  if(exact&&pR){
+    const idx=PRIMES.indexOf(pR);
+    if(idx>=0&&idx<=maxIdx){
+      const px=toX(idx+1),py=toY(points[idx].cx);
+      c.beginPath();c.arc(px,py,5,0,2*Math.PI);
+      c.fillStyle='#4dcc7a';c.shadowColor='#4dcc7a';c.shadowBlur=8;c.fill();c.shadowBlur=0;
+      c.fillStyle='rgba(77,204,122,.7)';c.font='9px var(--mono)';c.textAlign='center';
+      c.fillText('p='+pR,px,py-10);
+      // drop line to C∞
+      c.strokeStyle='rgba(200,168,75,.3)';c.lineWidth=1;c.setLineDash([3,3]);
+      c.beginPath();c.moveTo(px,py);c.lineTo(px,cinfY);c.stroke();
+      c.setLineDash([]);
     }
   }
 
-  // Update description
-  var pd=PRESET_DESC_DATA[idx];
-  document.getElementById('pd-name').textContent=pd.name;
-  document.getElementById('pd-text').textContent=pd.text;
-  document.getElementById('pd-formula').textContent=pd.formula;
+  // Axes
+  c.fillStyle='rgba(255,255,255,.25)';c.font='9px var(--mono)';c.textAlign='right';
+  [0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0].forEach(y=>{
+    if(y<yMin) return;
+    c.fillText(y.toFixed(2),pad.l-4,toY(y)+3);
+  });
+  c.textAlign='center';
+  [1,20,50,100,150,200].forEach(x=>{
+    if(x>points.length) return;
+    c.fillText(x,toX(x),H-pad.b+14);
+  });
+  c.fillText('Prime index n (first 200 primes)',W/2,H-5);
+  c.save();c.translate(13,H/2);c.rotate(-Math.PI/2);c.fillText('C(x)',0,0);c.restore();
+  c.fillStyle='rgba(200,168,75,.5)';c.font='10px var(--mono)';
+  c.textAlign='left';c.fillText('C(x) convergence to C∞ = 0.530711806246…',pad.l,16);
 }
 
-// ═══════════════════════════════════════════
+// ── Chart 2: Jump Spectrum ──────────────────────
+function drawJumpSpectrum(s){
+  const {c,W,H}=getCtx(2);
+  c.fillStyle='#020308';c.fillRect(0,0,W,H);
+
+  const pad={l:58,r:20,t:30,b:50};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+
+  const N=100; // first 100 primes
+  const ps=PRIMES.slice(0,N);
+  const jumps=ps.map(p=>jumpSize(p));
+  const maxJ=jumps[0]; // = 0.5 at p=2
+
+  const toX=(i)=>(i+0.5)/N*cW+pad.l;
+  const toY=(j)=>cH-j/maxJ*cH+pad.t;
+
+  // Bars
+  const bw=cW/N*0.7;
+  ps.forEach((p,i)=>{
+    const j=jumpSize(p);
+    const x=toX(i),y=toY(j);
+    const h=cH-(y-pad.t);
+    const frac=j/maxJ;
+    const r=Math.round(43*frac+10);
+    const g=Math.round(191*Math.pow(frac,.5));
+    const b=Math.round(176*(1-frac)+80);
+    c.fillStyle=`rgba(${r},${g},${b},0.75)`;
+    c.fillRect(x-bw/2,y,bw,h);
+  });
+
+  // Mark current s
+  if(!isNaN(s)&&s>0&&s<=maxJ){
+    const sY=toY(s);
+    c.strokeStyle='rgba(200,168,75,.8)';c.lineWidth=1.5;c.setLineDash([5,3]);
+    c.beginPath();c.moveTo(pad.l,sY);c.lineTo(W-pad.r,sY);c.stroke();
+    c.setLineDash([]);
+    c.fillStyle='rgba(200,168,75,.8)';c.font='9px var(--mono)';
+    c.textAlign='right';c.fillText('s='+s.toFixed(6),W-pad.r-3,sY-4);
+  }
+
+  // φ sentinel: s=1 line (above chart, mark at top)
+  c.strokeStyle='rgba(200,168,75,.3)';c.lineWidth=1;
+  c.fillStyle='rgba(200,168,75,.5)';c.font='9px var(--mono)';c.textAlign='left';
+  c.fillText('s=1 (φ sentinel — unreachable)',pad.l,pad.t-4);
+
+  // Axes
+  c.fillStyle='rgba(255,255,255,.25)';c.font='8px var(--mono)';c.textAlign='center';
+  [2,5,10,20,50,100].forEach(p=>{
+    const i=ps.indexOf(p);if(i<0) return;
+    c.fillText(p,toX(i),H-pad.b+14);
+  });
+  c.textAlign='right';
+  [0.1,0.2,0.3,0.4,0.5].forEach(j=>{
+    c.fillText(j.toFixed(1),pad.l-4,toY(j)+3);
+    c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+    c.beginPath();c.moveTo(pad.l,toY(j));c.lineTo(W-pad.r,toY(j));c.stroke();
+  });
+  c.fillStyle='rgba(255,255,255,.25)';c.textAlign='center';
+  c.fillText('Prime p (first 100)',W/2,H-5);
+  c.save();c.translate(13,H/2);c.rotate(-Math.PI/2);c.fillText('s = 1/p(p−1)',0,0);c.restore();
+  c.fillStyle='rgba(200,168,75,.5)';c.font='10px var(--mono)';c.textAlign='left';
+  c.fillText('Jump Spectrum: s_p = 1/p(p−1) → 0 as p → ∞',pad.l,16);
+}
+
+// ── Chart 3: Recovery Curve ─────────────────────
+function drawRecoveryCurve(s){
+  const {c,W,H}=getCtx(3);
+  c.fillStyle='#020308';c.fillRect(0,0,W,H);
+
+  const pad={l:50,r:30,t:30,b:50};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+
+  // Plot p(s) vs s linearly from 0 to 0.52
+  const sMin=0.0001, sMax=0.52;
+  const pMin=1.5, pMax=30;
+  const toX=sv=>(sv-sMin)/(sMax-sMin)*cW+pad.l;
+  const toY=pv=>cH-(pv-pMin)/(pMax-pMin)*cH+pad.t;
+
+  // Grid
+  c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+  [5,10,15,20,25,30].forEach(y=>{
+    c.beginPath();c.moveTo(pad.l,toY(y));c.lineTo(W-pad.r,toY(y));c.stroke();
+  });
+  [0.1,0.2,0.3,0.4,0.5].forEach(x=>{
+    const px=toX(x);
+    c.beginPath();c.moveTo(px,pad.t);c.lineTo(px,H-pad.b);c.stroke();
+  });
+
+  // φ line at s=1 (off chart) — show as asymptote at pMin
+  const phiY=toY(PHI);
+  if(phiY>pad.t&&phiY<H-pad.b){
+    c.strokeStyle='rgba(200,168,75,.5)';c.lineWidth=1.2;c.setLineDash([5,4]);
+    c.beginPath();c.moveTo(pad.l,phiY);c.lineTo(W-pad.r,phiY);c.stroke();
+    c.setLineDash([]);
+    c.fillStyle='rgba(200,168,75,.7)';c.font='9px var(--mono)';c.textAlign='left';
+    c.fillText('φ = 1.618…',pad.l+2,phiY-4);
+  }
+
+  // Curve
+  c.beginPath();
+  let first=true;
+  for(let sv=sMin;sv<=sMax;sv+=0.0005){
+    const pv=recoverPrime(sv);
+    if(pv<pMin||pv>pMax){first=true;continue;}
+    const px=toX(sv),py=toY(pv);
+    if(first){c.moveTo(px,py);first=false;}else c.lineTo(px,py);
+  }
+  c.strokeStyle='rgba(43,191,176,.75)';c.lineWidth=2;c.stroke();
+
+  // Prime tick marks on curve
+  PRIMES.slice(0,30).forEach(pp=>{
+    const sv=jumpSize(pp);
+    if(sv>sMax||pp>pMax||pp<pMin) return;
+    const px=toX(sv),py=toY(pp);
+    c.beginPath();c.arc(px,py,3.5,0,2*Math.PI);
+    c.fillStyle='rgba(43,191,176,.9)';c.fill();
+  });
+
+  // Current s
+  if(!isNaN(s)&&s>0){
+    const sv=Math.min(s,sMax);
+    const pv=recoverPrime(sv);
+    if(pv>=pMin&&pv<=pMax){
+      const px=toX(sv),py=toY(pv);
+      c.beginPath();c.arc(px,py,7,0,2*Math.PI);
+      c.strokeStyle='var(--gold)';c.lineWidth=2;c.stroke();
+      c.beginPath();c.arc(px,py,3,0,2*Math.PI);
+      c.fillStyle='var(--gold)';c.fill();
+    }
+  }
+
+  // Axes
+  c.fillStyle='rgba(255,255,255,.25)';c.font='9px var(--mono)';c.textAlign='center';
+  [0,0.1,0.2,0.3,0.4,0.5].forEach(x=>{c.fillText(x.toFixed(1),toX(x),H-pad.b+14);});
+  c.textAlign='right';
+  [2,5,10,15,20,25,30].forEach(y=>{if(y>=pMin) c.fillText(y,pad.l-4,toY(y)+3);});
+  c.fillText('s = 1/p(p−1)',W/2,H-5);
+  c.save();c.translate(13,H/2);c.rotate(-Math.PI/2);c.fillText('p(s) recovered',0,0);c.restore();
+  c.fillStyle='rgba(200,168,75,.5)';c.font='10px var(--mono)';c.textAlign='left';
+  c.fillText('Recovery Curve p(s) — teal dots = actual primes',pad.l,16);
+}
+
+// ── Chart 4: Coprimality Drop ───────────────────
+function drawCoprimDrop(s, p, exact, pR){
+  const {c,W,H}=getCtx(4);
+  c.fillStyle='#020308';c.fillRect(0,0,W,H);
+
+  const pad={l:58,r:20,t:30,b:50};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+
+  // Show both C(x) cumulative and per-prime drop s_p
+  const N=80;
+  const ps=PRIMES.slice(0,N);
+
+  // Primary: C(x) per prime
+  let cx=1;
+  const cxPts=ps.map(pp=>{cx*=(pp*pp-2)/(pp*pp-1);return{p:pp,cx};});
+  const toX=i=>((i+0.5)/N)*cW+pad.l;
+  const toY=y=>cH-(y-0)/(1-0)*cH+pad.t;
+
+  // C∞
+  c.strokeStyle='rgba(200,168,75,.4)';c.lineWidth=1;c.setLineDash([5,3]);
+  const cinfY=toY(C_INF);
+  c.beginPath();c.moveTo(pad.l,cinfY);c.lineTo(W-pad.r,cinfY);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='rgba(200,168,75,.6)';c.font='8px var(--mono)';c.textAlign='left';
+  c.fillText('C∞',pad.l+2,cinfY-3);
+
+  // C(x) step function
+  let prevX=pad.l;
+  cxPts.forEach(({p:pp,cx:cv},i)=>{
+    const x=toX(i),y=toY(cv);
+    const prevY=i>0?toY(cxPts[i-1].cx):pad.t;
+    // Horizontal at prev level, then vertical drop
+    c.strokeStyle='rgba(43,191,176,.6)';c.lineWidth=1.5;
+    c.beginPath();c.moveTo(prevX,prevY);c.lineTo(x,prevY);c.lineTo(x,y);c.stroke();
+    prevX=x;
+  });
+  // Final horizontal
+  c.beginPath();c.moveTo(prevX,toY(cxPts[cxPts.length-1].cx));c.lineTo(W-pad.r,toY(cxPts[cxPts.length-1].cx));c.stroke();
+
+  // Drop bars (s_p values as vertical bars)
+  ps.forEach((pp,i)=>{
+    const sv=jumpSize(pp);
+    const x=toX(i);
+    const barH=sv/(0.5)*cH*0.15; // scale for visibility
+    c.fillStyle=`rgba(224,85,64,${0.3+0.4*sv/0.5})`;
+    c.fillRect(x-3,cinfY,6,barH);
+  });
+
+  // Mark current prime
+  if(exact&&pR){
+    const idx=PRIMES.indexOf(pR);
+    if(idx>=0&&idx<N){
+      const px=toX(idx),py=toY(cxPts[idx].cx);
+      c.beginPath();c.arc(px,py,5,0,2*Math.PI);
+      c.fillStyle='#4dcc7a';c.shadowColor='#4dcc7a';c.shadowBlur=8;c.fill();c.shadowBlur=0;
+      // s_p annotation
+      const sv=jumpSize(pR);
+      c.fillStyle='rgba(200,168,75,.8)';c.font='9px var(--mono)';c.textAlign='center';
+      c.fillText('s='+sv.toFixed(4),px,cinfY+40);
+    }
+  }
+
+  // Axes
+  c.fillStyle='rgba(255,255,255,.25)';c.font='9px var(--mono)';c.textAlign='center';
+  [2,5,10,20,50].forEach(pp=>{
+    const i=ps.indexOf(pp);if(i<0)return;
+    c.fillText('p='+pp,toX(i),H-pad.b+14);
+  });
+  c.textAlign='right';
+  [0,0.2,0.4,0.6,0.8,1.0].forEach(y=>{
+    c.fillText(y.toFixed(1),pad.l-4,toY(y)+3);
+    c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+    c.beginPath();c.moveTo(pad.l,toY(y));c.lineTo(W-pad.r,toY(y));c.stroke();
+  });
+  c.fillStyle='rgba(255,255,255,.25)';c.textAlign='center';
+  c.fillText('Prime p',W/2,H-5);
+  c.save();c.translate(13,H/2);c.rotate(-Math.PI/2);c.fillText('C(x) + drop s_p',0,0);c.restore();
+  c.fillStyle='rgba(200,168,75,.5)';c.font='10px var(--mono)';c.textAlign='left';
+  c.fillText('C(x) step function (teal) · coprimality drops s_p (coral bars)',pad.l,16);
+
+  // Legend
+  c.fillStyle='rgba(43,191,176,.7)';c.fillText('— C(x)',W-pad.r-80,20);
+  c.fillStyle='rgba(224,85,64,.7)';c.fillText('▌ s_p drops',W-pad.r-80,32);
+}
+
+// ══════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════
+function onResize(){
+  drawChart(activeChart, currentS);
+}
+window.addEventListener('resize',()=>setTimeout(onResize,100));
+
+// ══════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════
-initRain();
-initCx();
-setPreset(0);
-checkJump(0.5);
-requestAnimationFrame(loop);
+// ══════════════════════════════════════════════
+compute(0.5);
 </script>
 </body>
 </html>
