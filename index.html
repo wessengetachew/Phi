@@ -20,7 +20,8 @@
 html{font-size:14px;}
 body{background:var(--void);color:var(--ink);font-family:var(--mono);
   height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--void);}
 ::-webkit-scrollbar-thumb{background:var(--ink4);border-radius:2px;}
 
 /* ── HEADER ── */
@@ -171,6 +172,280 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   backdrop-filter:blur(8px);
   box-shadow:0 4px 24px rgba(0,0,0,.6);
 }
+
+/* ── TABS ── */
+#tabs{
+  display:flex;gap:0;align-items:stretch;
+  border-bottom:2px solid rgba(212,168,67,.2);
+  background:rgba(2,3,10,.98);
+  flex-shrink:0;
+}
+.tab-btn{
+  background:transparent;border:none;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  color:var(--ink3);font-family:var(--mono);
+  font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  padding:10px 22px;cursor:pointer;white-space:nowrap;
+  transition:all .15s;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-btn.intro-tab.active{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-page{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden;}
+.tab-page.active{display:flex;}
+
+/* ── INTRO PAGE ── */
+#intro-page{overflow-y:auto;background:var(--void);}
+.intro-inner{
+  max-width:1100px;margin:0 auto;
+  padding:40px 44px 80px;
+}
+
+/* Hero */
+.intro-hero{
+  display:grid;grid-template-columns:1fr auto;
+  gap:32px;align-items:start;
+  margin-bottom:52px;
+  padding-bottom:40px;
+  border-bottom:1px solid var(--edge);
+}
+.intro-hero-phi{
+  font-family:var(--serif);font-size:8rem;
+  font-weight:300;font-style:italic;
+  color:var(--gold);line-height:.85;
+  opacity:.85;letter-spacing:-.04em;
+}
+.intro-hero-text h1{
+  font-family:var(--serif);font-size:2.2rem;
+  font-weight:300;color:var(--ink);
+  letter-spacing:-.01em;line-height:1.25;
+  margin-bottom:10px;
+}
+.intro-hero-text h1 em{color:var(--gold);font-style:italic;}
+.intro-hero-text p{
+  font-family:var(--serif);font-size:1.05rem;
+  color:var(--ink2);line-height:1.75;font-weight:300;
+  max-width:600px;margin-bottom:16px;
+}
+.intro-meta{
+  font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink3);line-height:2.2;
+}
+.intro-cta{
+  display:inline-block;margin-top:20px;
+  background:transparent;
+  border:1px solid rgba(43,191,176,.45);
+  color:var(--teal);font-family:var(--mono);
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  padding:9px 22px;border-radius:2px;cursor:pointer;
+  transition:all .18s;
+}
+.intro-cta:hover{background:var(--teal2);box-shadow:0 0 16px rgba(43,191,176,.2);}
+
+/* Section headings */
+.intro-sect{
+  margin-bottom:44px;
+}
+.intro-sect-label{
+  font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.intro-sect-label::after{content:'';flex:1;height:1px;background:var(--edge);}
+.intro-sect-label span{color:var(--gold);font-size:9px;}
+.intro-h2{
+  font-family:var(--serif);font-size:1.5rem;font-weight:300;
+  font-style:italic;color:var(--ink);
+  margin-bottom:14px;letter-spacing:-.01em;
+}
+.intro-h2 em{color:var(--gold);}
+.intro-p{
+  font-family:var(--serif);font-size:.95rem;
+  color:var(--ink2);line-height:1.8;font-weight:300;
+  margin-bottom:12px;max-width:760px;
+}
+.intro-p strong{color:var(--ink);font-weight:500;}
+.intro-p em{color:var(--gold);font-style:italic;}
+.intro-p code{
+  font-family:var(--mono);font-size:.8rem;
+  color:var(--teal);background:var(--teal2);
+  padding:1px 6px;border-radius:2px;
+}
+
+/* Math blocks */
+.math-block{
+  background:rgba(212,168,67,.05);
+  border:1px solid rgba(212,168,67,.18);
+  border-left:3px solid var(--gold);
+  padding:16px 20px;margin:18px 0;
+  font-family:var(--mono);font-size:11px;
+  color:var(--ink);line-height:2.2;
+}
+.math-block .mg{color:var(--gold);}
+.math-block .mt{color:var(--teal);}
+.math-block .mv{color:var(--violet);}
+.math-block .mc{color:var(--coral);}
+.math-block .mn{color:var(--ink3);font-size:9px;}
+
+/* Color legend */
+.color-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:10px;margin:18px 0;
+}
+.color-card{
+  display:flex;gap:14px;align-items:flex-start;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:14px 16px;
+  transition:background .15s;
+}
+.color-card:hover{background:rgba(255,255,255,.04);}
+.color-swatch{
+  width:4px;min-height:48px;border-radius:2px;
+  flex-shrink:0;margin-top:2px;
+}
+.color-card-body{}
+.cc-name{
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:5px;font-family:var(--mono);
+}
+.cc-desc{
+  font-family:var(--serif);font-size:.85rem;
+  color:var(--ink3);line-height:1.6;font-weight:300;
+}
+.cc-val{
+  font-family:var(--mono);font-size:8px;
+  color:var(--ink3);margin-top:4px;
+}
+
+/* Element legend */
+.elem-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:10px;margin:18px 0;
+}
+.elem-card{
+  background:rgba(255,255,255,.018);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:14px 16px;
+}
+.ec-icon{font-size:1.1rem;margin-bottom:6px;}
+.ec-name{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.1em;color:var(--ink);
+  text-transform:uppercase;margin-bottom:6px;
+}
+.ec-desc{
+  font-family:var(--serif);font-size:.85rem;
+  color:var(--ink3);line-height:1.65;font-weight:300;
+}
+
+/* Control guide */
+.ctrl-guide{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:10px;margin:16px 0;
+}
+.cg-item{
+  background:rgba(255,255,255,.018);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:12px 14px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.cg-icon{
+  font-family:var(--mono);font-size:8px;
+  color:var(--gold);letter-spacing:.06em;
+  text-transform:uppercase;white-space:nowrap;
+  min-width:64px;margin-top:1px;
+}
+.cg-desc{
+  font-family:var(--serif);font-size:.85rem;
+  color:var(--ink3);line-height:1.6;font-weight:300;
+}
+
+/* Quick-start cards */
+.qs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;margin:18px 0;
+}
+.qs-card{
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:14px 16px;
+  cursor:pointer;transition:all .15s;
+  text-decoration:none;
+}
+.qs-card:hover{background:rgba(43,191,176,.06);border-color:rgba(43,191,176,.3);}
+.qs-num{
+  font-family:var(--mono);font-size:8px;
+  color:var(--ink3);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.qs-title{
+  font-family:var(--serif);font-size:.95rem;
+  color:var(--teal);font-weight:300;
+  margin-bottom:6px;
+}
+.qs-desc{
+  font-family:var(--serif);font-size:.82rem;
+  color:var(--ink3);line-height:1.55;font-weight:300;
+}
+
+/* Key identity box */
+.identity-box{
+  background:rgba(212,168,67,.05);
+  border:1px solid rgba(212,168,67,.2);
+  border-radius:3px;padding:24px 28px;
+  margin:20px 0;
+  display:grid;grid-template-columns:1fr 1fr;gap:28px;
+}
+@media(max-width:700px){.identity-box{grid-template-columns:1fr;}}
+.id-side-label{
+  font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:12px;
+}
+.id-eq{
+  font-family:var(--mono);font-size:11px;
+  color:var(--ink);line-height:2.2;
+}
+.id-eq .mg{color:var(--gold);}
+.id-eq .mt{color:var(--teal);}
+.id-eq .mv{color:var(--violet);}
+
+/* Note box */
+.note-box{
+  background:rgba(255,255,255,.02);
+  border-left:3px solid rgba(43,191,176,.45);
+  padding:12px 18px;margin:14px 0;
+  font-family:var(--serif);font-size:.88rem;
+  color:var(--ink3);line-height:1.7;font-weight:300;
+}
+.note-box strong{color:var(--teal);}
+
+/* Comparison table */
+.cmp-table{
+  width:100%;border-collapse:collapse;
+  font-family:var(--mono);font-size:9.5px;
+  margin:18px 0;
+}
+.cmp-table th{
+  background:rgba(212,168,67,.08);
+  border:1px solid rgba(212,168,67,.15);
+  padding:8px 14px;text-align:left;
+  color:var(--gold);font-weight:400;
+  letter-spacing:.1em;font-size:8px;text-transform:uppercase;
+}
+.cmp-table td{
+  border:1px solid rgba(255,255,255,.04);
+  padding:8px 14px;color:var(--ink2);vertical-align:top;
+}
+.cmp-table tr:hover td{background:rgba(255,255,255,.02);}
+.cmp-table .ct{color:var(--teal);}
+.cmp-table .cv2{color:var(--violet);}
+.cmp-table .cg{color:var(--gold);}
 </style>
 </head>
 <body>
@@ -188,7 +463,383 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   </div>
 </header>
 
-<!-- CONTROL BAR -->
+<!-- TABS -->
+<div id="tabs">
+  <button class="tab-btn intro-tab active" onclick="switchTab('intro')">① Introduction &amp; Guide</button>
+  <button class="tab-btn" onclick="switchTab('explorer')">② Explorer — sp² − sp − 1 = 0</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- INTRODUCTION PAGE                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="intro-page" class="tab-page active">
+<div class="intro-inner">
+
+  <!-- HERO -->
+  <div class="intro-hero">
+    <div>
+      <div class="intro-hero-text">
+        <h1>The <em>Quadratic Family</em><br>Fibonacci to Primes</h1>
+        <p>Every prime number sits on the same quadratic curve that generates the Fibonacci sequence. The parameter <em>s</em> — called the <em>jump size</em> — measures exactly how far each prime is from the golden ratio φ. At s = 1, the curve produces φ exactly. At every other s, it produces a prime.</p>
+        <p>This is not a coincidence. It is a consequence of a single algebraic identity connecting modular arithmetic, prime distribution, and the Fibonacci recurrence.</p>
+        <div class="intro-meta">
+          Wessen Getachew · 2026 · math.NT<br>
+          Lift Survival Framework · Quadratic Family Theorem
+        </div>
+        <button class="intro-cta" onclick="switchTab('explorer')">→ Open the Explorer</button>
+      </div>
+    </div>
+    <div class="intro-hero-phi">φ</div>
+  </div>
+
+  <!-- §1 THE CORE IDENTITY -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 1</span> The Core Identity</div>
+    <h2 class="intro-h2">One equation — two worlds</h2>
+    <p class="intro-p">The quadratic <strong>sp² − sp − 1 = 0</strong> is a one-parameter family indexed by s. Every value of s gives a different parabola. Every parabola has a positive root p₊(s) — a specific number where the curve crosses the x-axis from below.</p>
+
+    <div class="identity-box">
+      <div>
+        <div class="id-side-label">At s = 1 → Fibonacci</div>
+        <div class="id-eq">
+          <span class="mg">1</span>·p² − <span class="mg">1</span>·p − 1 = 0<br>
+          p² − p − 1 = 0<br>
+          p₊ = <span class="mg">(1 + √5) / 2 = φ</span><br><br>
+          <span style="color:var(--ink3);font-size:9px;">This is the characteristic equation of the<br>Fibonacci recurrence xₙ = xₙ₋₁ + xₙ₋₂</span>
+        </div>
+      </div>
+      <div>
+        <div class="id-side-label">At s = 1/p(p−1) → prime p</div>
+        <div class="id-eq">
+          <span class="mt">s</span>·p² − <span class="mt">s</span>·p − 1 = 0<br>
+          s = 1/p(p−1)<br>
+          p₊ = <span class="mt">(1 + √(1 + 4/s)) / 2</span><br><br>
+          <span style="color:var(--ink3);font-size:9px;">This gives back p exactly.<br>Every prime has its own unique s.</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="intro-p">The two sides share the same algebraic skeleton. <em>φ is where the family begins.</em> As s decreases from 1 toward 0, the positive root p₊ grows from φ through 2, 3, 5, 7, 11… — the prime sequence in exact order.</p>
+
+    <div class="math-block">
+      <span class="mg">s = 1</span> &nbsp;→&nbsp; p₊ = φ = 1.6180339887… &nbsp;&nbsp;<span class="mn">← Fibonacci, the sentinel</span><br>
+      <span class="mt">s = 1/2</span> &nbsp;→&nbsp; p₊ = 2 &nbsp;&nbsp;<span class="mn">← first prime, largest jump</span><br>
+      <span class="mt">s = 1/6</span> &nbsp;→&nbsp; p₊ = 3<br>
+      <span class="mt">s = 1/20</span> &nbsp;→&nbsp; p₊ = 5<br>
+      <span class="mt">s = 1/42</span> &nbsp;→&nbsp; p₊ = 7<br>
+      <span class="mt">s = 1/p(p−1)</span> &nbsp;→&nbsp; p₊ = p &nbsp;&nbsp;<span class="mn">← exact recovery for every prime</span><br>
+      <span class="mv">s → 0</span> &nbsp;→&nbsp; p₊ → ∞ &nbsp;&nbsp;<span class="mn">← large primes, tiny jumps</span>
+    </div>
+
+    <div class="note-box"><strong>Key insight:</strong> φ is the permanent unreachable boundary. No prime produces s = 1. Every prime produces some s &lt; 1. The distance φ − p₊ measures how far that prime is from the Fibonacci fixed point — and it is always positive, always shrinking as primes grow.</div>
+  </div>
+
+  <!-- §2 WHAT IS s -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 2</span> What is the jump size s?</div>
+    <h2 class="intro-h2">s is the <em>fingerprint</em> of each prime</h2>
+    <p class="intro-p">The jump size s = 1/p(p−1) comes from the <strong>Lift Survival Framework</strong>. When a prime p enters the Euler product C(x) = ∏(p²−2)/(p²−1), the product drops by a multiplicative factor. The relative size of that drop — the fraction of coprime residues that the prime eliminates — is exactly s.</p>
+
+    <div class="math-block">
+      C(x) = ∏<sub>p ≤ x</sub> <span class="mg">(p² − 2) / (p² − 1)</span> &nbsp;&nbsp;<span class="mn">← Lift Survival Function</span><br>
+      At prime p: &nbsp; ΔC / C = <span class="mt">−s = −1/p(p−1)</span> &nbsp;&nbsp;<span class="mn">← the jump</span><br>
+      Equivalently: &nbsp; s = <span class="mt">1/p(p−1)</span> = 1/2, 1/6, 1/20, 1/42, …
+    </div>
+
+    <p class="intro-p">So s encodes a real arithmetic event — the drop in coprime density when prime p enters the sieve. The quadratic <strong>sp² − sp − 1 = 0</strong> inverts this: given the drop s, it recovers which prime caused it. This is exact for every prime, with no approximation.</p>
+
+    <table class="cmp-table">
+      <thead><tr><th>Prime p</th><th>Jump s = 1/p(p−1)</th><th>p₊(s) recovered</th><th>φ − p₊</th><th>1/s = p(p−1)</th></tr></thead>
+      <tbody>
+        <tr><td class="cg">φ (sentinel)</td><td class="cg">s = 1</td><td class="cg">1.6180339887…</td><td class="cg">0 — unreachable</td><td class="cg">1</td></tr>
+        <tr><td class="ct">2</td><td class="ct">0.500000</td><td>2.000000</td><td class="cv2">0.381966…</td><td>2</td></tr>
+        <tr><td class="ct">3</td><td class="ct">0.166667</td><td>3.000000</td><td class="cv2">−1.381966…</td><td>6</td></tr>
+        <tr><td class="ct">5</td><td class="ct">0.050000</td><td>5.000000</td><td class="cv2">−3.381966…</td><td>20</td></tr>
+        <tr><td class="ct">7</td><td class="ct">0.023810</td><td>7.000000</td><td class="cv2">−5.381966…</td><td>42</td></tr>
+        <tr><td class="ct">11</td><td class="ct">0.009091</td><td>11.000000</td><td class="cv2">−9.381966…</td><td>110</td></tr>
+        <tr><td class="ct">97</td><td class="ct">0.000105</td><td>97.000000</td><td class="cv2">−95.381966…</td><td>9312</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- §3 COLOR GUIDE -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 3</span> Color Guide — Everything on Screen</div>
+    <h2 class="intro-h2">What every <em>color</em> means</h2>
+    <p class="intro-p">Every element in the Explorer has a precise meaning. Nothing is decorative. Here is the complete color key.</p>
+
+    <div class="color-grid">
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#d4a843,#d4a843);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#d4a843;">Gold</div>
+          <div class="cc-desc">The parabola when s is near 1 (Fibonacci region). The φ vertical line and its glow zone. The positive root p₊ marker. The φ sentinel boundary. All things that point toward the golden ratio.</div>
+          <div class="cc-val">φ = 1.6180339887… · s close to 1</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#2bbfb0,#2bbfb0);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#2bbfb0;">Teal</div>
+          <div class="cc-desc">Prime dots on the x-axis. The parabola when s is small (prime region). The tangent line at p₊. All things that represent actual prime numbers and their jump sizes.</div>
+          <div class="cc-val">Primes p = 2, 3, 5, 7, 11… · small s values</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#9966dd,#9966dd);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#9966dd;">Violet</div>
+          <div class="cc-desc">The swept trace — the path that p₊ draws on the x-axis as s changes. The φ − p₊ distance annotation. The measure of how far the current root is from the golden ratio.</div>
+          <div class="cc-val">φ − p₊ · the sentinel distance</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#e05540,#e05540);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#e05540;">Coral / Red</div>
+          <div class="cc-desc">The negative root p₋ of the quadratic — always negative, always below the x-axis. The second solution of sp² − sp − 1 = 0 that has no prime interpretation. It exists algebraically but not arithmetically.</div>
+          <div class="cc-val">p₋ = (1 − √(1 + 4/s)) / 2 &lt; 0 always</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#4dcc7a,#4dcc7a);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#4dcc7a;">Green</div>
+          <div class="cc-desc">A prime dot that you have clicked to lock. When s is set to exactly that prime's jump size, the dot turns green and the root marker also turns green. Confirms an exact prime recovery.</div>
+          <div class="cc-val">Locked / exact recovery · ✓ confirmed prime</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:linear-gradient(to bottom,#6a6258,#6a6258);"></div>
+        <div class="color-card-body">
+          <div class="cc-name" style="color:#a8a098;">Dim white / grid</div>
+          <div class="cc-desc">The coordinate grid, axis labels, and vertex marker. Supporting structure that helps you read positions on the graph without drawing attention away from the mathematics.</div>
+          <div class="cc-val">Grid lines · axis ticks · labels</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- §4 ELEMENT GUIDE -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 4</span> Element Guide — Every Object on the Canvas</div>
+    <h2 class="intro-h2">What every <em>shape</em> means</h2>
+
+    <div class="elem-grid">
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#d4a843;">⌒</div>
+        <div class="ec-name" style="color:#d4a843;">The Parabola — f(p) = sp² − sp − 1</div>
+        <div class="ec-desc">The main curve. It changes shape as you move s. At s = 1 it is steep and gold (Fibonacci). As s decreases it flattens and shifts teal (prime territory). Where it crosses the x-axis is p₊ — the recovered prime or φ.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#d4a843;">- - - -</div>
+        <div class="ec-name" style="color:#d4a843;">φ Vertical Line</div>
+        <div class="ec-desc">The golden ratio φ ≈ 1.618. A permanent vertical dashed line. The parabola always has its positive root to the right of this line for primes, and exactly on it at s = 1. It is the sentinel: no prime can push the root leftward past it.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#d4a843;">◎</div>
+        <div class="ec-name" style="color:#d4a843;">p₊ Root Marker (Gold rings)</div>
+        <div class="ec-desc">The positive root of the current quadratic. Three concentric rings centered where the parabola crosses the x-axis. Gold when s is arbitrary. Green when s exactly matches a prime's jump size. This is the number recovered by the formula.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#e05540;">●</div>
+        <div class="ec-name" style="color:#e05540;">p₋ Root Marker (Coral dot)</div>
+        <div class="ec-desc">The negative root. Always sits left of zero on the x-axis, below zero in value. Algebraically real but arithmetically irrelevant — no prime is negative. It completes the quadratic but plays no role in prime recovery.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#2bbfb0;">●</div>
+        <div class="ec-name" style="color:#2bbfb0;">Prime Dots (Teal circles)</div>
+        <div class="ec-desc">Fixed teal dots on the x-axis at every prime p in view. They do not move. They mark the positions where the positive root lands when s = 1/p(p−1). Their height above the axis (tick mark) is proportional to the jump size — taller for smaller primes.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#9966dd;">~~~</div>
+        <div class="ec-name" style="color:#9966dd;">Swept Trace (Violet path)</div>
+        <div class="ec-desc">When the animation runs, or as you drag the slider, the path that p₊ traces along the x-axis is recorded in violet. It shows the continuous journey from φ at s = 1 through every prime as s decreases. Enable with the Trace layer toggle.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#2bbfb0;">/ /</div>
+        <div class="ec-name" style="color:#2bbfb0;">Tangent Line (Teal dashes)</div>
+        <div class="ec-desc">The slope of the parabola at the positive root p₊. The tangent is always positive here (the curve is rising). Its steepness tells you how sensitive p₊ is to small changes in s — steeper tangent means the root moves faster with s.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon" style="color:#d4a843;">⊙ ⊡</div>
+        <div class="ec-name" style="color:#d4a843;">Fibonacci Spiral + Rectangles</div>
+        <div class="ec-desc">The golden spiral and golden rectangle series drawn at the φ position. Visible when s is near 1. The spiral is a logarithmic spiral with growth ratio φ. The rectangles show the φ:1 ratio decomposing into itself. Enable/disable with the Fibonacci layer toggle.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon">▪</div>
+        <div class="ec-name" style="color:#6a6258;">Vertex Marker (White dot)</div>
+        <div class="ec-desc">The minimum of the parabola, which always sits at p = 1/2 regardless of s. The vertex y-value is −s/4 − 1, which approaches −1 as s → 0 (flat line). Helps you see how the parabola changes shape.</div>
+      </div>
+
+      <div class="elem-card">
+        <div class="ec-icon">◌</div>
+        <div class="ec-name" style="color:#4dcc7a;">Filled area between roots</div>
+        <div class="ec-desc">The shaded region between p₋ and p₊ where f(p) &lt; 0 — where the parabola dips below the x-axis. This region contains the interval [p₋, p₊]. Its width grows as s decreases and p₊ moves right toward larger primes.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- §5 CONTROLS -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 5</span> Controls — How to Use the Explorer</div>
+    <h2 class="intro-h2">Every <em>control</em> explained</h2>
+
+    <div class="ctrl-guide">
+
+      <div class="cg-item">
+        <div class="cg-icon">s (linear)</div>
+        <div class="cg-desc">Move s from 0 to 1 linearly. Start at 1 (φ) and drag left to watch the parabola sweep through each prime. The number box accepts any decimal up to 10 places.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">s (log scale)</div>
+        <div class="cg-desc">Navigate to very small s values for large primes — 10⁻⁹ lets you reach primes in the billions. The linear slider compresses everything near zero so use log scale for p &gt; 30.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Jump to prime</div>
+        <div class="cg-desc">Click any prime button (p=2 through p=997) to set s exactly to 1/p(p−1). The root snaps to that prime precisely. The dot turns green. The graph centers on that prime.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Parabola</div>
+        <div class="cg-desc">Toggle the main curve. Even off, the root markers and prime dots remain. Useful when studying just the root positions without the visual mass of the parabola.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Roots</div>
+        <div class="cg-desc">Toggle the p₊ and p₋ root markers. The concentric-ring gold marker and the small coral dot below the axis.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Primes</div>
+        <div class="cg-desc">Toggle the fixed teal prime dots. When off, you see only the moving root with no reference points. When on, every prime in view is marked with its label and jump size.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Fibonacci</div>
+        <div class="cg-desc">Toggle the golden spiral and rectangle overlay at φ. Most visible when s is near 1. Turn off for a cleaner view when working with small primes.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">p₊ trace</div>
+        <div class="cg-desc">Toggle the violet trail that records where p₊ has been. Cleared when toggled off and back on. Most useful during animation — you see the full path from φ through every prime.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Tangent</div>
+        <div class="cg-desc">Toggle the teal dashed tangent line at the root. Shows the local slope f′(p₊) = 2s·p₊ − s. The steeper this is, the more the root position depends on s.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Animate</div>
+        <div class="cg-desc">Sweeps s continuously from 1 down to near 0 and back. Watch the parabola travel from the Fibonacci equation through every prime. The speed slider controls pace.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Hover canvas</div>
+        <div class="cg-desc">Move your mouse over the canvas to see f(p) at any point — the equation value, distance to φ, and nearest prime. The tooltip tracks your position in real time.</div>
+      </div>
+
+      <div class="cg-item">
+        <div class="cg-icon">Click prime dot</div>
+        <div class="cg-desc">Click any teal prime dot to lock s to that prime's exact jump size. The dot turns green. Click again to unlock. The status bar shows all computed values for that prime.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- §6 QUICK START -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 6</span> Quick Start — Five Things to Try First</div>
+    <h2 class="intro-h2">Start <em>here</em></h2>
+
+    <div class="qs-grid">
+
+      <div class="qs-card" onclick="launchExplorer(1.0)">
+        <div class="qs-num">Try 1</div>
+        <div class="qs-title">Start at φ</div>
+        <div class="qs-desc">Set s = 1 and look at the Fibonacci spiral behind φ. The equation is x² − x − 1 = 0 — identical to the Fibonacci recurrence. Watch F(n)/F(n−1) converging to φ in the corner.</div>
+      </div>
+
+      <div class="qs-card" onclick="launchExplorer(0.5)">
+        <div class="qs-num">Try 2</div>
+        <div class="qs-title">Jump to p = 2</div>
+        <div class="qs-desc">Set s = 1/2. The parabola shifts. The root lands exactly at p = 2. Notice how close to φ the first prime is — and how the sentinel distance φ − 2 = −0.382 captures that gap.</div>
+      </div>
+
+      <div class="qs-card" onclick="launchAnim()">
+        <div class="qs-num">Try 3</div>
+        <div class="qs-title">Animate the sweep</div>
+        <div class="qs-desc">Hit Animate. Enable the Trace layer. Watch the violet trail draw the full journey from φ through 2, 3, 5, 7, 11… in real time. The parabola gradually flattens as it reaches larger primes.</div>
+      </div>
+
+      <div class="qs-card" onclick="launchExplorer(jumpSize(97))">
+        <div class="qs-num">Try 4</div>
+        <div class="qs-title">Try a large prime</div>
+        <div class="qs-desc">Click p=97 in the prime buttons. The graph zooms out to show the root at 97. Notice how small s is (0.000105) and how flat the parabola has become. The curve barely dips below the axis.</div>
+      </div>
+
+      <div class="qs-card" onclick="launchExplorer(0.3)">
+        <div class="qs-num">Try 5</div>
+        <div class="qs-title">A non-prime s</div>
+        <div class="qs-desc">Set s = 0.3 manually. The root lands at p ≈ 2.17 — not a prime. The root marker stays gold (not green). The status bar says "not a prime s". Only s = 1/p(p−1) recovers a prime exactly.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- §7 THE MATH IN PLAIN LANGUAGE -->
+  <div class="intro-sect">
+    <div class="intro-sect-label"><span>§ 7</span> Why Does This Work?</div>
+    <h2 class="intro-h2">The <em>algebra</em> in plain language</h2>
+    <p class="intro-p">Start with any prime p. Define s = 1/p(p−1). Then plug s into the quadratic sp² − sp − 1 = 0 and check whether p satisfies it:</p>
+    <div class="math-block">
+      s·p² − s·p − 1<br>
+      = <span class="mg">[1/p(p−1)]</span>·p² − <span class="mg">[1/p(p−1)]</span>·p − 1<br>
+      = p²/p(p−1) − p/p(p−1) − 1<br>
+      = p/(p−1) − 1/(p−1) − 1<br>
+      = (p−1)/(p−1) − 1<br>
+      = 1 − 1 = <span class="mt">0  ✓</span>
+    </div>
+    <p class="intro-p">So p is always a root of the quadratic formed by its own jump size. The recovery formula just inverts this: given s, solve for p. The positive root p₊ = (1 + √(1 + 4/s))/2 is that inversion — the quadratic formula applied to sp² − sp − 1 = 0.</p>
+    <p class="intro-p">At s = 1 the formula gives p = (1 + √5)/2 = φ. The connection to Fibonacci is not approximate — it is exact, because <strong>the Fibonacci characteristic equation x² − x − 1 = 0 is precisely this quadratic evaluated at s = 1.</strong></p>
+    <div class="note-box"><strong>The sentinel property:</strong> φ &gt; 2 &gt; 3? No — φ ≈ 1.618 &lt; 2. Every prime is greater than φ. So the positive root p₊ is always above φ for primes. φ is the infimum of the set {p₊(s) : p is prime} and is never achieved. That is why it is called the Golden Ratio Sentinel.</div>
+  </div>
+
+  <!-- Footer -->
+  <div style="border-top:1px solid var(--edge);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div style="font-family:var(--serif);font-size:.85rem;color:var(--ink3);font-weight:300;">
+      Wessen Getachew · 2026 · math.NT · Lift Survival Framework
+    </div>
+    <button class="intro-cta" onclick="switchTab('explorer')">→ Open the Explorer</button>
+  </div>
+
+</div><!-- /intro-inner -->
+</div><!-- /intro-page -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EXPLORER PAGE                                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="explorer-page" class="tab-page">
 <div id="ctrl">
 
   <!-- s value display -->
@@ -268,10 +919,10 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   <div class="stat" style="margin-left:auto;border-right:none;color:var(--ink4);">
     hover canvas · click prime dot to lock
   </div>
-</div>
+</div><!-- /status bar -->
+</div><!-- /explorer-page -->
 
 <script>
-'use strict';
 
 // ══════════════════════════════════
 // MATH CORE
@@ -285,7 +936,7 @@ function sieve(n){
   for(let i=2;i*i<=n;i++)if(a[i])for(let j=i*i;j<=n;j+=i)a[j]=0;
   const r=[];for(let i=2;i<=n;i++)if(a[i])r.push(i);return r;
 }
-const PRIMES=sieve(500);
+const PRIMES=sieve(10000);
 const FIB=(()=>{const f=[0,1];for(let i=2;i<=22;i++)f.push(f[i-1]+f[i-2]);return f;})();
 
 function nearestPrime(x){
@@ -324,16 +975,23 @@ window.addEventListener('resize',()=>setTimeout(resize,80));
 // COORDINATE SYSTEM
 // ══════════════════════════════════
 function makeCoord(){
-  // x = p value, y = f(p) = Sp²-Sp-1
-  // Visible range adapts: zoom in near current root
+  // x-axis always tracks the current positive root p₊
+  // so large primes stay centered regardless of s
   const pr=posRoot(S);
-  const cx=Math.min(Math.max(pr,0),12);
-  const halfW=Math.max(3.5, Math.min(8, cx*0.8));
-  const xMin=Math.max(-2, cx-halfW);
-  const xMax=cx+halfW+1;
-  const yRange=3.5;
+  const safeP=isFinite(pr)?Math.max(pr,1.5):3;
 
-  const pad={l:62,r:28,t:48,b:52};
+  // Window half-width: show ~2 primes on each side of current root
+  // but never less than 2 units — scales up for large primes
+  const halfW=Math.max(2, safeP * 0.55);
+  const xMin=Math.max(-1.5, safeP - halfW - 1);
+  const xMax=safeP + halfW + 1;
+
+  // y-range: the parabola vertex is at y = -s/4 - 1
+  // for small s the curve is nearly flat, so scale range by s
+  // keep at least 1.5, max 5
+  const yRange=Math.max(1.5, Math.min(5, 2.5 + S*2.5));
+
+  const pad={l:66,r:32,t:52,b:56};
   const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
   return{
     toX:p=>(p-xMin)/(xMax-xMin)*cW+pad.l,
@@ -378,23 +1036,25 @@ function draw(){
 
 // ── Grid ──────────────────────────
 function drawGrid(co){
+  const xRange=co.xMax-co.xMin;
+  let xStep=1;
+  if(xRange>200) xStep=50;
+  else if(xRange>100) xStep=20;
+  else if(xRange>50)  xStep=10;
+  else if(xRange>20)  xStep=5;
+  else if(xRange>10)  xStep=2;
+
   g.strokeStyle='rgba(255,255,255,.04)';g.lineWidth=1;
-  // vertical lines at integer p
-  for(let x=Math.ceil(co.xMin);x<=co.xMax;x++){
+  const xStart=Math.ceil(co.xMin/xStep)*xStep;
+  for(let x=xStart;x<=co.xMax;x+=xStep){
     const px=co.toX(x);
+    if(px<co.pad.l||px>W-co.pad.r) continue;
     g.beginPath();g.moveTo(px,co.pad.t);g.lineTo(px,H-co.pad.b);g.stroke();
   }
-  // horizontal lines at integer y
-  for(let y=-3;y<=3;y++){
-    if(Math.abs(y)===0) continue;
-    const py=co.toY(y);
-    if(py<co.pad.t||py>H-co.pad.b) continue;
-    g.beginPath();g.moveTo(co.pad.l,py);g.lineTo(W-co.pad.r,py);g.stroke();
-  }
-  // finer grid at 0.5
-  g.strokeStyle='rgba(255,255,255,.018)';
-  for(let y=-3;y<=3;y+=0.5){
-    if(y===Math.floor(y)) continue;
+  // horizontal lines
+  const yStep=co.yRange>4?1:0.5;
+  for(let y=-co.yRange;y<=co.yRange;y+=yStep){
+    if(Math.abs(y)<0.01) continue;
     const py=co.toY(y);
     if(py<co.pad.t||py>H-co.pad.b) continue;
     g.beginPath();g.moveTo(co.pad.l,py);g.lineTo(W-co.pad.r,py);g.stroke();
@@ -412,27 +1072,44 @@ function drawAxes(co){
   if(axX>co.pad.l&&axX<W-co.pad.r){
     g.beginPath();g.moveTo(axX,co.pad.t);g.lineTo(axX,H-co.pad.b);g.stroke();
   }
-  // tick labels — x
-  g.fillStyle='rgba(255,255,255,.25)';g.font=`${9*devicePixelRatio/devicePixelRatio}px JetBrains Mono,monospace`;
+
+  // Adaptive tick spacing for x-axis
+  const xRange=co.xMax-co.xMin;
+  let xStep=1;
+  if(xRange>200) xStep=50;
+  else if(xRange>100) xStep=20;
+  else if(xRange>50)  xStep=10;
+  else if(xRange>20)  xStep=5;
+  else if(xRange>10)  xStep=2;
+
+  g.fillStyle='rgba(255,255,255,.25)';
+  g.font=`9px JetBrains Mono,monospace`;
   g.textAlign='center';g.textBaseline='top';
-  for(let x=Math.ceil(co.xMin);x<=co.xMax;x++){
+  const xStart=Math.ceil(co.xMin/xStep)*xStep;
+  for(let x=xStart;x<=co.xMax;x+=xStep){
     const px=co.toX(x);
+    if(px<co.pad.l||px>W-co.pad.r) continue;
     g.fillText(x,px,axY+6);
+    g.strokeStyle='rgba(255,255,255,.15)';g.lineWidth=1;
+    g.beginPath();g.moveTo(px,axY-3);g.lineTo(px,axY+3);g.stroke();
   }
-  // tick labels — y
+
+  // y-axis labels
+  const yStep=co.yRange>4?1:co.yRange>2?0.5:0.25;
   g.textAlign='right';g.textBaseline='middle';
-  for(let y=-3;y<=3;y++){
-    if(y===0) continue;
+  for(let y=-co.yRange;y<=co.yRange;y+=yStep){
+    if(Math.abs(y)<0.01) continue;
     const py=co.toY(y);
     if(py<co.pad.t||py>H-co.pad.b) continue;
-    g.fillText(y,co.pad.l-7,py);
-    // tick mark
-    g.strokeStyle='rgba(255,255,255,.2)';g.lineWidth=1;
+    g.fillStyle='rgba(255,255,255,.2)';
+    g.fillText(y.toFixed(yStep<1?1:0),co.pad.l-7,py);
+    g.strokeStyle='rgba(255,255,255,.12)';g.lineWidth=1;
     g.beginPath();g.moveTo(co.pad.l-3,py);g.lineTo(co.pad.l,py);g.stroke();
   }
+
   // axis titles
   g.fillStyle='rgba(255,255,255,.2)';g.textAlign='center';g.textBaseline='bottom';
-  g.font=`${9*devicePixelRatio/devicePixelRatio}px JetBrains Mono,monospace`;
+  g.font=`9px JetBrains Mono,monospace`;
   g.fillText('p  (variable / recovered prime)',W/2,H-4);
   g.save();g.translate(14,H/2);g.rotate(-Math.PI/2);
   g.textBaseline='top';g.fillText('f(p) = sp² − sp − 1',0,-5);
@@ -617,54 +1294,74 @@ function drawTangent(co){
 // ── Prime dots on x-axis ──────────
 function drawPrimeDots(co){
   const axY=co.toY(0);
-  const visPs=PRIMES.filter(p=>p>=co.xMin-0.5&&p<=co.xMax+0.5&&p<=50);
+  // Show all primes in visible x range — no hard cap
+  const visPs=PRIMES.filter(p=>p>=co.xMin-0.5&&p<=co.xMax+0.5);
+  // How many pixels per unit? Determines label spacing
+  const pxPerUnit=co.cW/(co.xMax-co.xMin);
+  const crowded=pxPerUnit<30; // many primes squeezed in
 
   visPs.forEach(p=>{
     const px=co.toX(p);
     const isLocked=lockedPrime===p;
-    const isHov=mouseP!==null&&Math.abs(mouseP-p)<0.4;
+    const isHov=mouseP!==null&&Math.abs(mouseP-p)<(co.xMax-co.xMin)*0.04;
+    const isCurrent=Math.abs(S-jumpSize(p))<1e-7;
 
-    // glow halo
-    const grd=g.createRadialGradient(px,axY,0,px,axY,isHov||isLocked?24:16);
-    grd.addColorStop(0,isLocked?'rgba(77,204,122,.4)':'rgba(43,191,176,.3)');
-    grd.addColorStop(1,'transparent');
-    g.fillStyle=grd;
-    g.beginPath();g.arc(px,axY,isHov||isLocked?24:16,0,2*Math.PI);g.fill();
+    // Scale dot size based on how crowded things are
+    const baseR=crowded?2.5:4;
+    const dotR=isHov||isLocked?baseR+2.5:isCurrent?baseR+2:baseR;
+
+    // glow halo — skip for very crowded views
+    if(!crowded||isHov||isLocked||isCurrent){
+      const haloR=dotR*4;
+      const grd=g.createRadialGradient(px,axY,0,px,axY,haloR);
+      grd.addColorStop(0,isLocked?'rgba(77,204,122,.4)':isCurrent?'rgba(212,168,67,.35)':'rgba(43,191,176,.25)');
+      grd.addColorStop(1,'transparent');
+      g.fillStyle=grd;
+      g.beginPath();g.arc(px,axY,haloR,0,2*Math.PI);g.fill();
+    }
 
     // main dot
-    const r=isHov||isLocked?6:4;
-    g.beginPath();g.arc(px,axY,r,0,2*Math.PI);
-    g.fillStyle=isLocked?'#4dcc7a':'rgba(43,191,176,.9)';
-    g.shadowColor=isLocked?'#4dcc7a':'#2bbfb0';g.shadowBlur=12;
+    g.beginPath();g.arc(px,axY,dotR,0,2*Math.PI);
+    g.fillStyle=isLocked?'#4dcc7a':isCurrent?'#d4a843':'rgba(43,191,176,.9)';
+    if(!crowded){g.shadowColor=isLocked?'#4dcc7a':isCurrent?'#d4a843':'#2bbfb0';g.shadowBlur=10;}
     g.fill();g.shadowBlur=0;
 
-    // outer ring for locked/hovered
-    if(isHov||isLocked){
-      g.beginPath();g.arc(px,axY,r+4,0,2*Math.PI);
-      g.strokeStyle=isLocked?'rgba(77,204,122,.6)':'rgba(43,191,176,.4)';
+    // outer ring for locked/hovered/current
+    if(isHov||isLocked||isCurrent){
+      g.beginPath();g.arc(px,axY,dotR+3.5,0,2*Math.PI);
+      g.strokeStyle=isLocked?'rgba(77,204,122,.7)':isCurrent?'rgba(212,168,67,.7)':'rgba(43,191,176,.5)';
       g.lineWidth=1.5;g.stroke();
     }
 
-    // drop line from dot up/down to show s value
-    const s=jumpSize(p);
-    // small tick above x-axis showing s magnitude
-    const tickH=Math.min(s*300,40);
-    g.beginPath();g.moveTo(px,axY-r);g.lineTo(px,axY-r-tickH);
-    g.strokeStyle='rgba(43,191,176,.25)';g.lineWidth=1;g.stroke();
+    // tick above x-axis proportional to jump size s=1/p(p-1)
+    if(!crowded){
+      const sv=jumpSize(p);
+      const tickH=Math.min(sv*300,50);
+      g.beginPath();g.moveTo(px,axY-dotR);g.lineTo(px,axY-dotR-tickH);
+      g.strokeStyle='rgba(43,191,176,.2)';g.lineWidth=1;g.stroke();
+    }
 
-    // label
-    const showLabel=p<=20||isHov||isLocked;
+    // Labels — show based on space available
+    // Always show: locked, hovered, current, s=1 match
+    // Show if uncrowded: all primes up to some threshold
+    // Show if moderately crowded: every Nth prime
+    const forceShow=isHov||isLocked||isCurrent;
+    const labelThresh=crowded ? (pxPerUnit<10 ? 0 : p%10===0||p<=5) : p<=30;
+    const showLabel=forceShow||labelThresh;
+
     if(showLabel){
-      g.fillStyle=isLocked?'rgba(77,204,122,.9)':'rgba(43,191,176,.75)';
-      g.font=`${isHov||isLocked?10:8.5}px JetBrains Mono,monospace`;
+      const fs=isHov||isLocked||isCurrent?10:crowded?7.5:8.5;
+      g.fillStyle=isLocked?'rgba(77,204,122,.9)':isCurrent?'rgba(212,168,67,.9)':'rgba(43,191,176,.75)';
+      g.font=`${fs}px JetBrains Mono,monospace`;
       g.textAlign='center';g.textBaseline='bottom';
-      g.fillText('p='+p,px,axY-r-tickH-4);
-      // s value below
-      if(isHov||isLocked||p<=13){
-        g.fillStyle='rgba(43,191,176,.4)';
-        g.font=`${7.5}px JetBrains Mono,monospace`;
+      g.fillText('p='+p, px, axY-dotR-(crowded?4:jumpSize(p)*300+4));
+
+      // s value below axis — only when not too crowded or forced
+      if((forceShow||!crowded)&&(isHov||isLocked||isCurrent||p<=13)){
+        g.fillStyle='rgba(43,191,176,.38)';
+        g.font=`7px JetBrains Mono,monospace`;
         g.textBaseline='top';
-        g.fillText('s=1/'+(p*(p-1)),px,axY+r+4);
+        g.fillText('s=1/'+Math.round(p*(p-1)), px, axY+dotR+3);
       }
     }
   });
@@ -857,7 +1554,7 @@ document.getElementById('spd').oninput=function(){
 // ══════════════════════════════════
 function buildPrimeBtns(){
   const el=document.getElementById('prime-btns');
-  const showPs=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47];
+  const showPs=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,67,71,79,97,101,127,151,199,211,251,307,401,503,601,701,809,997];
   el.innerHTML=showPs.map(p=>
     `<button class="qb prime-btn" data-p="${p}" onclick="setP(${p})">p=${p}</button>`
   ).join('');
@@ -916,11 +1613,37 @@ cv.addEventListener('click',e=>{
 });
 
 // ══════════════════════════════════
+// TAB SYSTEM
+// ══════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(name+'-page').classList.add('active');
+  const idx=name==='intro'?0:1;
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if(name==='explorer') setTimeout(()=>{resize();},60);
+}
+
+// Quick-start launchers from intro page
+function launchExplorer(s){
+  switchTab('explorer');
+  setTimeout(()=>update(s),80);
+}
+function launchAnim(){
+  switchTab('explorer');
+  setTimeout(()=>{
+    update(1.0);
+    if(!animOn) toggleAnim();
+  },80);
+}
+
+// ══════════════════════════════════
 // INIT
 // ══════════════════════════════════
 buildPrimeBtns();
-resize();
-update(1.0);
+// Don't call resize() yet — explorer canvas is hidden on load
+// resize will be called when explorer tab is opened
+
 </script>
 </body>
 </html>
