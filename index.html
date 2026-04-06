@@ -136,12 +136,64 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
 .spd-row label{font-size:7.5px;color:var(--ink3);}
 .spd-row input{width:80px;accent-color:var(--teal);height:3px;}
 
-/* ── CANVAS AREA ── */
+
+/* ── MAIN CONTENT SPLIT ── */
+#main-content{
+  flex:1;display:flex;flex-direction:row;
+  min-height:0;overflow:hidden;
+}
 #cv-wrap{
-  flex:1;position:relative;overflow:hidden;
-  background:var(--void);
+  flex:1;position:relative;
+  background:var(--void);overflow:hidden;
 }
 #cv{display:block;cursor:crosshair;width:100%;height:100%;}
+
+/* ── RIGHT PANELS ── */
+#right-panels{
+  width:272px;min-width:220px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  border-left:1px solid var(--edge);
+  background:var(--panel);
+  overflow:hidden;
+}
+.rpanel{
+  display:flex;flex-direction:column;
+  border-bottom:1px solid var(--edge);
+  flex:1;min-height:0;overflow:hidden;
+}
+.rpanel:last-child{border-bottom:none;}
+.rp-header{
+  padding:6px 10px 4px;
+  border-bottom:1px solid var(--edge2);
+  flex-shrink:0;
+}
+.rp-title{
+  display:block;font-size:7.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:2px;
+}
+.rp-sub{display:block;font-size:7px;color:var(--ink3);}
+.rpanel canvas{flex:1;display:block;width:100%;min-height:0;}
+.rp-footer{
+  padding:3px 10px;font-size:7.5px;
+  color:var(--ink3);border-top:1px solid var(--edge2);
+  flex-shrink:0;line-height:1.6;
+}
+/* Gap table */
+#gap-table-wrap{flex:1;overflow-y:auto;min-height:0;}
+#gap-table{width:100%;border-collapse:collapse;font-size:8px;font-family:var(--mono);}
+#gap-table thead{position:sticky;top:0;background:var(--panel);z-index:2;}
+#gap-table th{
+  padding:4px 7px;text-align:left;color:var(--ink3);
+  font-size:7px;letter-spacing:.1em;text-transform:uppercase;
+  border-bottom:1px solid var(--edge);font-weight:400;
+}
+#gap-table td{padding:3px 7px;color:var(--ink3);border-bottom:1px solid var(--edge2);white-space:nowrap;}
+#gap-table tr.gap-active td{color:var(--ink);background:rgba(153,102,221,.14);}
+#gap-table tr.gap-active .gap-col{color:var(--violet);}
+#gap-table .p-col{color:var(--teal);}
+#gap-table .s-col{color:var(--gold);font-size:7px;}
+#gap-table .j-col{color:var(--ink2);}
+
 
 /* ── STATUS BAR ── */
 #status{
@@ -194,6 +246,7 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
 .tab-btn.intro-tab.active{color:var(--teal);border-bottom-color:var(--teal);}
 .tab-page{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden;}
 .tab-page.active{display:flex;}
+#explorer-page{flex-direction:column;}
 
 /* ── INTRO PAGE ── */
 #intro-page{overflow-y:auto;background:var(--void);}
@@ -201,6 +254,57 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   max-width:1100px;margin:0 auto;
   padding:40px 44px 80px;
 }
+
+/* TOC */
+.toc{
+  background:rgba(255,255,255,.018);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:18px 22px;
+  margin-bottom:44px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:4px 24px;
+}
+.toc-title{
+  grid-column:1/-1;
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:10px;
+  padding-bottom:8px;border-bottom:1px solid var(--edge2);
+}
+.toc-item{
+  font-family:var(--mono);font-size:8.5px;
+  color:var(--ink3);text-decoration:none;
+  padding:3px 0;display:flex;align-items:center;gap:8px;
+  transition:color .12s;cursor:pointer;
+}
+.toc-item:hover{color:var(--teal);}
+.toc-item .toc-num{color:var(--gold);min-width:24px;}
+.toc-item .toc-tag{
+  font-size:7px;padding:1px 5px;border-radius:10px;
+  margin-left:auto;white-space:nowrap;
+}
+.toc-tag.new{background:rgba(43,191,176,.15);color:var(--teal);border:1px solid rgba(43,191,176,.3);}
+.toc-tag.updated{background:rgba(212,168,67,.12);color:var(--gold);border:1px solid rgba(212,168,67,.3);}
+
+/* Anchor scroll offset */
+.intro-anchor{scroll-margin-top:8px;}
+
+/* Panel preview strip */
+.panel-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin:18px 0;
+}
+.ps-card{
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--edge2);
+  border-radius:3px;padding:14px 16px;
+  border-top:3px solid var(--gold);
+}
+.ps-card.teal-top{border-top-color:var(--teal);}
+.ps-card.violet-top{border-top-color:var(--violet);}
+.ps-card-num{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;}
+.ps-card-title{font-family:var(--serif);font-size:1rem;color:var(--ink);font-weight:300;margin-bottom:6px;}
+.ps-card-desc{font-family:var(--serif);font-size:.82rem;color:var(--ink3);line-height:1.6;font-weight:300;}
+
 
 /* Hero */
 .intro-hero{
@@ -480,11 +584,11 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
     <div>
       <div class="intro-hero-text">
         <h1>The <em>Quadratic Family</em><br>Fibonacci to Primes</h1>
-        <p>Every prime number sits on the same quadratic curve that generates the Fibonacci sequence. The parameter <em>s</em> — called the <em>jump size</em> — measures exactly how far each prime is from the golden ratio φ. At s = 1, the curve produces φ exactly. At every other s, it produces a prime.</p>
-        <p>This is not a coincidence. It is a consequence of a single algebraic identity connecting modular arithmetic, prime distribution, and the Fibonacci recurrence.</p>
+        <p>Every prime number sits on the same quadratic curve that generates the Fibonacci sequence. The parameter <em>s</em> — called the <em>jump size</em> — measures exactly how far each prime is from the golden ratio φ. At s = 1, the curve produces φ exactly. At every prime p, it produces p exactly.</p>
+        <p>The Explorer shows this in three synchronized views simultaneously: the <em>parabola</em> tracing the algebraic family, the <em>modular ring</em> showing the arithmetic geometry that defines s, and the <em>C(x) product</em> recording the cumulative consequence of every prime's jump.</p>
         <div class="intro-meta">
           Wessen Getachew · 2026 · math.NT<br>
-          Lift Survival Framework · Quadratic Family Theorem
+          Lift Survival Framework · Quadratic Family · Modular Ring Geometry
         </div>
         <button class="intro-cta" onclick="switchTab('explorer')">→ Open the Explorer</button>
       </div>
@@ -492,8 +596,23 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
     <div class="intro-hero-phi">φ</div>
   </div>
 
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents — click any section to jump</div>
+    <a class="toc-item" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 1</span> The Core Identity</a>
+    <a class="toc-item" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 2</span> The Jump Size s</a>
+    <a class="toc-item" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 3</span> Color Guide <span class="toc-tag updated">updated</span></a>
+    <a class="toc-item" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 4</span> Element Guide <span class="toc-tag updated">updated</span></a>
+    <a class="toc-item" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 5</span> The Three Panels <span class="toc-tag new">new</span></a>
+    <a class="toc-item" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 6</span> Controls Guide <span class="toc-tag updated">updated</span></a>
+    <a class="toc-item" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 7</span> Conjugate Root &amp; Vieta <span class="toc-tag new">new</span></a>
+    <a class="toc-item" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 8</span> Prime Gaps as Slow Zones <span class="toc-tag new">new</span></a>
+    <a class="toc-item" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 9</span> Quick Start — Eight Things to Try</a>
+    <a class="toc-item" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})"><span class="toc-num">§ 10</span> Why Does This Work?</a>
+  </div>
+
   <!-- §1 THE CORE IDENTITY -->
-  <div class="intro-sect">
+  <div class="intro-sect intro-anchor" id="s1">
     <div class="intro-sect-label"><span>§ 1</span> The Core Identity</div>
     <h2 class="intro-h2">One equation — two worlds</h2>
     <p class="intro-p">The quadratic <strong>sp² − sp − 1 = 0</strong> is a one-parameter family indexed by s. Every value of s gives a different parabola. Every parabola has a positive root p₊(s) — a specific number where the curve crosses the x-axis from below.</p>
@@ -504,8 +623,9 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
         <div class="id-eq">
           <span class="mg">1</span>·p² − <span class="mg">1</span>·p − 1 = 0<br>
           p² − p − 1 = 0<br>
-          p₊ = <span class="mg">(1 + √5) / 2 = φ</span><br><br>
-          <span style="color:var(--ink3);font-size:9px;">This is the characteristic equation of the<br>Fibonacci recurrence xₙ = xₙ₋₁ + xₙ₋₂</span>
+          p₊ = <span class="mg">(1 + √5) / 2 = φ</span><br>
+          p₋ = <span class="mg">−1/φ = (1 − √5) / 2</span><br><br>
+          <span style="color:var(--ink3);font-size:9px;">Characteristic equation of xₙ = xₙ₋₁ + xₙ₋₂<br>p₊ · p₋ = −1 &nbsp;·&nbsp; p₊ + p₋ = 1</span>
         </div>
       </div>
       <div>
@@ -513,8 +633,9 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
         <div class="id-eq">
           <span class="mt">s</span>·p² − <span class="mt">s</span>·p − 1 = 0<br>
           s = 1/p(p−1)<br>
-          p₊ = <span class="mt">(1 + √(1 + 4/s)) / 2</span><br><br>
-          <span style="color:var(--ink3);font-size:9px;">This gives back p exactly.<br>Every prime has its own unique s.</span>
+          p₊ = <span class="mt">(1 + √(1 + 4/s)) / 2</span><br>
+          p₋ = <span class="mc">(1 − √(1 + 4/s)) / 2</span><br><br>
+          <span style="color:var(--ink3);font-size:9px;">p₊ · p₋ = −1/s = −p(p−1)<br>p₊ + p₋ = 1 &nbsp;(always)</span>
         </div>
       </div>
     </div>
@@ -522,28 +643,28 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
     <p class="intro-p">The two sides share the same algebraic skeleton. <em>φ is where the family begins.</em> As s decreases from 1 toward 0, the positive root p₊ grows from φ through 2, 3, 5, 7, 11… — the prime sequence in exact order.</p>
 
     <div class="math-block">
-      <span class="mg">s = 1</span> &nbsp;→&nbsp; p₊ = φ = 1.6180339887… &nbsp;&nbsp;<span class="mn">← Fibonacci, the sentinel</span><br>
-      <span class="mt">s = 1/2</span> &nbsp;→&nbsp; p₊ = 2 &nbsp;&nbsp;<span class="mn">← first prime, largest jump</span><br>
-      <span class="mt">s = 1/6</span> &nbsp;→&nbsp; p₊ = 3<br>
-      <span class="mt">s = 1/20</span> &nbsp;→&nbsp; p₊ = 5<br>
-      <span class="mt">s = 1/42</span> &nbsp;→&nbsp; p₊ = 7<br>
-      <span class="mt">s = 1/p(p−1)</span> &nbsp;→&nbsp; p₊ = p &nbsp;&nbsp;<span class="mn">← exact recovery for every prime</span><br>
-      <span class="mv">s → 0</span> &nbsp;→&nbsp; p₊ → ∞ &nbsp;&nbsp;<span class="mn">← large primes, tiny jumps</span>
+      <span class="mg">s = 1</span> &nbsp;→&nbsp; p₊ = φ = 1.6180339887… &nbsp;&nbsp;<span class="mn">← Fibonacci sentinel · p₋ = −1/φ</span><br>
+      <span class="mt">s = 1/2</span> &nbsp;→&nbsp; p₊ = 2 &nbsp;&nbsp;<span class="mn">← first prime · p₋ = −1</span><br>
+      <span class="mt">s = 1/6</span> &nbsp;→&nbsp; p₊ = 3 &nbsp;&nbsp;<span class="mn">← p₋ = −2</span><br>
+      <span class="mt">s = 1/20</span> &nbsp;→&nbsp; p₊ = 5 &nbsp;&nbsp;<span class="mn">← p₋ = −4</span><br>
+      <span class="mt">s = 1/p(p−1)</span> &nbsp;→&nbsp; p₊ = p &nbsp;&nbsp;<span class="mn">← exact · p₋ = 1 − p</span><br>
+      <span class="mv">s → 0</span> &nbsp;→&nbsp; p₊ → ∞ &nbsp;&nbsp;<span class="mn">← large primes · p₋ → 0⁻</span>
     </div>
 
-    <div class="note-box"><strong>Key insight:</strong> φ is the permanent unreachable boundary. No prime produces s = 1. Every prime produces some s &lt; 1. The distance φ − p₊ measures how far that prime is from the Fibonacci fixed point — and it is always positive, always shrinking as primes grow.</div>
+    <div class="note-box"><strong>Key insight:</strong> φ is the permanent unreachable boundary. No prime produces s = 1. The distance φ − p₊ is always positive for s near 1, and always shrinks as primes grow. φ is the infimum of the set {p₊(s) : p is prime} — the Golden Ratio Sentinel.</div>
   </div>
 
   <!-- §2 WHAT IS s -->
-  <div class="intro-sect">
+  <div class="intro-sect intro-anchor" id="s2">
     <div class="intro-sect-label"><span>§ 2</span> What is the jump size s?</div>
     <h2 class="intro-h2">s is the <em>fingerprint</em> of each prime</h2>
     <p class="intro-p">The jump size s = 1/p(p−1) comes from the <strong>Lift Survival Framework</strong>. When a prime p enters the Euler product C(x) = ∏(p²−2)/(p²−1), the product drops by a multiplicative factor. The relative size of that drop — the fraction of coprime residues that the prime eliminates — is exactly s.</p>
 
     <div class="math-block">
-      C(x) = ∏<sub>p ≤ x</sub> <span class="mg">(p² − 2) / (p² − 1)</span> &nbsp;&nbsp;<span class="mn">← Lift Survival Function</span><br>
-      At prime p: &nbsp; ΔC / C = <span class="mt">−s = −1/p(p−1)</span> &nbsp;&nbsp;<span class="mn">← the jump</span><br>
-      Equivalently: &nbsp; s = <span class="mt">1/p(p−1)</span> = 1/2, 1/6, 1/20, 1/42, …
+      C(x) = ∏<sub>p ≤ x</sub> <span class="mg">(p² − 2) / (p² − 1)</span> &nbsp;&nbsp;<span class="mn">← Lift Survival Function · C∞ ≈ 0.530711806246</span><br>
+      At prime p: &nbsp; ΔC / C = <span class="mt">−s = −1/p(p−1)</span> &nbsp;&nbsp;<span class="mn">← the jump size</span><br>
+      Equivalently: &nbsp; s = <span class="mt">1/p(p−1)</span> = 1/2, 1/6, 1/20, 1/42, …<br>
+      −d/dx log C = <span class="mt">Σ<sub>p</sub> s · δ(x−p)</span> &nbsp;&nbsp;<span class="mn">← analog of von Mangoldt function</span>
     </div>
 
     <p class="intro-p">So s encodes a real arithmetic event — the drop in coprime density when prime p enters the sieve. The quadratic <strong>sp² − sp − 1 = 0</strong> inverts this: given the drop s, it recovers which prime caused it. This is exact for every prime, with no approximation.</p>
@@ -563,253 +684,312 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   </div>
 
   <!-- §3 COLOR GUIDE -->
-  <div class="intro-sect">
-    <div class="intro-sect-label"><span>§ 3</span> Color Guide — Everything on Screen</div>
+  <div class="intro-sect intro-anchor" id="s3">
+    <div class="intro-sect-label"><span>§ 3</span> Color Guide — Everything on Screen <span class="toc-tag updated" style="margin-left:8px;">updated</span></div>
     <h2 class="intro-h2">What every <em>color</em> means</h2>
-    <p class="intro-p">Every element in the Explorer has a precise meaning. Nothing is decorative. Here is the complete color key.</p>
+    <p class="intro-p">Every element in the Explorer has a precise meaning. Nothing is decorative. The same colors appear across all three panels — gold, teal, violet, coral, and green always mean the same thing regardless of which panel you are reading.</p>
 
     <div class="color-grid">
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#d4a843,#d4a843);"></div>
+        <div class="color-swatch" style="background:#d4a843;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#d4a843;">Gold</div>
-          <div class="cc-desc">The parabola when s is near 1 (Fibonacci region). The φ vertical line and its glow zone. The positive root p₊ marker. The φ sentinel boundary. All things that point toward the golden ratio.</div>
-          <div class="cc-val">φ = 1.6180339887… · s close to 1</div>
+          <div class="cc-desc">The parabola at s near 1. The φ vertical line. The positive root p₊ marker. The C(x) current-prime dot. Panel headers. All things pointing toward the golden ratio or the active state.</div>
+          <div class="cc-val">φ = 1.6180339887… · s close to 1 · active element</div>
         </div>
       </div>
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#2bbfb0,#2bbfb0);"></div>
+        <div class="color-swatch" style="background:#2bbfb0;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#2bbfb0;">Teal</div>
-          <div class="cc-desc">Prime dots on the x-axis. The parabola when s is small (prime region). The tangent line at p₊. All things that represent actual prime numbers and their jump sizes.</div>
-          <div class="cc-val">Primes p = 2, 3, 5, 7, 11… · small s values</div>
+          <div class="cc-desc">Prime dots on the x-axis. The parabola when s is small. The tangent line. Coprime residues that survive the lift in the ring panel. The C(x) step function. Primes in the gap table. Everything that represents actual primes.</div>
+          <div class="cc-val">Primes · surviving residues · coprime structure</div>
         </div>
       </div>
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#9966dd,#9966dd);"></div>
+        <div class="color-swatch" style="background:#9966dd;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#9966dd;">Violet</div>
-          <div class="cc-desc">The swept trace — the path that p₊ draws on the x-axis as s changes. The φ − p₊ distance annotation. The measure of how far the current root is from the golden ratio.</div>
-          <div class="cc-val">φ − p₊ · the sentinel distance</div>
+          <div class="cc-desc">The swept p₊ trace. The φ−p₊ distance annotation. The gap zone shading between consecutive primes. The active row in the J gap table. The sweep-rate bar below the axis. Everything measuring distance or time in the number line.</div>
+          <div class="cc-val">φ−p₊ distance · gap zones · trace history · J table active row</div>
         </div>
       </div>
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#e05540,#e05540);"></div>
+        <div class="color-swatch" style="background:#e05540;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#e05540;">Coral / Red</div>
-          <div class="cc-desc">The negative root p₋ of the quadratic — always negative, always below the x-axis. The second solution of sp² − sp − 1 = 0 that has no prime interpretation. It exists algebraically but not arithmetically.</div>
-          <div class="cc-val">p₋ = (1 − √(1 + 4/s)) / 2 &lt; 0 always</div>
+          <div class="cc-desc">The negative conjugate root p₋. Coprime residues that are blocked at the lift in the ring panel — they do not survive M → M+1. The broken-lift side of the modular geometry. The algebraic but non-prime second solution.</div>
+          <div class="cc-val">p₋ = 1−p₊ · blocked residues · lift failures</div>
         </div>
       </div>
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#4dcc7a,#4dcc7a);"></div>
+        <div class="color-swatch" style="background:#4dcc7a;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#4dcc7a;">Green</div>
-          <div class="cc-desc">A prime dot that you have clicked to lock. When s is set to exactly that prime's jump size, the dot turns green and the root marker also turns green. Confirms an exact prime recovery.</div>
-          <div class="cc-val">Locked / exact recovery · ✓ confirmed prime</div>
+          <div class="cc-desc">A locked prime — clicked to fix the view. When s is set to exactly a prime's jump size, the root marker and prime dot both turn green. Confirms exact recovery. The C(x) marked dot also turns green for a locked prime.</div>
+          <div class="cc-val">Locked · exact recovery confirmed · ✓</div>
         </div>
       </div>
-
       <div class="color-card">
-        <div class="color-swatch" style="background:linear-gradient(to bottom,#6a6258,#6a6258);"></div>
+        <div class="color-swatch" style="background:#6a6258;"></div>
         <div class="color-card-body">
-          <div class="cc-name" style="color:#a8a098;">Dim white / grid</div>
-          <div class="cc-desc">The coordinate grid, axis labels, and vertex marker. Supporting structure that helps you read positions on the graph without drawing attention away from the mathematics.</div>
-          <div class="cc-val">Grid lines · axis ticks · labels</div>
+          <div class="cc-name" style="color:#a8a098;">Dim white / grey</div>
+          <div class="cc-desc">Grid lines, axis labels, vertex marker, non-coprime residues in the ring (those where gcd(r,M) &gt; 1). Supporting structure. Present but not the focus — context without clutter.</div>
+          <div class="cc-val">Grid · axes · non-coprime residues · labels</div>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- §4 ELEMENT GUIDE -->
-  <div class="intro-sect">
-    <div class="intro-sect-label"><span>§ 4</span> Element Guide — Every Object on the Canvas</div>
+  <div class="intro-sect intro-anchor" id="s4">
+    <div class="intro-sect-label"><span>§ 4</span> Element Guide — Every Object on the Main Canvas <span class="toc-tag updated" style="margin-left:8px;">updated</span></div>
     <h2 class="intro-h2">What every <em>shape</em> means</h2>
 
     <div class="elem-grid">
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#d4a843;">⌒</div>
         <div class="ec-name" style="color:#d4a843;">The Parabola — f(p) = sp² − sp − 1</div>
-        <div class="ec-desc">The main curve. It changes shape as you move s. At s = 1 it is steep and gold (Fibonacci). As s decreases it flattens and shifts teal (prime territory). Where it crosses the x-axis is p₊ — the recovered prime or φ.</div>
+        <div class="ec-desc">The main curve. Changes shape as s moves. Gold at s=1 (Fibonacci). Teal at small s (prime territory). Where it crosses the x-axis is p₊. The filled region between the two roots shades lightly — f(p) is negative inside that region.</div>
       </div>
-
       <div class="elem-card">
-        <div class="ec-icon" style="color:#d4a843;">- - - -</div>
+        <div class="ec-icon" style="color:#d4a843;">- - -</div>
         <div class="ec-name" style="color:#d4a843;">φ Vertical Line</div>
-        <div class="ec-desc">The golden ratio φ ≈ 1.618. A permanent vertical dashed line. The parabola always has its positive root to the right of this line for primes, and exactly on it at s = 1. It is the sentinel: no prime can push the root leftward past it.</div>
+        <div class="ec-desc">The golden ratio φ ≈ 1.618 — a permanent dashed gold line with a soft glow halo. The parabola's positive root is always to the right of this for primes, and exactly on it at s=1. The sentinel: no prime can push p₊ left of φ.</div>
       </div>
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#d4a843;">◎</div>
         <div class="ec-name" style="color:#d4a843;">p₊ Root Marker (Gold rings)</div>
-        <div class="ec-desc">The positive root of the current quadratic. Three concentric rings centered where the parabola crosses the x-axis. Gold when s is arbitrary. Green when s exactly matches a prime's jump size. This is the number recovered by the formula.</div>
+        <div class="ec-desc">Three concentric rings where the parabola crosses the x-axis. Gold for arbitrary s. Green when s exactly matches a prime. Label above shows p₊ value and φ−p₊ distance in violet. This is the number the formula recovers.</div>
       </div>
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#e05540;">●</div>
-        <div class="ec-name" style="color:#e05540;">p₋ Root Marker (Coral dot)</div>
-        <div class="ec-desc">The negative root. Always sits left of zero on the x-axis, below zero in value. Algebraically real but arithmetically irrelevant — no prime is negative. It completes the quadratic but plays no role in prime recovery.</div>
+        <div class="ec-name" style="color:#e05540;">p₋ — Conjugate Root</div>
+        <div class="ec-desc">The second root — always negative or near zero. At s=1: p₋ = −1/φ exactly (the golden ratio reciprocal, negated). Vieta's formulas hold for all s: p₊ + p₋ = 1 always, and p₊ · p₋ = −1/s. Shown on the dot and in the status bar.</div>
       </div>
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#2bbfb0;">●</div>
         <div class="ec-name" style="color:#2bbfb0;">Prime Dots (Teal circles)</div>
-        <div class="ec-desc">Fixed teal dots on the x-axis at every prime p in view. They do not move. They mark the positions where the positive root lands when s = 1/p(p−1). Their height above the axis (tick mark) is proportional to the jump size — taller for smaller primes.</div>
+        <div class="ec-desc">Fixed teal dots on the x-axis at every prime in view. They do not move — they are the destinations p₊ visits as s decreases. Tick mark height above the axis is proportional to the jump size. Labels show p and s=1/p(p−1) below.</div>
       </div>
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#9966dd;">~~~</div>
         <div class="ec-name" style="color:#9966dd;">Swept Trace (Violet path)</div>
-        <div class="ec-desc">When the animation runs, or as you drag the slider, the path that p₊ traces along the x-axis is recorded in violet. It shows the continuous journey from φ at s = 1 through every prime as s decreases. Enable with the Trace layer toggle.</div>
+        <div class="ec-desc">The violet trail recording where p₊ has traveled along the x-axis. During animation it draws the full journey from φ through every prime. The trail reveals the structure of prime spacing — gaps between primes appear as stretched zones.</div>
       </div>
-
       <div class="elem-card">
         <div class="ec-icon" style="color:#2bbfb0;">/ /</div>
-        <div class="ec-name" style="color:#2bbfb0;">Tangent Line (Teal dashes)</div>
-        <div class="ec-desc">The slope of the parabola at the positive root p₊. The tangent is always positive here (the curve is rising). Its steepness tells you how sensitive p₊ is to small changes in s — steeper tangent means the root moves faster with s.</div>
+        <div class="ec-name" style="color:#2bbfb0;">Tangent Line</div>
+        <div class="ec-desc">The slope f′(p₊) = 2s·p₊ − s at the current root. Always positive here (the curve is rising at its crossing). The formula dp₊/ds = −1/(s²√(1+4/s)) tells how fast p₊ moves — the tangent visualizes this sensitivity.</div>
       </div>
-
       <div class="elem-card">
-        <div class="ec-icon" style="color:#d4a843;">⊙ ⊡</div>
+        <div class="ec-icon" style="color:#d4a843;">⊙</div>
         <div class="ec-name" style="color:#d4a843;">Fibonacci Spiral + Rectangles</div>
-        <div class="ec-desc">The golden spiral and golden rectangle series drawn at the φ position. Visible when s is near 1. The spiral is a logarithmic spiral with growth ratio φ. The rectangles show the φ:1 ratio decomposing into itself. Enable/disable with the Fibonacci layer toggle.</div>
+        <div class="ec-desc">The golden logarithmic spiral and nested golden rectangles at φ. Visible when s is near 1. The spiral has growth ratio φ. When s=1, Fibonacci ratio convergence (F(n)/F(n−1)→φ) is shown as text in the corner.</div>
       </div>
-
       <div class="elem-card">
-        <div class="ec-icon">▪</div>
-        <div class="ec-name" style="color:#6a6258;">Vertex Marker (White dot)</div>
-        <div class="ec-desc">The minimum of the parabola, which always sits at p = 1/2 regardless of s. The vertex y-value is −s/4 − 1, which approaches −1 as s → 0 (flat line). Helps you see how the parabola changes shape.</div>
+        <div class="ec-icon" style="color:#9966dd;">▬</div>
+        <div class="ec-name" style="color:#9966dd;">Gap Zone Shading</div>
+        <div class="ec-desc">The violet-shaded interval between the two consecutive primes surrounding p₊. Darker shading means a larger prime gap. The thin bar below the axis shows |dp₊/ds| — the sweep rate. A wide bar means p₊ moves slowly: the animation literally slows in large gaps.</div>
       </div>
-
       <div class="elem-card">
-        <div class="ec-icon">◌</div>
-        <div class="ec-name" style="color:#4dcc7a;">Filled area between roots</div>
-        <div class="ec-desc">The shaded region between p₋ and p₊ where f(p) &lt; 0 — where the parabola dips below the x-axis. This region contains the interval [p₋, p₊]. Its width grows as s decreases and p₊ moves right toward larger primes.</div>
+        <div class="ec-icon" style="color:#6a6258;">▪</div>
+        <div class="ec-name" style="color:#6a6258;">Vertex Marker</div>
+        <div class="ec-desc">The minimum of the parabola, always at p = ½ regardless of s. Vertex value = −s/4 − 1, approaching −1 as s→0 (the curve flattens to a nearly horizontal line near large primes).</div>
       </div>
-
     </div>
   </div>
 
-  <!-- §5 CONTROLS -->
-  <div class="intro-sect">
-    <div class="intro-sect-label"><span>§ 5</span> Controls — How to Use the Explorer</div>
+  <!-- §5 THE THREE PANELS -->
+  <div class="intro-sect intro-anchor" id="s5">
+    <div class="intro-sect-label"><span>§ 5</span> The Three Synchronized Panels <span class="toc-tag new" style="margin-left:8px;">new</span></div>
+    <h2 class="intro-h2">Three views of the <em>same event</em></h2>
+    <p class="intro-p">On the right side of the Explorer are three panels that update in real time as you move s. Each shows a different face of what happens when a prime p enters the arithmetic structure. They are synchronized — one s value, three simultaneous representations.</p>
+
+    <div class="panel-strip">
+      <div class="ps-card">
+        <div class="ps-card-num">Panel 1 · Gold</div>
+        <div class="ps-card-title">Modular Ring</div>
+        <div class="ps-card-desc">Shows ring M = the current prime (or nearest prime to p₊). Every integer residue r from 1 to M−1 is placed at angle 2πr/M around the circle. Teal dots are coprime to M — they are in (ℤ/Mℤ)*. Coral dots are blocked — they do not survive the lift from ring M to ring M+1. The percentage at the center is the survival rate C(p) at that prime. This is the geometry that <em>produces</em> the jump size s.</div>
+      </div>
+      <div class="ps-card teal-top">
+        <div class="ps-card-num">Panel 2 · Teal</div>
+        <div class="ps-card-title">C(x) Step Function</div>
+        <div class="ps-card-desc">Shows the running Euler product C(x) = ∏(p²−2)/(p²−1) as a descending step function. Each step drops at a prime — the drop size is exactly s for that prime. The gold dashed line is C∞ ≈ 0.5307. The current prime is marked with a glowing dot. As you animate s, you watch C(x) descend one step at a time — the parabola captures the algebra, C(x) captures the cumulative arithmetic.</div>
+      </div>
+      <div class="ps-card violet-top">
+        <div class="ps-card-num">Panel 3 · Violet</div>
+        <div class="ps-card-title">J Gap Decomposition</div>
+        <div class="ps-card-desc">A live-scrolling table of consecutive prime gaps. The gap that p₊ is currently inside is highlighted in violet. Each row shows: the prime, the next prime, the gap value, which J term it contributes (J₁ for gap 1, J₂ for twin primes, J₄ for cousins, J₆ for sexy primes), and the jump size s. Together with the gap zone shading on the main canvas, this makes prime gap structure visible as you navigate s.</div>
+      </div>
+    </div>
+
+    <div class="note-box"><strong>The chain:</strong> Move s → the parabola shifts → p₊ lands at a prime → the ring shows which residues survive → C(x) takes its step → the gap table highlights which gap you are in. One parameter, four synchronized representations of one arithmetic event.</div>
+  </div>
+
+  <!-- §6 CONTROLS -->
+  <div class="intro-sect intro-anchor" id="s6">
+    <div class="intro-sect-label"><span>§ 6</span> Controls — How to Use Everything <span class="toc-tag updated" style="margin-left:8px;">updated</span></div>
     <h2 class="intro-h2">Every <em>control</em> explained</h2>
 
     <div class="ctrl-guide">
-
       <div class="cg-item">
-        <div class="cg-icon">s (linear)</div>
+        <div class="cg-icon">s linear</div>
         <div class="cg-desc">Move s from 0 to 1 linearly. Start at 1 (φ) and drag left to watch the parabola sweep through each prime. The number box accepts any decimal up to 10 places.</div>
       </div>
-
       <div class="cg-item">
-        <div class="cg-icon">s (log scale)</div>
-        <div class="cg-desc">Navigate to very small s values for large primes — 10⁻⁹ lets you reach primes in the billions. The linear slider compresses everything near zero so use log scale for p &gt; 30.</div>
+        <div class="cg-icon">s log scale</div>
+        <div class="cg-desc">Navigate to very small s values for large primes — 10⁻⁹ lets you reach primes in the billions. The linear slider compresses everything near zero; use log scale for p &gt; 30.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Jump to prime</div>
-        <div class="cg-desc">Click any prime button (p=2 through p=997) to set s exactly to 1/p(p−1). The root snaps to that prime precisely. The dot turns green. The graph centers on that prime.</div>
+        <div class="cg-desc">Click any prime button (p=2 through p=997) to set s exactly to 1/p(p−1). All three panels update simultaneously. The root snaps green. The ring shows that prime's modular structure.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Parabola</div>
-        <div class="cg-desc">Toggle the main curve. Even off, the root markers and prime dots remain. Useful when studying just the root positions without the visual mass of the parabola.</div>
+        <div class="cg-desc">Toggle the main curve on the left canvas. Root markers and prime dots remain even when off. Useful when studying root positions without the visual mass of the parabola.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Roots</div>
-        <div class="cg-desc">Toggle the p₊ and p₋ root markers. The concentric-ring gold marker and the small coral dot below the axis.</div>
+        <div class="cg-desc">Toggle both root markers — the gold concentric-ring p₊ marker and the coral p₋ conjugate dot. The Vieta annotations (p₊·p₋ = −1/s) go with the p₋ marker.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Primes</div>
-        <div class="cg-desc">Toggle the fixed teal prime dots. When off, you see only the moving root with no reference points. When on, every prime in view is marked with its label and jump size.</div>
+        <div class="cg-desc">Toggle the fixed teal prime dots on the x-axis. When off, you see only the moving root. When on, every prime in the current view is marked with its label and jump size tick.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Fibonacci</div>
-        <div class="cg-desc">Toggle the golden spiral and rectangle overlay at φ. Most visible when s is near 1. Turn off for a cleaner view when working with small primes.</div>
+        <div class="cg-desc">Toggle the golden spiral and rectangle overlay at φ. Most prominent at s=1. Shows the geometric structure whose characteristic equation is the quadratic family's origin point.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">p₊ trace</div>
-        <div class="cg-desc">Toggle the violet trail that records where p₊ has been. Cleared when toggled off and back on. Most useful during animation — you see the full path from φ through every prime.</div>
+        <div class="cg-desc">Toggle the violet trail recording p₊'s history. Most revealing during animation — shows the full journey from φ through the prime sequence. Cleared when toggled off and on.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Tangent</div>
-        <div class="cg-desc">Toggle the teal dashed tangent line at the root. Shows the local slope f′(p₊) = 2s·p₊ − s. The steeper this is, the more the root position depends on s.</div>
+        <div class="cg-desc">Toggle the teal dashed tangent line showing f′(p₊) = 2s·p₊ − s. Steeper slope = root moves more per unit change in s. Flattens dramatically as you reach large primes.</div>
       </div>
-
       <div class="cg-item">
         <div class="cg-icon">Animate</div>
-        <div class="cg-desc">Sweeps s continuously from 1 down to near 0 and back. Watch the parabola travel from the Fibonacci equation through every prime. The speed slider controls pace.</div>
+        <div class="cg-desc">Sweeps s from 1 down to near 0 and back continuously. All three panels animate together. The speed slider controls pace. Enable the Trace layer first for the fullest effect.</div>
       </div>
-
       <div class="cg-item">
-        <div class="cg-icon">Hover canvas</div>
-        <div class="cg-desc">Move your mouse over the canvas to see f(p) at any point — the equation value, distance to φ, and nearest prime. The tooltip tracks your position in real time.</div>
+        <div class="cg-icon">Ring panel</div>
+        <div class="cg-desc">Updates automatically as s changes. Click any prime button to see exactly that prime's ring. The survival percentage at the center equals C(p)/C(p−) — the lift rate at that prime.</div>
       </div>
-
+      <div class="cg-item">
+        <div class="cg-icon">C(x) panel</div>
+        <div class="cg-desc">The step graph scrolls to keep the current prime visible. The gold dot marks the current position. Watch C(x) descend as the animation sweeps s — each step is one prime's contribution.</div>
+      </div>
+      <div class="cg-item">
+        <div class="cg-icon">Gap table</div>
+        <div class="cg-desc">Scrolls automatically to keep the active gap (the one p₊ is currently inside) highlighted in violet. Compare the gap size column with the gap zone shading on the main canvas.</div>
+      </div>
+      <div class="cg-item">
+        <div class="cg-icon">Status bar</div>
+        <div class="cg-desc">Shows equation, p₊, p₋, φ−p₊, s, 1/s, nearest prime, sweep rate |dp₊/ds|, current gap zone, and Vieta product p₊·p₋. All update live as s changes.</div>
+      </div>
       <div class="cg-item">
         <div class="cg-icon">Click prime dot</div>
-        <div class="cg-desc">Click any teal prime dot to lock s to that prime's exact jump size. The dot turns green. Click again to unlock. The status bar shows all computed values for that prime.</div>
+        <div class="cg-desc">Click any teal prime dot on the main canvas to lock s. The dot and root marker turn green. Click again to unlock. All panels synchronize to the locked prime's exact s.</div>
       </div>
-
     </div>
   </div>
 
-  <!-- §6 QUICK START -->
-  <div class="intro-sect">
-    <div class="intro-sect-label"><span>§ 6</span> Quick Start — Five Things to Try First</div>
+  <!-- §7 CONJUGATE ROOT & VIETA -->
+  <div class="intro-sect intro-anchor" id="s7">
+    <div class="intro-sect-label"><span>§ 7</span> The Conjugate Root &amp; Vieta's Formulas <span class="toc-tag new" style="margin-left:8px;">new</span></div>
+    <h2 class="intro-h2">p₋ = <em>−1/φ</em> at s = 1 — the algebraic mirror</h2>
+    <p class="intro-p">Every quadratic has two roots. The positive root p₊ recovers the prime (or φ at s=1). The negative root p₋ is its algebraic mirror — and at s=1 it is exactly −1/φ, the reciprocal conjugate of φ with a sign change.</p>
+
+    <div class="math-block">
+      <span class="mn">Vieta's formulas for sp² − sp − 1 = 0:</span><br><br>
+      p₊ + p₋ = <span class="mg">1</span> &nbsp;&nbsp;<span class="mn">← always, for every s</span><br>
+      p₊ · p₋ = <span class="mg">−1/s</span> &nbsp;&nbsp;<span class="mn">← product encodes s exactly</span><br><br>
+      <span class="mn">At s = 1 (Fibonacci):</span><br>
+      p₊ = φ = 1.6180… &nbsp;·&nbsp; p₋ = <span class="mc">−1/φ = −0.6180…</span><br>
+      φ · (−1/φ) = −1 = <span class="mg">−1/s</span> &nbsp;✓<br><br>
+      <span class="mn">At s = 1/p(p−1) (prime p):</span><br>
+      p₊ = p &nbsp;·&nbsp; p₋ = <span class="mc">1 − p</span><br>
+      p · (1−p) = p − p² = −p(p−1) = <span class="mg">−1/s</span> &nbsp;✓
+    </div>
+
+    <p class="intro-p">The product p₊ · p₋ = −1/s is shown live in the status bar. Since 1/s = p(p−1) for primes, this means <strong>the product of the two roots is always exactly −p(p−1)</strong> — a direct readout of the prime's defining relationship. The conjugate root is not a curiosity: it carries the same arithmetic information as p₊, encoded negatively.</p>
+
+    <div class="note-box"><strong>Note on p₋ off-screen:</strong> For most primes (p ≥ 3), p₋ = 1−p is far to the left of the visible graph. When it is off-screen, the Explorer shows it as an annotation at the left edge of the canvas. The status bar always shows its exact value.</div>
+  </div>
+
+  <!-- §8 PRIME GAPS AS SLOW ZONES -->
+  <div class="intro-sect intro-anchor" id="s8">
+    <div class="intro-sect-label"><span>§ 8</span> Prime Gaps as Slow Zones — Reading the Sweep Rate <span class="toc-tag new" style="margin-left:8px;">new</span></div>
+    <h2 class="intro-h2">The animation <em>slows</em> at large prime gaps</h2>
+    <p class="intro-p">As s decreases continuously, p₊ sweeps right through the number line. The rate of that sweep is dp₊/ds — and it is not constant. Between consecutive primes p and p+g, the root p₊ must travel a distance g in the x-direction as s decreases by Δs = 1/p(p−1) − 1/(p+g)(p+g−1).</p>
+
+    <div class="math-block">
+      dp₊/ds = −1 / (s² · √(1 + 4/s)) &nbsp;&nbsp;<span class="mn">← always negative (p₊ grows as s shrinks)</span><br><br>
+      <span class="mn">At s = 1/2 (near p=2):</span> &nbsp; |dp₊/ds| ≈ 2.83 &nbsp;&nbsp;<span class="mn">← fast sweep</span><br>
+      <span class="mn">At s = 1/20 (near p=5):</span> &nbsp; |dp₊/ds| ≈ 50 &nbsp;&nbsp;<span class="mn">← already much faster</span><br>
+      <span class="mn">At s = 1/9312 (near p=97):</span> &nbsp; |dp₊/ds| ≈ 43,000 &nbsp;&nbsp;<span class="mn">← enormous</span><br><br>
+      <span class="mv">Large prime gap ⟺ p₊ lingers in that interval ⟺ wide violet gap zone</span>
+    </div>
+
+    <p class="intro-p">The <strong>gap zone shading</strong> on the main canvas and the <strong>gap table</strong> in Panel 3 make this visible. When p₊ is between two primes with a gap of 6 (a sexy prime pair), the shading is noticeably darker than when it sits in a gap of 2 (twin primes). During animation, the root visually slows — not because the animation is slower, but because p₊ is traveling through a longer gap in s-space.</p>
+
+    <div class="note-box"><strong>Why this matters:</strong> The distribution of large prime gaps — where the animation dwells longest — is deeply connected to the J gap decomposition in Panel 3. Gap 2 (twin primes) dominates J because consecutive twin prime gaps are narrow in s-space. A proof that twin prime gaps never stop appearing would correspond to p₊ always eventually returning to a gap-2 zone. The geometry makes this intuition concrete.</div>
+  </div>
+
+  <!-- §9 QUICK START -->
+  <div class="intro-sect intro-anchor" id="s9">
+    <div class="intro-sect-label"><span>§ 9</span> Quick Start — Eight Things to Try</div>
     <h2 class="intro-h2">Start <em>here</em></h2>
 
     <div class="qs-grid">
-
       <div class="qs-card" onclick="launchExplorer(1.0)">
-        <div class="qs-num">Try 1</div>
+        <div class="qs-num">Try 1 · Fibonacci origin</div>
         <div class="qs-title">Start at φ</div>
-        <div class="qs-desc">Set s = 1 and look at the Fibonacci spiral behind φ. The equation is x² − x − 1 = 0 — identical to the Fibonacci recurrence. Watch F(n)/F(n−1) converging to φ in the corner.</div>
+        <div class="qs-desc">Set s = 1. The equation becomes x²−x−1=0 exactly. See the Fibonacci spiral at φ. Watch F(n)/F(n−1) converging in the corner. The ring shows M=6 with all 2 coprime residues. C(x) = 1 before any prime.</div>
       </div>
-
       <div class="qs-card" onclick="launchExplorer(0.5)">
-        <div class="qs-num">Try 2</div>
+        <div class="qs-num">Try 2 · First prime</div>
         <div class="qs-title">Jump to p = 2</div>
-        <div class="qs-desc">Set s = 1/2. The parabola shifts. The root lands exactly at p = 2. Notice how close to φ the first prime is — and how the sentinel distance φ − 2 = −0.382 captures that gap.</div>
+        <div class="qs-desc">Set s = 1/2. The root lands at p=2. The ring shows M=2 with only residue r=1 — one coprime, 50% survive. C(x) drops from 1 to 2/3. Notice φ−2 = −0.382: the first prime is only 0.382 below φ.</div>
       </div>
-
       <div class="qs-card" onclick="launchAnim()">
-        <div class="qs-num">Try 3</div>
-        <div class="qs-title">Animate the sweep</div>
-        <div class="qs-desc">Hit Animate. Enable the Trace layer. Watch the violet trail draw the full journey from φ through 2, 3, 5, 7, 11… in real time. The parabola gradually flattens as it reaches larger primes.</div>
+        <div class="qs-num">Try 3 · Watch the sweep</div>
+        <div class="qs-title">Animate with Trace on</div>
+        <div class="qs-desc">Enable Trace layer, then hit Animate. The violet trail shows the complete journey from φ through every prime. Watch all three panels update simultaneously. Notice how C(x) descends in lockstep with p₊ hitting each prime.</div>
       </div>
-
       <div class="qs-card" onclick="launchExplorer(jumpSize(97))">
-        <div class="qs-num">Try 4</div>
-        <div class="qs-title">Try a large prime</div>
-        <div class="qs-desc">Click p=97 in the prime buttons. The graph zooms out to show the root at 97. Notice how small s is (0.000105) and how flat the parabola has become. The curve barely dips below the axis.</div>
+        <div class="qs-num">Try 4 · Large prime</div>
+        <div class="qs-title">Try p = 97</div>
+        <div class="qs-desc">Click p=97. The graph zooms to show the root at 97. The parabola is nearly flat. The ring shows 96 positions with most surviving. The gap table highlights whatever gap surrounds 97. s = 1/9312 ≈ 0.0001074.</div>
       </div>
-
       <div class="qs-card" onclick="launchExplorer(0.3)">
-        <div class="qs-num">Try 5</div>
-        <div class="qs-title">A non-prime s</div>
-        <div class="qs-desc">Set s = 0.3 manually. The root lands at p ≈ 2.17 — not a prime. The root marker stays gold (not green). The status bar says "not a prime s". Only s = 1/p(p−1) recovers a prime exactly.</div>
+        <div class="qs-num">Try 5 · Non-prime s</div>
+        <div class="qs-title">s = 0.3 (no prime)</div>
+        <div class="qs-desc">Type s = 0.3. The root lands at p ≈ 2.17 — not a prime. Root stays gold, not green. The ring shows the nearest prime's structure. The gap table highlights the gap containing 2.17.</div>
       </div>
-
+      <div class="qs-card" onclick="launchExplorer(1.0)">
+        <div class="qs-num">Try 6 · Conjugate root</div>
+        <div class="qs-title">Read p₋ = −1/φ</div>
+        <div class="qs-desc">Set s=1. Look at the coral dot on the left of the canvas at p₋ = −1/φ ≈ −0.618. Check the status bar: p₊·p₋ = −1 = −1/s exactly. Then set s=1/6 (p=3) — p₋ becomes −2 and p₊·p₋ = −6 = −1/s.</div>
+      </div>
+      <div class="qs-card" onclick="launchExplorer(jumpSize(23))">
+        <div class="qs-num">Try 7 · Prime gap</div>
+        <div class="qs-title">Watch a gap of 6</div>
+        <div class="qs-desc">Jump to p=23. Then slowly drag s between 23 and 29 (gap 6, sexy prime pair). Watch the violet gap shading darken. The gap table row highlights. The sweep-rate bar widens. Compare with the gap between p=29 and p=31 (gap 2).</div>
+      </div>
+      <div class="qs-card" onclick="launchExplorer(jumpSize(5))">
+        <div class="qs-num">Try 8 · Ring geometry</div>
+        <div class="qs-title">Study the ring at p=5</div>
+        <div class="qs-desc">Jump to p=5. Panel 1 shows ring M=5: residues {1,2,3,4} all coprime, s=1/20. Check which survive lift to M+1=6: only those coprime to 6. The center shows the survival rate, which is exactly C(5)/C(4) = (25−2)/(25−1).</div>
+      </div>
     </div>
   </div>
 
-  <!-- §7 THE MATH IN PLAIN LANGUAGE -->
-  <div class="intro-sect">
-    <div class="intro-sect-label"><span>§ 7</span> Why Does This Work?</div>
+  <!-- §10 THE MATH IN PLAIN LANGUAGE -->
+  <div class="intro-sect intro-anchor" id="s10">
+    <div class="intro-sect-label"><span>§ 10</span> Why Does This Work?</div>
     <h2 class="intro-h2">The <em>algebra</em> in plain language</h2>
     <p class="intro-p">Start with any prime p. Define s = 1/p(p−1). Then plug s into the quadratic sp² − sp − 1 = 0 and check whether p satisfies it:</p>
     <div class="math-block">
@@ -820,17 +1000,17 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
       = (p−1)/(p−1) − 1<br>
       = 1 − 1 = <span class="mt">0  ✓</span>
     </div>
-    <p class="intro-p">So p is always a root of the quadratic formed by its own jump size. The recovery formula just inverts this: given s, solve for p. The positive root p₊ = (1 + √(1 + 4/s))/2 is that inversion — the quadratic formula applied to sp² − sp − 1 = 0.</p>
-    <p class="intro-p">At s = 1 the formula gives p = (1 + √5)/2 = φ. The connection to Fibonacci is not approximate — it is exact, because <strong>the Fibonacci characteristic equation x² − x − 1 = 0 is precisely this quadratic evaluated at s = 1.</strong></p>
-    <div class="note-box"><strong>The sentinel property:</strong> φ &gt; 2 &gt; 3? No — φ ≈ 1.618 &lt; 2. Every prime is greater than φ. So the positive root p₊ is always above φ for primes. φ is the infimum of the set {p₊(s) : p is prime} and is never achieved. That is why it is called the Golden Ratio Sentinel.</div>
+    <p class="intro-p">So p is always a root of the quadratic formed by its own jump size. The recovery formula just inverts this: given s, solve for p using the quadratic formula. The positive root p₊ = (1 + √(1 + 4/s))/2 is that inversion.</p>
+    <p class="intro-p">At s = 1 the formula gives (1+√5)/2 = φ. The connection to Fibonacci is exact — <strong>the Fibonacci characteristic equation x² − x − 1 = 0 is precisely this quadratic evaluated at s = 1.</strong> Both the Fibonacci recurrence and the prime recovery live inside the same algebraic family, separated by the single parameter s.</p>
+    <div class="note-box"><strong>The sentinel property:</strong> φ ≈ 1.618 is less than 2 — smaller than every prime. So p₊ at any actual prime is always greater than φ. φ is the infimum of {p₊(s) : p prime} — permanently unreachable, approached from above as s→1, but never achieved by any prime. That is why it is called the Golden Ratio Sentinel.</div>
   </div>
 
   <!-- Footer -->
   <div style="border-top:1px solid var(--edge);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-    <div style="font-family:var(--serif);font-size:.85rem;color:var(--ink3);font-weight:300;">
-      Wessen Getachew · 2026 · math.NT · Lift Survival Framework
+    <div style="font-family:var(--serif);font-size:.85rem;color:var(--ink3);font-weight:300;line-height:1.9;">
+      Wessen Getachew · 2026 · math.NT · Lift Survival Framework<br>
+      <span style="font-size:.75rem;">sp² − sp − 1 = 0 · φ = sentinel · C(x) = ∏(p²−2)/(p²−1) · s = 1/p(p−1)</span>
     </div>
-    <button class="intro-cta" onclick="switchTab('explorer')">→ Open the Explorer</button>
   </div>
 
 </div><!-- /intro-inner -->
@@ -841,15 +1021,6 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
 <!-- ═══════════════════════════════════════════════════════ -->
 <div id="explorer-page" class="tab-page">
 <div id="ctrl">
-
-  <!-- s value display -->
-  <div class="ctrl-block" style="min-width:170px;">
-    <div class="cb-label">Jump Parameter</div>
-    <div class="s-big" id="s-big">s = 1</div>
-    <div class="s-note" id="s-note">Fibonacci fixed point</div>
-  </div>
-
-  <!-- Linear slider -->
   <div class="ctrl-block grow">
     <div class="cb-label">s (linear)</div>
     <div class="sl-row">
@@ -901,11 +1072,59 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
 
 </div>
 
-<!-- CANVAS -->
-<div id="cv-wrap">
-  <canvas id="cv"></canvas>
-  <div id="tip"></div>
-</div>
+<!-- MAIN CONTENT: parabola left, panels right -->
+<div id="main-content">
+
+  <!-- Main parabola canvas -->
+  <div id="cv-wrap">
+    <canvas id="cv"></canvas>
+    <div id="tip"></div>
+  </div>
+
+  <!-- Right panel: three synchronized views -->
+  <div id="right-panels">
+
+    <!-- Panel 1: Modular Ring -->
+    <div class="rpanel" id="ring-panel">
+      <div class="rp-header">
+        <span class="rp-title">Modular Ring — M = <span id="rp-m">?</span></span>
+        <span class="rp-sub">coprime residues · lift lines · s = 1/p(p−1)</span>
+      </div>
+      <canvas id="ring-cv"></canvas>
+      <div class="rp-footer" id="ring-footer">—</div>
+    </div>
+
+    <!-- Panel 2: C(x) Step Function -->
+    <div class="rpanel" id="cx-panel">
+      <div class="rp-header">
+        <span class="rp-title">C(x) — Lift Survival Product</span>
+        <span class="rp-sub">drops at each prime by s = 1/p(p−1) · C∞ ≈ 0.5307</span>
+      </div>
+      <canvas id="cx-cv"></canvas>
+      <div class="rp-footer" id="cx-footer">—</div>
+    </div>
+
+    <!-- Panel 3: J Gap Table -->
+    <div class="rpanel" id="gap-panel">
+      <div class="rp-header">
+        <span class="rp-title">J Gap Decomposition</span>
+        <span class="rp-sub">J = J₁ + Σ J₂ₙ · current gap highlighted</span>
+      </div>
+      <div id="gap-table-wrap">
+        <table id="gap-table">
+          <thead>
+            <tr>
+              <th>p</th><th>next</th><th>gap</th><th>J term</th><th>s</th>
+            </tr>
+          </thead>
+          <tbody id="gap-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /right-panels -->
+
+</div><!-- /main-content -->
 
 <!-- STATUS BAR -->
 <div id="status">
@@ -916,9 +1135,7 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   <div class="stat">s = <span class="t" id="st-s">—</span></div>
   <div class="stat">1/s = p(p−1) = <em id="st-inv">—</em></div>
   <div class="stat">nearest prime: <span class="g" id="st-np">—</span></div>
-  <div class="stat" style="margin-left:auto;border-right:none;color:var(--ink4);">
-    hover canvas · click prime dot to lock
-  </div>
+  <div class="stat" style="flex:1;border-right:none;color:var(--ink3);font-size:8px;" id="st-ext">—</div>
 </div><!-- /status bar -->
 </div><!-- /explorer-page -->
 
@@ -964,10 +1181,25 @@ let W,H;
 
 function resize(){
   const wrap=document.getElementById('cv-wrap');
+  if(!wrap||wrap.clientWidth===0) return;
   W=wrap.clientWidth;H=wrap.clientHeight;
   cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;
   cv.style.width=W+'px';cv.style.height=H+'px';
+
+  // Size right panel canvases to their containers
+  ['ring-cv','cx-cv'].forEach(id=>{
+    const c2=document.getElementById(id);
+    if(!c2) return;
+    const p=c2.parentElement;
+    // Height = panel height minus header and footer (~55px)
+    const h=Math.max(60, p.clientHeight-55);
+    c2.style.height=h+'px';
+  });
+
   draw();
+  drawRingPanel();
+  drawCxPanel();
+  updateGapTable();
 }
 window.addEventListener('resize',()=>setTimeout(resize,80));
 
@@ -1021,6 +1253,7 @@ function draw(){
   }
 
   if(modes.grid)   drawGrid(co);
+  drawGapZone(co);
   if(modes.fib)    drawFibSpiral(co);
   if(modes.trace)  drawTrace(co);
   if(modes.parabola) drawParabola(co);
@@ -1032,6 +1265,56 @@ function draw(){
   drawLabels(co);
 
   g.restore();
+}
+
+// ── Gap Zone — highlight the prime gap p₊ currently sits in ──
+function drawGapZone(co){
+  const pr=posRoot(S);
+  if(!isFinite(pr)||pr<1) return;
+  const axY=co.toY(0);
+  const pBelow=PRIMES.filter(p=>p<=pr).slice(-1)[0];
+  const pAbove=PRIMES.find(p=>p>pr);
+  if(!pBelow||!pAbove) return;
+  const gap=pAbove-pBelow;
+
+  // Only shade if p₊ is between two primes (not exactly on one)
+  const onPrime=PRIMES.some(p=>Math.abs(pr-p)<0.001);
+
+  const x1=co.toX(pBelow);
+  const x2=co.toX(pAbove);
+  if(x2<co.pad.l||x1>W-co.pad.r) return;
+
+  // Shade the gap region — intensity proportional to gap size
+  const alpha=Math.min(0.12, 0.02*gap);
+  if(!onPrime&&alpha>0.01){
+    const grd=g.createLinearGradient(x1,0,x2,0);
+    grd.addColorStop(0,'transparent');
+    grd.addColorStop(0.15,`rgba(153,102,221,${alpha})`);
+    grd.addColorStop(0.85,`rgba(153,102,221,${alpha})`);
+    grd.addColorStop(1,'transparent');
+    g.fillStyle=grd;
+    g.fillRect(Math.max(x1,co.pad.l),co.pad.t,
+               Math.min(x2,W-co.pad.r)-Math.max(x1,co.pad.l),
+               H-co.pad.t-co.pad.b);
+  }
+
+  // Gap label at top of gap zone
+  if(!onPrime&&x2-x1>40){
+    g.fillStyle=`rgba(153,102,221,${Math.min(0.6,alpha*8)})`;
+    g.font='8px JetBrains Mono,monospace';
+    g.textAlign='center';g.textBaseline='top';
+    g.fillText(`gap ${gap}`,( Math.max(x1,co.pad.l)+Math.min(x2,W-co.pad.r))/2, co.pad.t+6);
+  }
+
+  // dp₊/ds sweep rate bar — shown as a small indicator below the axis
+  // Wider bar = slower sweep = larger gap
+  const sweepRate=Math.abs(-1/(S*S*Math.sqrt(1+4/S)));
+  const barH=Math.min(12, sweepRate*0.0005);
+  const barAlpha=0.35;
+  g.fillStyle=`rgba(153,102,221,${barAlpha})`;
+  const barY=axY+28;
+  const bx1=Math.max(x1,co.pad.l),bx2=Math.min(x2,W-co.pad.r);
+  if(bx2>bx1&&barH>1) g.fillRect(bx1,barY,bx2-bx1,barH);
 }
 
 // ── Grid ──────────────────────────
@@ -1422,15 +1705,42 @@ function drawRoots(co){
     }
   }
 
-  // ── Negative root ──
-  if(isFinite(nr)&&nr>=co.xMin&&nr<=co.xMax){
-    const px=co.toX(nr);
-    g.beginPath();g.arc(px,axY,4,0,2*Math.PI);
-    g.fillStyle='rgba(224,85,64,.55)';g.fill();
-    g.fillStyle='rgba(224,85,64,.5)';
-    g.font=`${8.5}px JetBrains Mono,monospace`;
-    g.textAlign='center';g.textBaseline='top';
-    g.fillText('p₋='+nr.toFixed(4),px,axY+8);
+  // ── Negative root — Conjugate ──
+  if(isFinite(nr)){
+    const nrInView=nr>=co.xMin&&nr<=co.xMax;
+    // The conjugate root satisfies p₊ · p₋ = -1/s (Vieta)
+    // and p₊ + p₋ = 1 (Vieta). At s=1: p₋ = -1/φ exactly.
+    const conjugateLabel=isAtPhi
+      ? 'p₋ = −1/φ ≈ −0.61803'
+      : `p₋ = ${nr.toFixed(6)}`;
+    const vietaNote=`p₊·p₋ = ${(pr*nr).toFixed(4)} = −1/s`;
+
+    if(nrInView){
+      const px=co.toX(nr);
+      // Coral glow
+      const grd=g.createRadialGradient(px,axY,0,px,axY,20);
+      grd.addColorStop(0,'rgba(224,85,64,.2)');grd.addColorStop(1,'transparent');
+      g.fillStyle=grd;g.beginPath();g.arc(px,axY,20,0,2*Math.PI);g.fill();
+      // Dot
+      g.beginPath();g.arc(px,axY,4.5,0,2*Math.PI);
+      g.fillStyle='rgba(224,85,64,.7)';g.fill();
+      g.strokeStyle='rgba(224,85,64,.4)';g.lineWidth=1;
+      g.beginPath();g.arc(px,axY,8,0,2*Math.PI);g.stroke();
+      // Labels
+      g.fillStyle='rgba(224,85,64,.8)';
+      g.font=`${isAtPhi?9.5:8.5}px JetBrains Mono,monospace`;
+      g.textAlign='center';g.textBaseline='top';
+      g.fillText(conjugateLabel,px,axY+10);
+      g.fillStyle='rgba(224,85,64,.4)';
+      g.font='7.5px JetBrains Mono,monospace';
+      g.fillText(vietaNote,px,axY+24);
+    } else {
+      // Off-screen — show annotation at left edge
+      g.fillStyle='rgba(224,85,64,.45)';
+      g.font='8px JetBrains Mono,monospace';
+      g.textAlign='left';g.textBaseline='middle';
+      g.fillText(`← p₋=${conjugateLabel.split('=')[1]?.trim()||nr.toFixed(4)}  (${vietaNote})`,co.pad.l+4,axY+28);
+    }
   }
 }
 
@@ -1489,14 +1799,41 @@ function update(s){
     `p₊ = ${pr.toFixed(8)} — not a prime s`;
 
   // Status bar
-  const eqStr=`${s.toFixed(5)}p²−${s.toFixed(5)}p−1=0`;
+  // Precision fix: for large primes, 1/s may not be an exact integer due to float limits.
+  // Use Math.round and check residual.
+  const invS=1/s;
+  const invSInt=Math.round(invS);
+  const invSErr=Math.abs(invS-invSInt);
+  const invSStr=invSErr<0.01?invSInt.toString():invS.toFixed(4);
+
+  // dp₊/ds = sweep rate: how fast p₊ moves as s changes
+  // dp₊/ds = d/ds[(1+√(1+4/s))/2] = -1/(s²√(1+4/s))
+  const sweepRate=pr<1e9?-1/(s*s*Math.sqrt(1+4/s)):NaN;
+  const sweepStr=isFinite(sweepRate)?Math.abs(sweepRate).toFixed(2):'∞';
+
+  // Prime gap context: what gap is p₊ currently in?
+  const pBelow=PRIMES.filter(p=>p<=pr).slice(-1)[0];
+  const pAbove=PRIMES.find(p=>p>pr);
+  const gapStr=(pBelow&&pAbove)
+    ?`gap ${pAbove-pBelow} (${pBelow}→${pAbove})`
+    :'—';
+
+  // Vieta: p₊ + p₋ = 1, p₊·p₋ = -1/s
+  const vietaProduct=(pr*nr).toFixed(6);
+
+  const eqStr=s>=0.01?`${s.toFixed(5)}p²−${s.toFixed(5)}p−1=0`:`${s.toExponential(3)}·(p²−p)=1`;
   document.getElementById('st-eq').textContent=eqStr;
   document.getElementById('st-p').textContent=isAtPhi?'φ = 1.6180339887…':pr.toFixed(10);
-  document.getElementById('st-pn').textContent=nr.toFixed(8);
+  document.getElementById('st-pn').textContent=
+    isAtPhi?'−1/φ = −0.6180339887…':nr.toFixed(8);
   document.getElementById('st-d').textContent=dist.toFixed(12);
   document.getElementById('st-s').textContent=s<=1e-4?s.toExponential(8):s.toFixed(10);
-  document.getElementById('st-inv').textContent=isAtPhi?'1':(1/s).toFixed(4);
+  document.getElementById('st-inv').textContent=invSStr;
   document.getElementById('st-np').textContent=np;
+  // Extended stats
+  const extEl=document.getElementById('st-ext');
+  if(extEl) extEl.textContent=
+    `|dp₊/ds| = ${sweepStr}  ·  gap zone: ${gapStr}  ·  p₊·p₋ = ${vietaProduct}`;
 
   // Highlight active prime button
   document.querySelectorAll('.prime-btn').forEach(b=>{
@@ -1505,10 +1842,282 @@ function update(s){
   });
 
   draw();
+  drawRingPanel();
+  drawCxPanel();
+  updateGapTable();
 }
 
-// ══════════════════════════════════
-// INPUT HANDLERS
+// ══════════════════════════════════════════════════════
+// PANEL 1: MODULAR RING
+// Shows ring M=p (or M=2 at φ), coprime residues, lift lines
+// ══════════════════════════════════════════════════════
+function drawRingPanel(){
+  const cv2=document.getElementById('ring-cv');
+  if(!cv2) return;
+  const wrap=cv2.parentElement;
+  const W2=wrap.clientWidth, H2=cv2.clientHeight||Math.max(wrap.clientHeight-60,80);
+  cv2.width=W2*devicePixelRatio; cv2.height=H2*devicePixelRatio;
+  cv2.style.height=H2+'px';
+  const c=cv2.getContext('2d');
+  c.save();c.scale(devicePixelRatio,devicePixelRatio);
+  c.fillStyle='#010208';c.fillRect(0,0,W2,H2);
+
+  const s=S;
+  const pr=posRoot(s);
+  const isAtPhi=Math.abs(s-1)<1e-9;
+  const matchedP=PRIMES.find(p=>Math.abs(s-jumpSize(p))<1e-8);
+
+  // Which ring to show: the matched prime, or the nearest prime to p₊
+  const ringM=matchedP||(isAtPhi?6:nearestPrime(pr));
+  document.getElementById('rp-m').textContent=ringM;
+
+  const cx=W2/2, cy=H2/2;
+  const R=Math.min(W2,H2)*0.38;
+
+  // Build coprime residues for ring M
+  function gcd(a,b){while(b){const t=b;b=a%b;a=t;}return a;}
+  const coprimes=[];
+  for(let r=1;r<ringM;r++) if(gcd(r,ringM)===1) coprimes.push(r);
+  const phi_M=coprimes.length;
+
+  // Ring circle
+  c.beginPath();c.arc(cx,cy,R,0,2*Math.PI);
+  c.strokeStyle='rgba(255,255,255,.08)';c.lineWidth=1;c.stroke();
+
+  // Label ring
+  c.fillStyle='rgba(212,168,67,.5)';c.font='8px JetBrains Mono,monospace';
+  c.textAlign='center';c.textBaseline='top';
+  c.fillText(`M = ${ringM}  φ(M) = ${phi_M}`,cx,4);
+
+  // Draw all non-coprime residues (faint)
+  for(let r=1;r<ringM;r++){
+    if(gcd(r,ringM)!==1) continue; // skip for now, drawn as coprimes
+    const ang=2*Math.PI*r/ringM - Math.PI/2;
+    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+  }
+  // Non-coprime dots
+  for(let r=1;r<ringM;r++){
+    if(gcd(r,ringM)===1) continue;
+    const ang=2*Math.PI*r/ringM - Math.PI/2;
+    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+    c.beginPath();c.arc(x,y,2,0,2*Math.PI);
+    c.fillStyle='rgba(80,70,60,.4)';c.fill();
+  }
+
+  // Draw lift lines connecting coprimes that survive lift M→M+1
+  let survCount=0;
+  coprimes.forEach(r=>{
+    const lifts=gcd(r,ringM+1)===1;
+    if(lifts) survCount++;
+    const ang=2*Math.PI*r/ringM - Math.PI/2;
+    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+    // Line to center with color
+    if(ringM<=60){
+      c.beginPath();c.moveTo(cx,cy);c.lineTo(x,y);
+      c.strokeStyle=lifts?'rgba(43,191,176,.15)':'rgba(224,85,64,.1)';
+      c.lineWidth=0.7;c.stroke();
+    }
+  });
+
+  // Coprime residue dots
+  coprimes.forEach(r=>{
+    const lifts=gcd(r,ringM+1)===1;
+    const ang=2*Math.PI*r/ringM - Math.PI/2;
+    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+
+    // Glow for lifted
+    if(lifts){
+      const grd=c.createRadialGradient(x,y,0,x,y,9);
+      grd.addColorStop(0,'rgba(43,191,176,.3)');grd.addColorStop(1,'transparent');
+      c.fillStyle=grd;c.beginPath();c.arc(x,y,9,0,2*Math.PI);c.fill();
+    }
+
+    const dotR=matchedP&&Math.abs(S-jumpSize(matchedP))<1e-8?3.5:2.5;
+    c.beginPath();c.arc(x,y,dotR,0,2*Math.PI);
+    c.fillStyle=lifts?'rgba(43,191,176,.9)':'rgba(224,85,64,.6)';
+    c.shadowColor=lifts?'#2bbfb0':'#e05540';c.shadowBlur=lifts?6:0;
+    c.fill();c.shadowBlur=0;
+
+    // Label small rings
+    if(ringM<=20){
+      c.fillStyle=lifts?'rgba(43,191,176,.6)':'rgba(224,85,64,.4)';
+      c.font='7px JetBrains Mono,monospace';
+      c.textAlign='center';c.textBaseline='middle';
+      const lx=cx+(R+12)*Math.cos(ang), ly=cy+(R+12)*Math.sin(ang);
+      c.fillText(r,lx,ly);
+    }
+  });
+
+  // Center label: C(M) rate
+  const rate=phi_M>0?survCount/phi_M:0;
+  c.fillStyle='rgba(212,168,67,.7)';
+  c.font='bold 9px JetBrains Mono,monospace';
+  c.textAlign='center';c.textBaseline='middle';
+  c.fillText((rate*100).toFixed(1)+'%',cx,cy-7);
+  c.fillStyle='rgba(212,168,67,.4)';c.font='7px JetBrains Mono,monospace';
+  c.fillText('survive lift',cx,cy+6);
+
+  // Legend
+  c.fillStyle='rgba(43,191,176,.7)';c.font='7.5px JetBrains Mono,monospace';
+  c.textAlign='left';c.textBaseline='bottom';
+  c.fillText('● lifts  ',4,H2-4);
+  c.fillStyle='rgba(224,85,64,.6)';c.fillText('● blocked',60,H2-4);
+
+  // Footer
+  const s_actual=jumpSize(ringM);
+  const footer=document.getElementById('ring-footer');
+  if(footer) footer.textContent=
+    `s = 1/${ringM*(ringM-1)} = ${s_actual.toFixed(8)}  ·  ${survCount}/${phi_M} lift`;
+
+  c.restore();
+}
+
+// ══════════════════════════════════════════════════════
+// PANEL 2: C(x) STEP FUNCTION
+// Shows C(x) product up to current p₊, marks current prime
+// ══════════════════════════════════════════════════════
+function drawCxPanel(){
+  const cv2=document.getElementById('cx-cv');
+  if(!cv2) return;
+  const wrap=cv2.parentElement;
+  const W2=wrap.clientWidth, H2=cv2.clientHeight||Math.max(wrap.clientHeight-60,80);
+  cv2.width=W2*devicePixelRatio; cv2.height=H2*devicePixelRatio;
+  cv2.style.height=H2+'px';
+  const c=cv2.getContext('2d');
+  c.save();c.scale(devicePixelRatio,devicePixelRatio);
+  c.fillStyle='#010208';c.fillRect(0,0,W2,H2);
+
+  const s=S;
+  const pr=posRoot(s);
+  const isAtPhi=Math.abs(s-1)<1e-9;
+  const matchedP=PRIMES.find(p=>Math.abs(s-jumpSize(p))<1e-8);
+  const curP=matchedP||nearestPrime(pr);
+
+  // Build C(x) series up to max visible prime
+  const maxP=Math.max(curP+10, 50);
+  const displayPs=PRIMES.filter(p=>p<=maxP);
+  let cx2=1;
+  const pts=[];
+  displayPs.forEach(p=>{cx2*=(p*p-2)/(p*p-1);pts.push({p,cx:cx2});});
+
+  const pad={l:36,r:8,t:12,b:20};
+  const cW=W2-pad.l-pad.r, cH=H2-pad.t-pad.b;
+
+  const yMin=Math.max(0.45, cx2-0.02);
+  const yMax=1.02;
+  const toX=i=>(i+0.5)/pts.length*cW+pad.l;
+  const toY=y=>cH-(y-yMin)/(yMax-yMin)*cH+pad.t;
+
+  // C∞ reference line
+  const cinfY=toY(0.530711806246);
+  c.strokeStyle='rgba(212,168,67,.4)';c.lineWidth=1;c.setLineDash([4,3]);
+  c.beginPath();c.moveTo(pad.l,cinfY);c.lineTo(W2-pad.r,cinfY);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='rgba(212,168,67,.5)';c.font='6.5px JetBrains Mono,monospace';
+  c.textAlign='left';c.textBaseline='bottom';c.fillText('C∞',pad.l+2,cinfY-1);
+
+  // C(x) step function — draw as horizontal steps
+  let prevX=pad.l, prevY=toY(1);
+  pts.forEach(({p,cx:cv3},i)=>{
+    const x=toX(i);
+    const y=toY(cv3);
+    const isCur=p===curP;
+    // Horizontal at prev level, then drop
+    c.beginPath();c.moveTo(prevX,prevY);c.lineTo(x,prevY);c.lineTo(x,y);
+    c.strokeStyle=isCur?'rgba(43,191,176,1)':'rgba(43,191,176,.5)';
+    c.lineWidth=isCur?1.8:1;c.stroke();
+    prevX=x;prevY=y;
+  });
+  // Final horizontal
+  c.beginPath();c.moveTo(prevX,prevY);c.lineTo(W2-pad.r,prevY);
+  c.strokeStyle='rgba(43,191,176,.5)';c.lineWidth=1;c.stroke();
+
+  // Mark current prime
+  const curIdx=pts.findIndex(pt=>pt.p===curP);
+  if(curIdx>=0){
+    const x=toX(curIdx), y=toY(pts[curIdx].cx);
+    const grd=c.createRadialGradient(x,y,0,x,y,12);
+    grd.addColorStop(0,'rgba(212,168,67,.4)');grd.addColorStop(1,'transparent');
+    c.fillStyle=grd;c.beginPath();c.arc(x,y,12,0,2*Math.PI);c.fill();
+    c.beginPath();c.arc(x,y,4,0,2*Math.PI);
+    c.fillStyle=matchedP?'#4dcc7a':'#d4a843';
+    c.shadowColor=matchedP?'#4dcc7a':'#d4a843';c.shadowBlur=8;
+    c.fill();c.shadowBlur=0;
+    // drop annotation
+    c.strokeStyle='rgba(212,168,67,.25)';c.lineWidth=1;c.setLineDash([2,3]);
+    c.beginPath();c.moveTo(x,pad.t);c.lineTo(x,y);c.stroke();c.setLineDash([]);
+    // label
+    c.fillStyle='rgba(212,168,67,.8)';c.font='7.5px JetBrains Mono,monospace';
+    c.textAlign='center';c.textBaseline='bottom';
+    c.fillText('p='+curP,x,y-6);
+  }
+
+  // y-axis labels
+  c.fillStyle='rgba(255,255,255,.2)';c.font='6.5px JetBrains Mono,monospace';c.textAlign='right';
+  [0.53,0.6,0.7,0.8,0.9,1.0].forEach(y=>{
+    if(y<yMin) return;
+    const py=toY(y);
+    c.fillText(y.toFixed(2),pad.l-2,py+2);
+    c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=1;
+    c.beginPath();c.moveTo(pad.l,py);c.lineTo(W2-pad.r,py);c.stroke();
+  });
+
+  // x label
+  c.fillStyle='rgba(255,255,255,.2)';c.textAlign='center';c.textBaseline='bottom';
+  c.fillText('primes p',W2/2,H2-1);
+
+  // Footer
+  const lastCx=pts.length>0?pts[pts.length-1].cx:1;
+  const footer=document.getElementById('cx-footer');
+  if(footer) footer.textContent=
+    `C(${curP}) = ${(matchedP?pts[curIdx>=0?curIdx:pts.length-1]?.cx:lastCx||0).toFixed(8)}  · s = ${s.toExponential(4)}`;
+
+  c.restore();
+}
+
+// ══════════════════════════════════════════════════════
+// PANEL 3: J GAP TABLE
+// Shows prime gaps, J terms, highlights current gap
+// ══════════════════════════════════════════════════════
+function updateGapTable(){
+  const tbody=document.getElementById('gap-tbody');
+  if(!tbody) return;
+  const s=S;
+  const pr=posRoot(s);
+  const pBelow=PRIMES.filter(p=>p<=pr).slice(-1)[0];
+  const pAbove=PRIMES.find(p=>p>pr);
+  const curGapStart=pBelow||2;
+
+  // Build gap rows — show primes around the current position
+  // Show from p=2 up to current prime + a few more
+  const showUpTo=Math.max(pAbove||0, PRIMES[Math.min(PRIMES.indexOf(curGapStart)+8, PRIMES.length-1)]);
+  const showPs=PRIMES.filter(p=>p<=showUpTo&&p<PRIMES[PRIMES.length-1]);
+
+  const rows=showPs.map((p,i)=>{
+    if(i===showPs.length-1) return null;
+    const next=showPs[i+1];
+    const gap=next-p;
+    const isG1=gap===1;
+    const jTerm=isG1?'J₁':gap===2?'J₂':gap===4?'J₄':gap===6?'J₆':'J₊'+gap;
+    const sv=jumpSize(p);
+    const isActive=(p===curGapStart);
+    return{p,next,gap,jTerm,sv,isActive};
+  }).filter(Boolean);
+
+  tbody.innerHTML=rows.map(({p,next,gap,jTerm,sv,isActive})=>`
+    <tr class="${isActive?'gap-active':''}">
+      <td class="p-col">${p}</td>
+      <td class="p-col">${next}</td>
+      <td class="gap-col">${gap}</td>
+      <td class="j-col">${jTerm}</td>
+      <td class="s-col">${sv.toExponential(3)}</td>
+    </tr>`).join('');
+
+  // Scroll active row into view
+  const activeRow=tbody.querySelector('.gap-active');
+  if(activeRow) activeRow.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
 // ══════════════════════════════════
 function onLin(s){update(Math.max(1e-9,Math.min(1,s)));}
 function onLinNum(s){if(s>0&&s<=1){document.getElementById('sl-lin').value=s;update(s);}}
