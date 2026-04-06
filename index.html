@@ -584,8 +584,8 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
     <div>
       <div class="intro-hero-text">
         <h1>The <em>Quadratic Family</em><br>Fibonacci to Primes</h1>
-        <p>Every prime number sits on the same quadratic curve that generates the Fibonacci sequence. The parameter <em>s</em> — called the <em>jump size</em> — measures exactly how far each prime is from the golden ratio φ. At s = 1, the curve produces φ exactly. At every prime p, it produces p exactly.</p>
-        <p>The Explorer shows this in three synchronized views simultaneously: the <em>parabola</em> tracing the algebraic family, the <em>modular ring</em> showing the arithmetic geometry that defines s, and the <em>C(x) product</em> recording the cumulative consequence of every prime's jump.</p>
+        <p>Every prime number sits on the same quadratic curve that generates the Fibonacci sequence. The parameter <em>s</em> — called the <em>jump size</em> — assigns each prime a unique position on that curve. At s = 1, the curve passes through φ. At s = 1/p(p−1), it passes through p. The curve itself is smooth and continuous — there are no discontinuities in the algebra.</p>
+        <p>The Explorer shows this in three synchronized views: the <em>parabola</em> tracing the algebraic family, the <em>modular ring</em> showing the arithmetic geometry that defines s independently, and the <em>C(x) product</em> — a genuine step function — that drops at each prime by exactly s.</p>
         <div class="intro-meta">
           Wessen Getachew · 2026 · math.NT<br>
           Lift Survival Framework · Quadratic Family · Modular Ring Geometry
@@ -658,19 +658,25 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   <div class="intro-sect intro-anchor" id="s2">
     <div class="intro-sect-label"><span>§ 2</span> What is the jump size s?</div>
     <h2 class="intro-h2">s is the <em>fingerprint</em> of each prime</h2>
-    <p class="intro-p">The jump size s = 1/p(p−1) comes from the <strong>Lift Survival Framework</strong>. When a prime p enters the Euler product C(x) = ∏(p²−2)/(p²−1), the product drops by a multiplicative factor. The relative size of that drop — the fraction of coprime residues that the prime eliminates — is exactly s.</p>
+    <p class="intro-p">The jump size s = 1/p(p−1) comes from the <strong>Lift Survival Framework</strong>. When a prime p enters the Euler product C(x) = ∏(p²−2)/(p²−1), the product drops by a multiplicative factor. The relative size of that drop — the fraction of coprime residues that the prime eliminates — is exactly s. This is where s comes from arithmetically, independently of the quadratic.</p>
 
     <div class="math-block">
       C(x) = ∏<sub>p ≤ x</sub> <span class="mg">(p² − 2) / (p² − 1)</span> &nbsp;&nbsp;<span class="mn">← Lift Survival Function · C∞ ≈ 0.530711806246</span><br>
-      At prime p: &nbsp; ΔC / C = <span class="mt">−s = −1/p(p−1)</span> &nbsp;&nbsp;<span class="mn">← the jump size</span><br>
+      At prime p: &nbsp; ΔC / C = <span class="mt">−s = −1/p(p−1)</span> &nbsp;&nbsp;<span class="mn">← the jump in C(x) ← genuine step discontinuity</span><br>
       Equivalently: &nbsp; s = <span class="mt">1/p(p−1)</span> = 1/2, 1/6, 1/20, 1/42, …<br>
       −d/dx log C = <span class="mt">Σ<sub>p</sub> s · δ(x−p)</span> &nbsp;&nbsp;<span class="mn">← analog of von Mangoldt function</span>
     </div>
 
-    <p class="intro-p">So s encodes a real arithmetic event — the drop in coprime density when prime p enters the sieve. The quadratic <strong>sp² − sp − 1 = 0</strong> inverts this: given the drop s, it recovers which prime caused it. This is exact for every prime, with no approximation.</p>
+    <p class="intro-p">The quadratic sp² − sp − 1 = 0 connects to this because: if you know s from C(x), you can solve for which prime caused that specific drop. The algebra is a simple inversion — <strong>it does not detect primes and it is not a prime-finding formula.</strong> The formula p(s) = (1+√(1+4/s))/2 is a smooth, continuous curve. It passes through every positive real number as s varies. It passes through composite numbers, non-integers, and primes alike. What makes the prime values of s special is that they arise independently from the modular ring geometry — not from the quadratic itself.</p>
+
+    <div class="note-box" style="border-left-color:rgba(224,85,64,.5);">
+      <strong style="color:var(--coral);">Important — what this is and is not:</strong> The algebraic identity sp² − sp − 1 = 0 holds for p at s = 1/p(p−1) by substitution — it is tautologically true for any number, not just primes. The formula does not discover primes, predict primes, or produce a number-theoretic property that composites lack. What is non-trivial is that s = 1/p(p−1) appears <em>independently</em> as the drop in C(x) — a function built from modular arithmetic, not from the quadratic. The connection between those two contexts is the observation being made here.
+    </div>
+
+    <p class="intro-p">The step discontinuities in the mathematics are in C(x), not in p(s). C(x) is a step function with a genuine left-limit jump at each prime p: C(p) − C(p−) = −s·C(p−). The word "jump" throughout this tool refers to that drop in C(x), not to any discontinuity in the smooth curve p(s).</p>
 
     <table class="cmp-table">
-      <thead><tr><th>Prime p</th><th>Jump s = 1/p(p−1)</th><th>p₊(s) recovered</th><th>φ − p₊</th><th>1/s = p(p−1)</th></tr></thead>
+      <thead><tr><th>Prime p</th><th>Jump s = 1/p(p−1)</th><th>p₊(s) evaluated</th><th>φ − p₊</th><th>1/s = p(p−1)</th></tr></thead>
       <tbody>
         <tr><td class="cg">φ (sentinel)</td><td class="cg">s = 1</td><td class="cg">1.6180339887…</td><td class="cg">0 — unreachable</td><td class="cg">1</td></tr>
         <tr><td class="ct">2</td><td class="ct">0.500000</td><td>2.000000</td><td class="cv2">0.381966…</td><td>2</td></tr>
@@ -726,8 +732,8 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
         <div class="color-swatch" style="background:#4dcc7a;"></div>
         <div class="color-card-body">
           <div class="cc-name" style="color:#4dcc7a;">Green</div>
-          <div class="cc-desc">A locked prime — clicked to fix the view. When s is set to exactly a prime's jump size, the root marker and prime dot both turn green. Confirms exact recovery. The C(x) marked dot also turns green for a locked prime.</div>
-          <div class="cc-val">Locked · exact recovery confirmed · ✓</div>
+          <div class="cc-desc">A prime dot or root marker you have clicked to lock. When s is set to exactly 1/p(p−1) for a specific prime p, the dot and marker turn green — confirming that p(s) = p at this s. This is algebraically guaranteed, not a discovery: it marks the point where s was defined from p.</div>
+          <div class="cc-val">Locked · s = 1/p(p−1) exactly · p(s) = p by definition</div>
         </div>
       </div>
       <div class="color-card">
@@ -760,7 +766,7 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
       <div class="elem-card">
         <div class="ec-icon" style="color:#d4a843;">◎</div>
         <div class="ec-name" style="color:#d4a843;">p₊ Root Marker (Gold rings)</div>
-        <div class="ec-desc">Three concentric rings where the parabola crosses the x-axis. Gold for arbitrary s. Green when s exactly matches a prime. Label above shows p₊ value and φ−p₊ distance in violet. This is the number the formula recovers.</div>
+        <div class="ec-desc">Three concentric rings where the parabola crosses the x-axis. Gold for arbitrary s. Green when s exactly matches a prime's jump size. Label above shows p₊ value and φ−p₊ distance in violet. This is where p(s) evaluates at the current s — not a prime detector, just the positive root of the quadratic.</div>
       </div>
       <div class="elem-card">
         <div class="ec-icon" style="color:#e05540;">●</div>
@@ -900,7 +906,7 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
   <div class="intro-sect intro-anchor" id="s7">
     <div class="intro-sect-label"><span>§ 7</span> The Conjugate Root &amp; Vieta's Formulas <span class="toc-tag new" style="margin-left:8px;">new</span></div>
     <h2 class="intro-h2">p₋ = <em>−1/φ</em> at s = 1 — the algebraic mirror</h2>
-    <p class="intro-p">Every quadratic has two roots. The positive root p₊ recovers the prime (or φ at s=1). The negative root p₋ is its algebraic mirror — and at s=1 it is exactly −1/φ, the reciprocal conjugate of φ with a sign change.</p>
+    <p class="intro-p">Every quadratic has two roots. At s = 1/p(p−1), the positive root p₊ equals p — by construction, since s was defined to make this true. The negative root p₋ is its algebraic mirror — and at s=1 it is exactly −1/φ, the reciprocal conjugate of φ with a sign change.</p>
 
     <div class="math-block">
       <span class="mn">Vieta's formulas for sp² − sp − 1 = 0:</span><br><br>
@@ -1000,8 +1006,8 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
       = (p−1)/(p−1) − 1<br>
       = 1 − 1 = <span class="mt">0  ✓</span>
     </div>
-    <p class="intro-p">So p is always a root of the quadratic formed by its own jump size. The recovery formula just inverts this: given s, solve for p using the quadratic formula. The positive root p₊ = (1 + √(1 + 4/s))/2 is that inversion.</p>
-    <p class="intro-p">At s = 1 the formula gives (1+√5)/2 = φ. The connection to Fibonacci is exact — <strong>the Fibonacci characteristic equation x² − x − 1 = 0 is precisely this quadratic evaluated at s = 1.</strong> Both the Fibonacci recurrence and the prime recovery live inside the same algebraic family, separated by the single parameter s.</p>
+    <p class="intro-p">So p is always a root of the quadratic formed by its own jump size. This is algebraically tautological — it follows from substitution and holds for any number, not just primes. The formula inverts it: given s, solve for p(s). The positive root p₊ = (1 + √(1 + 4/s))/2 is a smooth, continuous function of s. It passes through every real number on the positive axis as s varies.</p>
+    <p class="intro-p">At s = 1 the formula gives (1+√5)/2 = φ. The connection to Fibonacci is exact — <strong>the Fibonacci characteristic equation x² − x − 1 = 0 is precisely this quadratic evaluated at s = 1.</strong> Both the Fibonacci recurrence and the modular ring jump size live inside the same algebraic family, separated by the single parameter s. The family is not prime-specific. What is prime-specific is the source of the s values — the modular ring geometry and the C(x) product — which exist independently of the quadratic.</p>
     <div class="note-box"><strong>The sentinel property:</strong> φ ≈ 1.618 is less than 2 — smaller than every prime. So p₊ at any actual prime is always greater than φ. φ is the infimum of {p₊(s) : p prime} — permanently unreachable, approached from above as s→1, but never achieved by any prime. That is why it is called the Golden Ratio Sentinel.</div>
   </div>
 
@@ -1021,6 +1027,12 @@ body{background:var(--void);color:var(--ink);font-family:var(--mono);
 <!-- ═══════════════════════════════════════════════════════ -->
 <div id="explorer-page" class="tab-page">
 <div id="ctrl">
+  <!-- Current s display — s-big / s-note referenced by update() -->
+  <div class="ctrl-block">
+    <div class="cb-label">current jump size</div>
+    <div class="s-big" id="s-big">s = 1.00000000</div>
+    <div class="s-note" id="s-note">Fibonacci fixed point — φ is the root</div>
+  </div>
   <div class="ctrl-block grow">
     <div class="cb-label">s (linear)</div>
     <div class="sl-row">
@@ -1393,7 +1405,7 @@ function drawAxes(co){
   // axis titles
   g.fillStyle='rgba(255,255,255,.2)';g.textAlign='center';g.textBaseline='bottom';
   g.font=`9px JetBrains Mono,monospace`;
-  g.fillText('p  (variable / recovered prime)',W/2,H-4);
+  g.fillText('p  (variable — any real number)',W/2,H-4);
   g.save();g.translate(14,H/2);g.rotate(-Math.PI/2);
   g.textBaseline='top';g.fillText('f(p) = sp² − sp − 1',0,-5);
   g.restore();
@@ -1693,7 +1705,7 @@ function drawRoots(co){
     g.fillStyle=isAtPhi?'rgba(212,168,67,.9)':matchedPrime?'rgba(77,204,122,.9)':'rgba(212,168,67,.8)';
     g.font=`bold ${11}px JetBrains Mono,monospace`;
     g.textAlign='center';g.textBaseline='bottom';
-    const label=isAtPhi?'p₊ = φ = 1.61803…':matchedPrime?`p₊ = p=${matchedPrime}  ✓`:`p₊ = ${pr.toFixed(6)}`;
+    const label=isAtPhi?'p₊ = φ = 1.61803…':matchedPrime?`p₊ = ${matchedPrime}  (s = 1/${matchedPrime*(matchedPrime-1)})`:`p₊ = ${pr.toFixed(6)}`;
     g.fillText(label,px,axY-22);
 
     // φ−p annotation
@@ -2256,4 +2268,3 @@ buildPrimeBtns();
 </script>
 </body>
 </html>
-
