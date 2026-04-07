@@ -3121,7 +3121,7 @@ function switchTab(name){
   const idx=name==='intro'?0:name==='explorer'?1:name==='constants'?2:3;
   document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   if(name==='constants'){setTimeout(()=>{showConstTab('const');},60);}
-  if(name==='farey'){requestAnimationFrame(()=>requestAnimationFrame(()=>{fcResize();fcDraw();}));}
+  if(name==='farey'){requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(!fc_cv) initFareyTab(); fcResize(); fcDraw(); }));}
   if(name==='explorer'){
     // Use requestAnimationFrame to ensure layout is complete before sizing
     requestAnimationFrame(()=>{
@@ -3196,12 +3196,14 @@ function fcInit(){
   fcUpdate();
 }
 
+let fc_raf = null;
 function fcUpdate(){
   const el = document.getElementById('fc-mmax');
   if(!el) return;
   document.getElementById('fc-mmax-v').textContent = el.value;
-  fcResize();
-  fcDraw();
+  // Throttle: only one draw per animation frame
+  if(fc_raf) cancelAnimationFrame(fc_raf);
+  fc_raf = requestAnimationFrame(()=>{ fc_raf=null; fcResize(); fcDraw(); });
 }
 
 function fcResize(){
@@ -3598,33 +3600,42 @@ function fcMouseMove(e){
 }
 
 // ── Density display ───────────────────────────────────────
+let fc_density_cache = {};
 function fcUpdateDensity(M){
-  let prim=0, total=0;
-  for(let m=1;m<=M;m++) for(let r=1;r<m;r++){total++;if(fcGcd(r,m)===1)prim++;}
   const el=document.getElementById('fc-density');
   if(!el) return;
-  const density=(prim/total);
-  el.innerHTML=
-    `M ≤ ${M}<br>`+
+  if(fc_density_cache.M === M){ el.innerHTML=fc_density_cache.html; return; }
+  let prim=0, total=0;
+  for(let m=1;m<=M;m++) for(let r=1;r<m;r++){
+    total++;
+    if(fcGcd(r,m)===1) prim++;
+  }
+  const density=prim/total;
+  const h=`M ≤ ${M}<br>`+
     `Primitive: <span style="color:var(--teal)">${prim.toLocaleString()}</span><br>`+
     `Total: ${total.toLocaleString()}<br>`+
     `Density: <span style="color:var(--gold)">${density.toFixed(6)}</span><br>`+
     `6/π² = <span style="color:var(--gold)">0.607927…</span>`;
+  fc_density_cache={M,html:h};
+  el.innerHTML=h;
 }
 
 // ── Tab integration ───────────────────────────────────────
+let fc_resize_listener = false;
 function initFareyTab(){
-  fcInit();
-  window.addEventListener('resize',()=>{
-    if(document.getElementById('farey-page')?.classList.contains('active')){
-      fcResize(); fcDraw();
-    }
-  });
+  fcInit(); // safe — guarded by if(fc_cv) return
+  if(!fc_resize_listener){
+    fc_resize_listener = true;
+    window.addEventListener('resize',()=>{
+      if(document.getElementById('farey-page')?.classList.contains('active')){
+        fcResize(); fcDraw();
+      }
+    });
+  }
 }
 
 
-// ── Init farey on page load ──
-initFareyTab();
+// Farey tab initializes lazily on first switch
 
 </script>
 <!-- ═══════════════════════════════════════════════════════ -->
